@@ -74,12 +74,20 @@ public class ConfigManager
 
     private void SaveConfig(CodeFormatterConfig config)
     {
-        var dir = Path.GetDirectoryName(_configPath)!;
-        if (!Directory.Exists(dir))
-            Directory.CreateDirectory(dir);
+        try
+        {
+            var dir = Path.GetDirectoryName(_configPath)!;
+            if (!Directory.Exists(dir))
+                Directory.CreateDirectory(dir);
 
-        var toml = GenerateToml(config);
-        File.WriteAllText(_configPath, toml);
+            var toml = GenerateToml(config);
+            File.WriteAllText(_configPath, toml);
+            _cachedConfig = config;
+        }
+        catch
+        {
+            // Silently fail - config persistence is convenience, not critical
+        }
     }
 
     private static CodeFormatterConfig CreateDefaultConfig() => new()
@@ -97,44 +105,51 @@ public class ConfigManager
 
     private static CodeFormatterConfig ParseConfig(string toml)
     {
-        var model = Toml.ToModel(toml);
-        var config = new CodeFormatterConfig();
-
-        if (model.TryGetValue("defaults", out var defaultsObj) && defaultsObj is TomlTable defaults)
+        try
         {
-            if (defaults.TryGetValue("lastLanguage", out var lastLang))
-                config.Defaults.LastLanguage = lastLang?.ToString() ?? "python";
-        }
+            var model = Toml.ToModel(toml);
+            var config = new CodeFormatterConfig();
 
-        if (model.TryGetValue("formatters", out var formattersObj) && formattersObj is TomlTable formatters)
-        {
-            foreach (var (key, value) in formatters)
+            if (model.TryGetValue("defaults", out var defaultsObj) && defaultsObj is TomlTable defaults)
             {
-                if (value is not TomlTable formatterTable)
-                    continue;
-
-                var entry = new FormatterEntry();
-                if (formatterTable.TryGetValue("command", out var cmd))
-                    entry.Command = cmd?.ToString() ?? "";
-                if (formatterTable.TryGetValue("args", out var argsObj) && argsObj is TomlArray args)
-                    entry.Args = args.Select(a => a?.ToString() ?? "").ToArray();
-                if (formatterTable.TryGetValue("requiresNode", out var reqNode))
-                    entry.RequiresNode = reqNode is bool b && b;
-
-                config.Formatters[key] = entry;
+                if (defaults.TryGetValue("lastLanguage", out var lastLang))
+                    config.Defaults.LastLanguage = lastLang?.ToString() ?? "python";
             }
-        }
 
-        if (model.TryGetValue("paths", out var pathsObj) && pathsObj is TomlTable paths)
+            if (model.TryGetValue("formatters", out var formattersObj) && formattersObj is TomlTable formatters)
+            {
+                foreach (var (key, value) in formatters)
+                {
+                    if (value is not TomlTable formatterTable)
+                        continue;
+
+                    var entry = new FormatterEntry();
+                    if (formatterTable.TryGetValue("command", out var cmd))
+                        entry.Command = cmd?.ToString() ?? "";
+                    if (formatterTable.TryGetValue("args", out var argsObj) && argsObj is TomlArray args)
+                        entry.Args = args.Select(a => a?.ToString() ?? "").ToArray();
+                    if (formatterTable.TryGetValue("requiresNode", out var reqNode))
+                        entry.RequiresNode = reqNode is bool b && b;
+
+                    config.Formatters[key] = entry;
+                }
+            }
+
+            if (model.TryGetValue("paths", out var pathsObj) && pathsObj is TomlTable paths)
+            {
+                config.Paths = new PathsConfig();
+                if (paths.TryGetValue("ruff", out var ruff))
+                    config.Paths.Ruff = ruff?.ToString();
+                if (paths.TryGetValue("dprint", out var dprint))
+                    config.Paths.Dprint = dprint?.ToString();
+            }
+
+            return config;
+        }
+        catch
         {
-            config.Paths = new PathsConfig();
-            if (paths.TryGetValue("ruff", out var ruff))
-                config.Paths.Ruff = ruff?.ToString();
-            if (paths.TryGetValue("dprint", out var dprint))
-                config.Paths.Dprint = dprint?.ToString();
+            return CreateDefaultConfig();
         }
-
-        return config;
     }
 
     private static string GenerateToml(CodeFormatterConfig config)
