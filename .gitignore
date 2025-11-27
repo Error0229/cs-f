@@ -4,3 +4,4 @@ obj/
 *.user
 *.suo
 .vscode/
+Binaries/*.exe
