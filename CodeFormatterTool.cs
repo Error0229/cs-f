@@ -97,9 +97,43 @@ internal sealed class CodeFormatterTool : IGuiTool
 
     private static IUIDropDownListItem[] GetLanguageItems() =>
     [
+        // Standalone formatter
         Item(Language.Python.ToDisplayName(), Language.Python),
+
+        // dprint typescript plugin
         Item(Language.JavaScript.ToDisplayName(), Language.JavaScript),
         Item(Language.TypeScript.ToDisplayName(), Language.TypeScript),
+
+        // dprint json plugin
+        Item(Language.Json.ToDisplayName(), Language.Json),
+
+        // dprint markdown plugin
+        Item(Language.Markdown.ToDisplayName(), Language.Markdown),
+
+        // dprint toml plugin
+        Item(Language.Toml.ToDisplayName(), Language.Toml),
+
+        // dprint malva plugin (CSS family)
+        Item(Language.Css.ToDisplayName(), Language.Css),
+        Item(Language.Scss.ToDisplayName(), Language.Scss),
+        Item(Language.Less.ToDisplayName(), Language.Less),
+
+        // dprint markup_fmt plugin (HTML family)
+        Item(Language.Html.ToDisplayName(), Language.Html),
+        Item(Language.Vue.ToDisplayName(), Language.Vue),
+        Item(Language.Svelte.ToDisplayName(), Language.Svelte),
+        Item(Language.Astro.ToDisplayName(), Language.Astro),
+
+        // dprint pretty_yaml plugin
+        Item(Language.Yaml.ToDisplayName(), Language.Yaml),
+
+        // dprint pretty_graphql plugin
+        Item(Language.GraphQL.ToDisplayName(), Language.GraphQL),
+
+        // dprint dockerfile plugin
+        Item(Language.Dockerfile.ToDisplayName(), Language.Dockerfile),
+
+        // Node.js required
         Item(Language.Java.ToDisplayName(), Language.Java),
         Item(Language.Sql.ToDisplayName(), Language.Sql)
     ];
@@ -109,6 +143,19 @@ internal sealed class CodeFormatterTool : IGuiTool
         Language.Python => "python",
         Language.JavaScript => "javascript",
         Language.TypeScript => "typescript",
+        Language.Json => "json",
+        Language.Markdown => "markdown",
+        Language.Toml => "toml",
+        Language.Css => "css",
+        Language.Scss => "scss",
+        Language.Less => "less",
+        Language.Html => "html",
+        Language.Vue => "html",      // Vue uses HTML highlighting
+        Language.Svelte => "html",   // Svelte uses HTML highlighting
+        Language.Astro => "html",    // Astro uses HTML highlighting
+        Language.Yaml => "yaml",
+        Language.GraphQL => "graphql",
+        Language.Dockerfile => "dockerfile",
         Language.Java => "java",
         Language.Sql => "sql",
         _ => "plaintext"
