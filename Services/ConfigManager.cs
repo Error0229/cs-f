@@ -48,6 +48,19 @@ public class ConfigManager
             "python" => Language.Python,
             "javascript" => Language.JavaScript,
             "typescript" => Language.TypeScript,
+            "json" => Language.Json,
+            "markdown" => Language.Markdown,
+            "toml" => Language.Toml,
+            "css" => Language.Css,
+            "scss" => Language.Scss,
+            "less" => Language.Less,
+            "html" => Language.Html,
+            "vue" => Language.Vue,
+            "svelte" => Language.Svelte,
+            "astro" => Language.Astro,
+            "yaml" => Language.Yaml,
+            "graphql" => Language.GraphQL,
+            "dockerfile" => Language.Dockerfile,
             "java" => Language.Java,
             "sql" => Language.Sql,
             _ => Language.Python
@@ -90,14 +103,59 @@ public class ConfigManager
         }
     }
 
+    // dprint plugin URLs (update versions as needed)
+    private const string DprintPluginTypeScript = "https://plugins.dprint.dev/typescript-0.95.13.wasm";
+    private const string DprintPluginJson = "https://plugins.dprint.dev/json-0.21.0.wasm";
+    private const string DprintPluginMarkdown = "https://plugins.dprint.dev/markdown-0.20.0.wasm";
+    private const string DprintPluginToml = "https://plugins.dprint.dev/toml-0.7.0.wasm";
+    private const string DprintPluginMalva = "https://plugins.dprint.dev/g-plane/malva-v0.15.1.wasm";
+    private const string DprintPluginMarkupFmt = "https://plugins.dprint.dev/g-plane/markup_fmt-v0.25.1.wasm";
+    private const string DprintPluginYaml = "https://plugins.dprint.dev/g-plane/pretty_yaml-v0.5.1.wasm";
+    private const string DprintPluginGraphQL = "https://plugins.dprint.dev/g-plane/pretty_graphql-v0.2.3.wasm";
+    private const string DprintPluginDockerfile = "https://plugins.dprint.dev/dockerfile-0.3.3.wasm";
+
     private static CodeFormatterConfig CreateDefaultConfig() => new()
     {
         Defaults = new DefaultsConfig { LastLanguage = "python" },
         Formatters = new Dictionary<string, FormatterEntry>
         {
+            // Python - standalone Ruff
             ["python"] = new() { Command = "ruff", Args = ["format", "-"] },
-            ["javascript"] = new() { Command = "dprint", Args = ["fmt", "--stdin", "file.js"] },
-            ["typescript"] = new() { Command = "dprint", Args = ["fmt", "--stdin", "file.ts"] },
+
+            // JavaScript/TypeScript - dprint typescript plugin
+            ["javascript"] = new() { Command = "dprint", Args = ["fmt", "--stdin", "file.js", "--plugins", DprintPluginTypeScript, "--config-discovery=false"] },
+            ["typescript"] = new() { Command = "dprint", Args = ["fmt", "--stdin", "file.ts", "--plugins", DprintPluginTypeScript, "--config-discovery=false"] },
+
+            // JSON - dprint json plugin
+            ["json"] = new() { Command = "dprint", Args = ["fmt", "--stdin", "file.json", "--plugins", DprintPluginJson, "--config-discovery=false"] },
+
+            // Markdown - dprint markdown plugin
+            ["markdown"] = new() { Command = "dprint", Args = ["fmt", "--stdin", "file.md", "--plugins", DprintPluginMarkdown, "--config-discovery=false"] },
+
+            // TOML - dprint toml plugin
+            ["toml"] = new() { Command = "dprint", Args = ["fmt", "--stdin", "file.toml", "--plugins", DprintPluginToml, "--config-discovery=false"] },
+
+            // CSS family - dprint malva plugin
+            ["css"] = new() { Command = "dprint", Args = ["fmt", "--stdin", "file.css", "--plugins", DprintPluginMalva, "--config-discovery=false"] },
+            ["scss"] = new() { Command = "dprint", Args = ["fmt", "--stdin", "file.scss", "--plugins", DprintPluginMalva, "--config-discovery=false"] },
+            ["less"] = new() { Command = "dprint", Args = ["fmt", "--stdin", "file.less", "--plugins", DprintPluginMalva, "--config-discovery=false"] },
+
+            // HTML family - dprint markup_fmt plugin
+            ["html"] = new() { Command = "dprint", Args = ["fmt", "--stdin", "file.html", "--plugins", DprintPluginMarkupFmt, "--config-discovery=false"] },
+            ["vue"] = new() { Command = "dprint", Args = ["fmt", "--stdin", "file.vue", "--plugins", DprintPluginMarkupFmt, "--config-discovery=false"] },
+            ["svelte"] = new() { Command = "dprint", Args = ["fmt", "--stdin", "file.svelte", "--plugins", DprintPluginMarkupFmt, "--config-discovery=false"] },
+            ["astro"] = new() { Command = "dprint", Args = ["fmt", "--stdin", "file.astro", "--plugins", DprintPluginMarkupFmt, "--config-discovery=false"] },
+
+            // YAML - dprint pretty_yaml plugin
+            ["yaml"] = new() { Command = "dprint", Args = ["fmt", "--stdin", "file.yaml", "--plugins", DprintPluginYaml, "--config-discovery=false"] },
+
+            // GraphQL - dprint pretty_graphql plugin
+            ["graphql"] = new() { Command = "dprint", Args = ["fmt", "--stdin", "file.graphql", "--plugins", DprintPluginGraphQL, "--config-discovery=false"] },
+
+            // Dockerfile - dprint dockerfile plugin
+            ["dockerfile"] = new() { Command = "dprint", Args = ["fmt", "--stdin", "Dockerfile", "--plugins", DprintPluginDockerfile, "--config-discovery=false"] },
+
+            // Java/SQL - Node.js required (npx)
             ["java"] = new() { Command = "npx", Args = ["prettier", "--parser", "java"], RequiresNode = true },
             ["sql"] = new() { Command = "npx", Args = ["sql-formatter", "--language", "postgresql"], RequiresNode = true }
         }
