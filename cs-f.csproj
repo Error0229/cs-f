@@ -29,4 +29,8 @@
     </Compile>
   </ItemGroup>
 
+  <ItemGroup>
+    <None Include="Binaries\**\*" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
 </Project>
