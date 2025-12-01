@@ -32,6 +32,10 @@ internal sealed class CodeFormatterTool : IGuiTool
     private Language _configSelectedLanguage;
     private Dictionary<string, object> _pendingSettings = new();
 
+    // Auto-format debounce
+    private CancellationTokenSource? _formatCts;
+    private const int DebounceDelayMs = 500;
+
     [Import]
     private IFileStorage _fileStorage = null!;
 
@@ -69,11 +73,7 @@ internal sealed class CodeFormatterTool : IGuiTool
                                         SelectDropDownList("language-selector")
                                             .WithItems(GetLanguageItems())
                                             .Select((int)_selectedLanguage)
-                                            .OnItemSelected(OnLanguageSelected),
-                                        Button("format-btn")
-                                            .Text(CodeFormatterStrings.FormatButton)
-                                            .AccentAppearance()
-                                            .OnClick(OnFormatClickAsync),
+                                            .OnItemSelected(OnLanguageSelectedAsync),
                                         Button("swap-btn")
                                             .Text(CodeFormatterStrings.SwapButton)
                                             .OnClick(OnSwapClick),
@@ -81,7 +81,7 @@ internal sealed class CodeFormatterTool : IGuiTool
                                             .Text(CodeFormatterStrings.ClearButton)
                                             .OnClick(OnClearClick),
                                         Button("config-btn")
-                                            .Text(CodeFormatterStrings.ConfigButton)
+                                            .Icon("FluentSystemIcons", '\uF6A9')
                                             .OnClick(OnConfigClickAsync))),
                             // Editors row
                             Cell(
@@ -95,6 +95,7 @@ internal sealed class CodeFormatterTool : IGuiTool
                                             .Language(GetMonacoLanguage(_selectedLanguage))
                                             .AlwaysWrap()
                                             .Extendable()
+                                            .OnTextChanged(OnInputTextChangedAsync)
                                             .CommandBarExtraContent(
                                                 Button("load-btn")
                                                     .Text(CodeFormatterStrings.LoadButton)
@@ -165,7 +166,7 @@ internal sealed class CodeFormatterTool : IGuiTool
         _ => "plaintext"
     };
 
-    private void OnLanguageSelected(IUIDropDownListItem? item)
+    private async void OnLanguageSelectedAsync(IUIDropDownListItem? item)
     {
         if (item?.Value is not Language language)
             return;
@@ -176,20 +177,55 @@ internal sealed class CodeFormatterTool : IGuiTool
         var monacoLang = GetMonacoLanguage(language);
         _inputEditor.Language(monacoLang);
         _outputEditor.Language(monacoLang);
+
+        // Re-format with new language if there's input
+        await FormatWithDebounceAsync();
     }
 
-    private async ValueTask OnFormatClickAsync()
+    private async void OnInputTextChangedAsync(string text)
     {
-        var input = _inputEditor.Text;
-        var result = await _formatterService.FormatAsync(input, _selectedLanguage);
-        _outputEditor.Text(result.Output);
+        await FormatWithDebounceAsync();
     }
 
-    private void OnSwapClick()
+    private async Task FormatWithDebounceAsync()
+    {
+        // Cancel any pending format operation
+        _formatCts?.Cancel();
+        _formatCts = new CancellationTokenSource();
+        var token = _formatCts.Token;
+
+        try
+        {
+            // Wait for debounce delay
+            await Task.Delay(DebounceDelayMs, token);
+
+            var input = _inputEditor.Text;
+            if (string.IsNullOrWhiteSpace(input))
+            {
+                _outputEditor.Text(string.Empty);
+                return;
+            }
+
+            var result = await _formatterService.FormatAsync(input, _selectedLanguage);
+
+            // Check if cancelled before updating UI
+            if (!token.IsCancellationRequested)
+            {
+                _outputEditor.Text(result.Output);
+            }
+        }
+        catch (OperationCanceledException)
+        {
+            // Debounce cancelled, ignore
+        }
+    }
+
+    private async void OnSwapClick()
     {
         var output = _outputEditor.Text;
         _inputEditor.Text(output);
         _outputEditor.Text(string.Empty);
+        // Auto-format will trigger from OnTextChanged
     }
 
     private void OnClearClick()
