@@ -38,7 +38,7 @@ public enum Language
     // dprint dockerfile plugin
     Dockerfile,
 
-    // Node.js required (npx)
+    // Node.js required
     Java,
     Sql
 }

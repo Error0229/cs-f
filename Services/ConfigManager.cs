@@ -85,6 +85,138 @@ public class ConfigManager
         };
     }
 
+    public void SaveFormatterEntry(Language language, string command, string[] args, bool requiresNode)
+    {
+        var config = LoadConfig();
+        var key = language.ToConfigKey();
+
+        // Preserve existing settings if entry exists
+        var existingSettings = config.Formatters.TryGetValue(key, out var existing)
+            ? existing.Settings
+            : new Dictionary<string, object>();
+
+        config.Formatters[key] = new FormatterEntry
+        {
+            Command = command,
+            Args = args,
+            RequiresNode = requiresNode,
+            Settings = existingSettings
+        };
+
+        SaveConfig(config);
+    }
+
+    public void ResetFormatterEntry(Language language)
+    {
+        var defaultConfig = CreateDefaultConfig();
+        var key = language.ToConfigKey();
+
+        if (!defaultConfig.Formatters.TryGetValue(key, out var defaultEntry))
+            return;
+
+        var config = LoadConfig();
+        config.Formatters[key] = defaultEntry;
+        SaveConfig(config);
+    }
+
+    /// <summary>
+    /// Gets the settings dictionary for a language, with defaults applied
+    /// </summary>
+    public Dictionary<string, object> GetSettingsWithDefaults(Language language)
+    {
+        var definitions = FormatterSettingsDefinitions.GetSettings(language);
+        var result = new Dictionary<string, object>();
+
+        // First apply defaults
+        foreach (var def in definitions)
+        {
+            result[def.Key] = def.DefaultValue;
+        }
+
+        // Then override with saved settings
+        var entry = GetFormatterEntry(language);
+        if (entry?.Settings is not null)
+        {
+            foreach (var (key, value) in entry.Settings)
+            {
+                if (result.ContainsKey(key))
+                {
+                    result[key] = value;
+                }
+            }
+        }
+
+        return result;
+    }
+
+    /// <summary>
+    /// Saves a single setting for a language
+    /// </summary>
+    public void SaveSetting(Language language, string key, object value)
+    {
+        var config = LoadConfig();
+        var langKey = language.ToConfigKey();
+
+        if (!config.Formatters.TryGetValue(langKey, out var entry))
+        {
+            // Create entry from defaults if it doesn't exist
+            var defaultConfig = CreateDefaultConfig();
+            if (defaultConfig.Formatters.TryGetValue(langKey, out var defaultEntry))
+            {
+                entry = defaultEntry;
+                config.Formatters[langKey] = entry;
+            }
+            else
+            {
+                return; // Unknown language
+            }
+        }
+
+        entry.Settings[key] = value;
+        SaveConfig(config);
+    }
+
+    /// <summary>
+    /// Saves all settings for a language at once
+    /// </summary>
+    public void SaveAllSettings(Language language, Dictionary<string, object> settings)
+    {
+        var config = LoadConfig();
+        var langKey = language.ToConfigKey();
+
+        if (!config.Formatters.TryGetValue(langKey, out var entry))
+        {
+            var defaultConfig = CreateDefaultConfig();
+            if (defaultConfig.Formatters.TryGetValue(langKey, out var defaultEntry))
+            {
+                entry = defaultEntry;
+                config.Formatters[langKey] = entry;
+            }
+            else
+            {
+                return;
+            }
+        }
+
+        entry.Settings = settings;
+        SaveConfig(config);
+    }
+
+    /// <summary>
+    /// Resets settings for a language to defaults
+    /// </summary>
+    public void ResetSettings(Language language)
+    {
+        var config = LoadConfig();
+        var langKey = language.ToConfigKey();
+
+        if (config.Formatters.TryGetValue(langKey, out var entry))
+        {
+            entry.Settings.Clear();
+            SaveConfig(config);
+        }
+    }
+
     private void SaveConfig(CodeFormatterConfig config)
     {
         try
@@ -155,9 +287,13 @@ public class ConfigManager
             // Dockerfile - dprint dockerfile plugin
             ["dockerfile"] = new() { Command = "dprint", Args = ["fmt", "--stdin", "Dockerfile", "--plugins", DprintPluginDockerfile, "--config-discovery=false"] },
 
-            // Java/SQL - Node.js required (npx)
-            ["java"] = new() { Command = "npx", Args = ["prettier", "--parser", "java"], RequiresNode = true },
-            ["sql"] = new() { Command = "npx", Args = ["sql-formatter", "--language", "postgresql"], RequiresNode = true }
+            // Java/SQL - Node.js required
+            // Java requires: npm install -g prettier prettier-plugin-java
+            // SQL requires: npm install -g sql-formatter
+            // On Windows, use powershell to properly handle stdin piping to .cmd files
+            // Working directory is set to npm global root by FormatterService
+            ["java"] = new() { Command = "powershell", Args = ["-NoProfile", "-NonInteractive", "-Command", "& prettier --plugin=prettier-plugin-java --parser java"], RequiresNode = true },
+            ["sql"] = new() { Command = "powershell", Args = ["-NoProfile", "-NonInteractive", "-Command", "& sql-formatter --language postgresql"], RequiresNode = true }
         }
     };
 
@@ -188,6 +324,23 @@ public class ConfigManager
                         entry.Args = args.Select(a => a?.ToString() ?? "").ToArray();
                     if (formatterTable.TryGetValue("requiresNode", out var reqNode))
                         entry.RequiresNode = reqNode is bool b && b;
+
+                    // Parse settings
+                    if (formatterTable.TryGetValue("settings", out var settingsObj) && settingsObj is TomlTable settings)
+                    {
+                        foreach (var (settingKey, settingValue) in settings)
+                        {
+                            // Convert TOML types to appropriate .NET types
+                            entry.Settings[settingKey] = settingValue switch
+                            {
+                                bool boolVal => boolVal,
+                                long longVal => (int)longVal,
+                                double doubleVal => (int)doubleVal,
+                                string strVal => strVal,
+                                _ => settingValue?.ToString() ?? ""
+                            };
+                        }
+                    }
 
                     config.Formatters[key] = entry;
                 }
@@ -227,6 +380,25 @@ public class ConfigManager
             sb.AppendLine($"args = [{argsStr}]");
             if (entry.RequiresNode)
                 sb.AppendLine("requiresNode = true");
+
+            // Write settings if any exist
+            if (entry.Settings.Count > 0)
+            {
+                sb.AppendLine();
+                sb.AppendLine($"[formatters.{key}.settings]");
+                foreach (var (settingKey, settingValue) in entry.Settings)
+                {
+                    var valueStr = settingValue switch
+                    {
+                        bool b => b.ToString().ToLowerInvariant(),
+                        int i => i.ToString(),
+                        string s => $"\"{s}\"",
+                        _ => $"\"{settingValue}\""
+                    };
+                    sb.AppendLine($"{settingKey} = {valueStr}");
+                }
+            }
+
             sb.AppendLine();
         }
 

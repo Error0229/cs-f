@@ -268,4 +268,29 @@ public class FormatterIntegrationTests
         Assert.False(result.Success);
         Assert.Contains("No code to format", result.Output);
     }
+
+    // ========== Java (npx prettier-java) ==========
+
+    [Fact]
+    public async Task Java_FormatsClass()
+    {
+        var input = "public class Foo{public static void main(String[] args){}}";
+        var result = await _formatterService.FormatAsync(input, Language.Java);
+
+        Assert.True(result.Success, $"Format failed: {result.Output}");
+        Assert.Contains("public class Foo", result.Output);
+    }
+
+    // ========== SQL (npx sql-formatter) ==========
+
+    [Fact]
+    public async Task Sql_FormatsSelect()
+    {
+        var input = "select id,name from users where active=true";
+        var result = await _formatterService.FormatAsync(input, Language.Sql);
+
+        Assert.True(result.Success, $"Format failed: {result.Output}");
+        Assert.Contains("SELECT", result.Output.ToUpperInvariant());
+        Assert.Contains("FROM", result.Output.ToUpperInvariant());
+    }
 }

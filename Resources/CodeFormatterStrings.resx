@@ -69,10 +69,28 @@
   <data name="LoadButton" xml:space="preserve">
     <value>Load</value>
   </data>
-  <data name="SaveButton" xml:space="preserve">
+  <data name="ConfigButton" xml:space="preserve">
+    <value>Config</value>
+  </data>
+  <data name="ConfigTitle" xml:space="preserve">
+    <value>Formatter Configuration</value>
+  </data>
+  <data name="ConfigLanguageLabel" xml:space="preserve">
+    <value>Language</value>
+  </data>
+  <data name="ConfigCommandLabel" xml:space="preserve">
+    <value>Command</value>
+  </data>
+  <data name="ConfigArgsLabel" xml:space="preserve">
+    <value>Arguments</value>
+  </data>
+  <data name="ConfigRequiresNodeLabel" xml:space="preserve">
+    <value>Requires Node.js</value>
+  </data>
+  <data name="ConfigSaveButton" xml:space="preserve">
     <value>Save</value>
   </data>
-  <data name="CopyButton" xml:space="preserve">
-    <value>Copy</value>
+  <data name="ConfigResetButton" xml:space="preserve">
+    <value>Reset to Default</value>
   </data>
 </root>

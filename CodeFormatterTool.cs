@@ -25,70 +25,95 @@ internal sealed class CodeFormatterTool : IGuiTool
     private readonly FormatterService _formatterService;
     private readonly IUIMultiLineTextInput _inputEditor = MultiLineTextInput("input-editor");
     private readonly IUIMultiLineTextInput _outputEditor = MultiLineTextInput("output-editor");
+    private readonly UIToolView _view = new();
     private Language _selectedLanguage;
+
+    // Config dialog state
+    private Language _configSelectedLanguage;
+    private Dictionary<string, object> _pendingSettings = new();
 
     [Import]
     private IFileStorage _fileStorage = null!;
-
-    [Import]
-    private IClipboard _clipboard = null!;
 
     public CodeFormatterTool()
     {
         _formatterService = new FormatterService(_configManager, new ProcessRunner());
         _selectedLanguage = _configManager.GetLastLanguage();
+        _configSelectedLanguage = _selectedLanguage;
     }
 
     public UIToolView View
-        => new UIToolView(
-            Stack()
-                .Vertical()
-                .WithChildren(
-                    // Toolbar
-                    Stack()
-                        .Horizontal()
-                        .SmallSpacing()
-                        .WithChildren(
-                            SelectDropDownList("language-selector")
-                                .Title("Language")
-                                .WithItems(GetLanguageItems())
-                                .Select((int)_selectedLanguage)
-                                .OnItemSelected(OnLanguageSelected),
-                            Button("format-btn")
-                                .Text(CodeFormatterStrings.FormatButton)
-                                .AccentAppearance()
-                                .OnClick(OnFormatClickAsync),
-                            Button("swap-btn")
-                                .Text(CodeFormatterStrings.SwapButton)
-                                .OnClick(OnSwapClick),
-                            Button("clear-btn")
-                                .Text(CodeFormatterStrings.ClearButton)
-                                .OnClick(OnClearClick),
-                            Button("load-btn")
-                                .Text(CodeFormatterStrings.LoadButton)
-                                .OnClick(OnLoadClickAsync),
-                            Button("save-btn")
-                                .Text(CodeFormatterStrings.SaveButton)
-                                .OnClick(OnSaveClickAsync)),
+    {
+        get
+        {
+            if (_view.RootElement is null)
+            {
+                _view.WithRootElement(
+                    Grid()
+                        .Rows(
+                            (GridRow.Settings, UIGridLength.Auto),
+                            (GridRow.Content, new UIGridLength(1, UIGridUnitType.Fraction)))
+                        .Columns(
+                            (GridColumn.Stretch, new UIGridLength(1, UIGridUnitType.Fraction)))
+                        .Cells(
+                            // Toolbar row
+                            Cell(
+                                GridRow.Settings,
+                                GridColumn.Stretch,
+                                Stack()
+                                    .Horizontal()
+                                    .MediumSpacing()
+                                    .AlignVertically(UIVerticalAlignment.Center)
+                                    .WithChildren(
+                                        Label().Text("Language"),
+                                        SelectDropDownList("language-selector")
+                                            .WithItems(GetLanguageItems())
+                                            .Select((int)_selectedLanguage)
+                                            .OnItemSelected(OnLanguageSelected),
+                                        Button("format-btn")
+                                            .Text(CodeFormatterStrings.FormatButton)
+                                            .AccentAppearance()
+                                            .OnClick(OnFormatClickAsync),
+                                        Button("swap-btn")
+                                            .Text(CodeFormatterStrings.SwapButton)
+                                            .OnClick(OnSwapClick),
+                                        Button("clear-btn")
+                                            .Text(CodeFormatterStrings.ClearButton)
+                                            .OnClick(OnClearClick),
+                                        Button("config-btn")
+                                            .Text(CodeFormatterStrings.ConfigButton)
+                                            .OnClick(OnConfigClickAsync))),
+                            // Editors row
+                            Cell(
+                                GridRow.Content,
+                                GridColumn.Stretch,
+                                SplitGrid()
+                                    .Horizontal()
+                                    .WithLeftPaneChild(
+                                        _inputEditor
+                                            .Title(CodeFormatterStrings.InputTitle)
+                                            .Language(GetMonacoLanguage(_selectedLanguage))
+                                            .AlwaysWrap()
+                                            .Extendable()
+                                            .CommandBarExtraContent(
+                                                Button("load-btn")
+                                                    .Text(CodeFormatterStrings.LoadButton)
+                                                    .OnClick(OnLoadClickAsync)))
+                                    .WithRightPaneChild(
+                                        _outputEditor
+                                            .Title(CodeFormatterStrings.OutputTitle)
+                                            .Language(GetMonacoLanguage(_selectedLanguage))
+                                            .ReadOnly()
+                                            .AlwaysWrap()
+                                            .Extendable()))));
+            }
 
-                    // Side-by-side editors
-                    SplitGrid()
-                        .Horizontal()
-                        .WithLeftPaneChild(
-                            _inputEditor
-                                .Title(CodeFormatterStrings.InputTitle)
-                                .Language(GetMonacoLanguage(_selectedLanguage))
-                                .AlwaysWrap())
-                        .WithRightPaneChild(
-                            _outputEditor
-                                .Title(CodeFormatterStrings.OutputTitle)
-                                .Language(GetMonacoLanguage(_selectedLanguage))
-                                .ReadOnly()
-                                .AlwaysWrap()
-                                .CommandBarExtraContent(
-                                    Button("copy-btn")
-                                        .Text(CodeFormatterStrings.CopyButton)
-                                        .OnClick(OnCopyClickAsync)))));
+            return _view;
+        }
+    }
+
+    private enum GridRow { Settings, Content }
+    private enum GridColumn { Stretch }
 
     public void OnDataReceived(string dataTypeName, object? parsedData)
     {
@@ -97,43 +122,22 @@ internal sealed class CodeFormatterTool : IGuiTool
 
     private static IUIDropDownListItem[] GetLanguageItems() =>
     [
-        // Standalone formatter
         Item(Language.Python.ToDisplayName(), Language.Python),
-
-        // dprint typescript plugin
         Item(Language.JavaScript.ToDisplayName(), Language.JavaScript),
         Item(Language.TypeScript.ToDisplayName(), Language.TypeScript),
-
-        // dprint json plugin
         Item(Language.Json.ToDisplayName(), Language.Json),
-
-        // dprint markdown plugin
         Item(Language.Markdown.ToDisplayName(), Language.Markdown),
-
-        // dprint toml plugin
         Item(Language.Toml.ToDisplayName(), Language.Toml),
-
-        // dprint malva plugin (CSS family)
         Item(Language.Css.ToDisplayName(), Language.Css),
         Item(Language.Scss.ToDisplayName(), Language.Scss),
         Item(Language.Less.ToDisplayName(), Language.Less),
-
-        // dprint markup_fmt plugin (HTML family)
         Item(Language.Html.ToDisplayName(), Language.Html),
         Item(Language.Vue.ToDisplayName(), Language.Vue),
         Item(Language.Svelte.ToDisplayName(), Language.Svelte),
         Item(Language.Astro.ToDisplayName(), Language.Astro),
-
-        // dprint pretty_yaml plugin
         Item(Language.Yaml.ToDisplayName(), Language.Yaml),
-
-        // dprint pretty_graphql plugin
         Item(Language.GraphQL.ToDisplayName(), Language.GraphQL),
-
-        // dprint dockerfile plugin
         Item(Language.Dockerfile.ToDisplayName(), Language.Dockerfile),
-
-        // Node.js required
         Item(Language.Java.ToDisplayName(), Language.Java),
         Item(Language.Sql.ToDisplayName(), Language.Sql)
     ];
@@ -150,9 +154,9 @@ internal sealed class CodeFormatterTool : IGuiTool
         Language.Scss => "scss",
         Language.Less => "less",
         Language.Html => "html",
-        Language.Vue => "html",      // Vue uses HTML highlighting
-        Language.Svelte => "html",   // Svelte uses HTML highlighting
-        Language.Astro => "html",    // Astro uses HTML highlighting
+        Language.Vue => "html",
+        Language.Svelte => "html",
+        Language.Astro => "html",
         Language.Yaml => "yaml",
         Language.GraphQL => "graphql",
         Language.Dockerfile => "dockerfile",
@@ -178,7 +182,6 @@ internal sealed class CodeFormatterTool : IGuiTool
     {
         var input = _inputEditor.Text;
         var result = await _formatterService.FormatAsync(input, _selectedLanguage);
-
         _outputEditor.Text(result.Output);
     }
 
@@ -197,7 +200,8 @@ internal sealed class CodeFormatterTool : IGuiTool
 
     private async ValueTask OnLoadClickAsync()
     {
-        using var file = await _fileStorage.PickOpenFileAsync("*");
+        var extensions = GetFileExtensions();
+        using var file = await _fileStorage.PickOpenFileAsync(extensions);
         if (file is null)
             return;
 
@@ -207,24 +211,198 @@ internal sealed class CodeFormatterTool : IGuiTool
         _inputEditor.Text(content);
     }
 
-    private async ValueTask OnSaveClickAsync()
+    private string[] GetFileExtensions() =>
+    [
+        "py", "js", "ts", "tsx", "jsx", "json", "md", "toml",
+        "css", "scss", "less", "html", "vue", "svelte", "astro",
+        "yaml", "yml", "graphql", "gql", "java", "sql",
+        "txt", "xml", "config"
+    ];
+
+    #region Config Dialog
+
+    private async ValueTask OnConfigClickAsync()
     {
-        var output = _outputEditor.Text;
-        if (string.IsNullOrWhiteSpace(output))
-            return;
+        _configSelectedLanguage = _selectedLanguage;
+        _pendingSettings = _configManager.GetSettingsWithDefaults(_configSelectedLanguage);
 
-        using var stream = await _fileStorage.PickSaveFileAsync("*");
-        if (stream is null)
-            return;
-
-        await using var writer = new StreamWriter(stream);
-        await writer.WriteAsync(output);
+        await OpenConfigDialogAsync();
     }
 
-    private async ValueTask OnCopyClickAsync()
+    private async Task OpenConfigDialogAsync()
     {
-        var output = _outputEditor.Text;
-        if (!string.IsNullOrWhiteSpace(output))
-            await _clipboard.SetClipboardTextAsync(output);
+        var definitions = FormatterSettingsDefinitions.GetSettings(_configSelectedLanguage);
+        var settingsControls = BuildSettingsControls(definitions);
+
+        await _view.OpenDialogAsync(
+            dialogContent:
+                Stack()
+                    .Vertical()
+                    .LargeSpacing()
+                    .WithChildren(
+                        Label()
+                            .Style(UILabelStyle.Subtitle)
+                            .Text($"{_configSelectedLanguage.ToDisplayName()} Settings"),
+
+                        // Language selector
+                        Stack()
+                            .Horizontal()
+                            .SmallSpacing()
+                            .AlignVertically(UIVerticalAlignment.Center)
+                            .WithChildren(
+                                Label().Text("Language:"),
+                                SelectDropDownList("config-language")
+                                    .WithItems(GetLanguageItems())
+                                    .Select((int)_configSelectedLanguage)
+                                    .OnItemSelected(OnConfigLanguageSelectedAsync)),
+
+                        // Settings section
+                        settingsControls.Length > 0
+                            ? Stack()
+                                .Vertical()
+                                .MediumSpacing()
+                                .WithChildren(settingsControls)
+                            : Label()
+                                .Style(UILabelStyle.Body)
+                                .Text("No configurable settings for this formatter.")),
+            footerContent:
+                Stack()
+                    .Horizontal()
+                    .MediumSpacing()
+                    .AlignHorizontally(UIHorizontalAlignment.Right)
+                    .WithChildren(
+                        Button("config-reset-btn")
+                            .Text(CodeFormatterStrings.ConfigResetButton)
+                            .OnClick(OnConfigResetClickAsync),
+                        Button("config-save-btn")
+                            .Text(CodeFormatterStrings.ConfigSaveButton)
+                            .AccentAppearance()
+                            .OnClick(OnConfigSaveClick)),
+            isDismissible: true);
     }
+
+    private IUIElement[] BuildSettingsControls(SettingDefinition[] definitions)
+    {
+        var controls = new List<IUIElement>();
+
+        foreach (var def in definitions)
+        {
+            var currentValue = _pendingSettings.TryGetValue(def.Key, out var val)
+                ? val
+                : def.DefaultValue;
+
+            IUIElement control = def.Type switch
+            {
+                SettingType.Boolean => BuildBooleanSetting(def, currentValue),
+                SettingType.Integer => BuildIntegerSetting(def, currentValue),
+                SettingType.Choice => BuildChoiceSetting(def, currentValue),
+                _ => Label().Text($"Unknown setting type: {def.Key}")
+            };
+
+            controls.Add(control);
+        }
+
+        return controls.ToArray();
+    }
+
+    private IUIElement BuildBooleanSetting(SettingDefinition def, object currentValue)
+    {
+        var isOn = currentValue is bool b && b;
+        var sw = Switch($"setting-{def.Key}")
+            .OnText("Yes")
+            .OffText("No")
+            .OnToggle(value => _pendingSettings[def.Key] = value);
+
+        if (isOn)
+            sw.On();
+        else
+            sw.Off();
+
+        return Stack()
+            .Horizontal()
+            .SmallSpacing()
+            .AlignVertically(UIVerticalAlignment.Center)
+            .WithChildren(
+                Label().Text(def.DisplayName),
+                sw,
+                def.Description != null
+                    ? Label().Style(UILabelStyle.Caption).Text($"({def.Description})")
+                    : Label().Text(""));
+    }
+
+    private IUIElement BuildIntegerSetting(SettingDefinition def, object currentValue)
+    {
+        var intValue = currentValue switch
+        {
+            int i => i,
+            long l => (int)l,
+            double d => (int)d,
+            _ => (int)def.DefaultValue
+        };
+
+        return Stack()
+            .Vertical()
+            .SmallSpacing()
+            .WithChildren(
+                Label().Text(def.DisplayName + (def.Description != null ? $" ({def.Description})" : "")),
+                NumberInput($"setting-{def.Key}")
+                    .Minimum(def.Min ?? 1)
+                    .Maximum(def.Max ?? 1000)
+                    .Value(intValue)
+                    .OnValueChanged(value => _pendingSettings[def.Key] = (int)value));
+    }
+
+    private IUIElement BuildChoiceSetting(SettingDefinition def, object currentValue)
+    {
+        var choices = def.Choices ?? [];
+        var items = choices.Select(c => Item(c, c)).ToArray();
+        var currentStr = currentValue?.ToString() ?? def.DefaultValue.ToString();
+        var selectedIndex = Array.IndexOf(choices, currentStr);
+        if (selectedIndex < 0) selectedIndex = 0;
+
+        return Stack()
+            .Vertical()
+            .SmallSpacing()
+            .WithChildren(
+                Label().Text(def.DisplayName + (def.Description != null ? $" ({def.Description})" : "")),
+                SelectDropDownList($"setting-{def.Key}")
+                    .WithItems(items)
+                    .Select(selectedIndex)
+                    .OnItemSelected(item =>
+                    {
+                        if (item?.Value is string s)
+                            _pendingSettings[def.Key] = s;
+                    }));
+    }
+
+    private async void OnConfigLanguageSelectedAsync(IUIDropDownListItem? item)
+    {
+        if (item?.Value is not Language language || language == _configSelectedLanguage)
+            return;
+
+        _configSelectedLanguage = language;
+        _pendingSettings = _configManager.GetSettingsWithDefaults(_configSelectedLanguage);
+
+        // Close and reopen dialog with new settings
+        _view.CurrentOpenedDialog?.Close();
+        await OpenConfigDialogAsync();
+    }
+
+    private void OnConfigSaveClick()
+    {
+        _configManager.SaveAllSettings(_configSelectedLanguage, _pendingSettings);
+        _view.CurrentOpenedDialog?.Close();
+    }
+
+    private async void OnConfigResetClickAsync()
+    {
+        _configManager.ResetSettings(_configSelectedLanguage);
+        _pendingSettings = _configManager.GetSettingsWithDefaults(_configSelectedLanguage);
+
+        // Reopen dialog to refresh UI
+        _view.CurrentOpenedDialog?.Close();
+        await OpenConfigDialogAsync();
+    }
+
+    #endregion
 }

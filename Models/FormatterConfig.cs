@@ -17,6 +17,12 @@ public class FormatterEntry
     public string Command { get; set; } = string.Empty;
     public string[] Args { get; set; } = [];
     public bool RequiresNode { get; set; } = false;
+
+    /// <summary>
+    /// Formatter-specific settings (e.g., line-length, useTabs, etc.)
+    /// Values can be bool, int, or string depending on the setting type.
+    /// </summary>
+    public Dictionary<string, object> Settings { get; set; } = new();
 }
 
 public class PathsConfig
