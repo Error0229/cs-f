@@ -7,6 +7,16 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <EnableDynamicLoading>true</EnableDynamicLoading>
+
+    <!-- NuGet Package Properties -->
+    <IsPackable>true</IsPackable>
+    <PackageId>CodeFormatter.DevToys</PackageId>
+    <Version>1.0.0</Version>
+    <Title>Code Formatter for DevToys</Title>
+    <Authors>cato</Authors>
+    <Description>A DevToys extension that formats code in 17 languages using Ruff, dprint, and Prettier.</Description>
+    <PackageTags>devtoys-app;extension;formatter;code;ruff;dprint;prettier</PackageTags>
+    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
   </PropertyGroup>
 
   <!-- Exclude test project files -->
@@ -17,7 +27,9 @@
 
   <ItemGroup>
     <PackageReference Include="DevToys.Api" Version="2.0.8-preview" />
-    <PackageReference Include="Tomlyn" Version="0.19.0" />
+    <PackageReference Include="Tomlyn" Version="0.19.0" GeneratePathProperty="true">
+      <PrivateAssets>none</PrivateAssets>
+    </PackageReference>
   </ItemGroup>
 
   <ItemGroup>
@@ -35,8 +47,25 @@
     </Compile>
   </ItemGroup>
 
+  <!-- Include binaries in output for local development -->
   <ItemGroup>
     <None Include="Binaries\**\*" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
+
+  <!-- Include binaries in NuGet package for Windows x64 -->
+  <ItemGroup>
+    <None Include="Binaries\ruff.exe" Pack="true" PackagePath="runtimes/win-x64/native/" />
+    <None Include="Binaries\dprint.exe" Pack="true" PackagePath="runtimes/win-x64/native/" />
+  </ItemGroup>
+
+  <!-- This makes sure to include dependencies of the project into the NuGet package -->
+  <Target Name="IncludeAllFilesInTargetDir" BeforeTargets="_GetPackageFiles">
+    <ItemGroup>
+      <None Include="$(TargetDir)\**\*" Exclude="$(TargetDir)\$(AssemblyName).pdb;$(TargetDir)\Binaries\**\*">
+        <Pack>true</Pack>
+        <PackagePath>lib\$(TargetFramework)</PackagePath>
+      </None>
+    </ItemGroup>
+  </Target>
 
 </Project>

@@ -167,5 +167,77 @@ namespace CodeFormatter.Resources {
                 return ResourceManager.GetString("SwapButton", resourceCulture);
             }
         }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Config.
+        /// </summary>
+        internal static string ConfigButton {
+            get {
+                return ResourceManager.GetString("ConfigButton", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Formatter Configuration.
+        /// </summary>
+        internal static string ConfigTitle {
+            get {
+                return ResourceManager.GetString("ConfigTitle", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Language.
+        /// </summary>
+        internal static string ConfigLanguageLabel {
+            get {
+                return ResourceManager.GetString("ConfigLanguageLabel", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Command.
+        /// </summary>
+        internal static string ConfigCommandLabel {
+            get {
+                return ResourceManager.GetString("ConfigCommandLabel", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Arguments.
+        /// </summary>
+        internal static string ConfigArgsLabel {
+            get {
+                return ResourceManager.GetString("ConfigArgsLabel", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Requires Node.js.
+        /// </summary>
+        internal static string ConfigRequiresNodeLabel {
+            get {
+                return ResourceManager.GetString("ConfigRequiresNodeLabel", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Save.
+        /// </summary>
+        internal static string ConfigSaveButton {
+            get {
+                return ResourceManager.GetString("ConfigSaveButton", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Reset to Default.
+        /// </summary>
+        internal static string ConfigResetButton {
+            get {
+                return ResourceManager.GetString("ConfigResetButton", resourceCulture);
+            }
+        }
     }
 }

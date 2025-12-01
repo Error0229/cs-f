@@ -1,0 +1,18 @@
+{
+  "profiles": {
+    "DevToys GUI": {
+      "commandName": "Executable",
+      "executablePath": "C:\\Users\\cato\\AppData\\Local\\Programs\\DevToys Preview\\DevToys.exe",
+      "environmentVariables": {
+        "EXTRAPLUGIN": "$(TargetDir)"
+      }
+    },
+    "DevToys CLI": {
+      "commandName": "Executable",
+      "executablePath": "C:\\Users\\cato\\AppData\\Local\\Programs\\DevToys Preview\\DevToys.CLI.exe",
+      "environmentVariables": {
+        "EXTRAPLUGIN": "$(TargetDir)"
+      }
+    }
+  }
+}
