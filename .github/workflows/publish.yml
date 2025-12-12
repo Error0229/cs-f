@@ -63,4 +63,7 @@ jobs:
         run: dotnet pack ./cs-f.csproj --configuration Release --no-build -p:Version=${{ steps.version.outputs.VERSION }} --output ./nupkg
 
       - name: Push to NuGet
-        run: dotnet nuget push ./nupkg/*.nupkg --api-key ${{ secrets.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json --skip-duplicate
+        run: |
+          $package = Get-ChildItem -Path ./nupkg -Filter *.nupkg | Select-Object -First 1
+          dotnet nuget push $package.FullName --api-key ${{ secrets.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json --skip-duplicate
+        shell: pwsh
