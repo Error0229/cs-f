@@ -22,4 +22,9 @@
     <ProjectReference Include="..\cs-f.csproj" />
   </ItemGroup>
 
+  <!-- Copy binaries from parent project for tests -->
+  <ItemGroup>
+    <None Include="..\Binaries\**\*" CopyToOutputDirectory="PreserveNewest" Link="Binaries\%(RecursiveDir)%(Filename)%(Extension)" />
+  </ItemGroup>
+
 </Project>

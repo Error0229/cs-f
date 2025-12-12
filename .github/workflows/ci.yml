@@ -32,9 +32,8 @@ jobs:
           unzip dprint.zip -d Binaries
           rm -f dprint.zip
 
-          # Download clang-format
-          curl -L -o clang-format.exe "https://github.com/nickvdyck/clang-format-binaries/releases/download/llvm-19.1.0/clang-format-19.1.0_windows-amd64.exe"
-          mv clang-format.exe Binaries/clang-format.exe
+          # Download clang-format (from muttleyxd static binaries)
+          curl -L -o Binaries/clang-format.exe "https://github.com/muttleyxd/clang-tools-static-binaries/releases/download/master-1a1f9bb4/clang-format-19_windows-amd64.exe"
 
           # Download gofumpt
           curl -L -o Binaries/gofumpt.exe "https://github.com/mvdan/gofumpt/releases/download/v0.7.0/gofumpt_v0.7.0_windows_amd64.exe"
