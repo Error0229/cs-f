@@ -293,4 +293,160 @@ public class FormatterIntegrationTests
         Assert.Contains("SELECT", result.Output.ToUpperInvariant());
         Assert.Contains("FROM", result.Output.ToUpperInvariant());
     }
+
+    // ========== C (clang-format) ==========
+
+    [Fact]
+    public async Task C_FormatsSimpleFunction()
+    {
+        var input = "int main(){int x=1;return 0;}";
+        var result = await _formatterService.FormatAsync(input, Language.C);
+
+        Assert.True(result.Success, $"Format failed: {result.Output}");
+        Assert.Contains("int main()", result.Output);
+        Assert.Contains("int x = 1;", result.Output);
+        Assert.Contains("return 0;", result.Output);
+    }
+
+    [Fact]
+    public async Task C_FormatsStruct()
+    {
+        var input = "struct Point{int x;int y;};";
+        var result = await _formatterService.FormatAsync(input, Language.C);
+
+        Assert.True(result.Success, $"Format failed: {result.Output}");
+        Assert.Contains("struct Point", result.Output);
+        Assert.Contains("int x;", result.Output);
+        Assert.Contains("int y;", result.Output);
+    }
+
+    [Fact]
+    public async Task C_FormatsIfStatement()
+    {
+        var input = "void foo(){if(x>0){y=1;}else{y=2;}}";
+        var result = await _formatterService.FormatAsync(input, Language.C);
+
+        Assert.True(result.Success, $"Format failed: {result.Output}");
+        Assert.Contains("if (x > 0)", result.Output);
+        Assert.Contains("else", result.Output);
+    }
+
+    // ========== C++ (clang-format) ==========
+
+    [Fact]
+    public async Task Cpp_FormatsClass()
+    {
+        var input = "class Foo{public:int bar();private:int x;};";
+        var result = await _formatterService.FormatAsync(input, Language.Cpp);
+
+        Assert.True(result.Success, $"Format failed: {result.Output}");
+        Assert.Contains("class Foo", result.Output);
+        Assert.Contains("public:", result.Output);
+        Assert.Contains("private:", result.Output);
+    }
+
+    [Fact]
+    public async Task Cpp_FormatsTemplate()
+    {
+        var input = "template<typename T>T max(T a,T b){return a>b?a:b;}";
+        var result = await _formatterService.FormatAsync(input, Language.Cpp);
+
+        Assert.True(result.Success, $"Format failed: {result.Output}");
+        Assert.Contains("template", result.Output);
+        Assert.Contains("typename T", result.Output);
+    }
+
+    [Fact]
+    public async Task Cpp_FormatsNamespace()
+    {
+        var input = "namespace foo{class Bar{};}";
+        var result = await _formatterService.FormatAsync(input, Language.Cpp);
+
+        Assert.True(result.Success, $"Format failed: {result.Output}");
+        Assert.Contains("namespace foo", result.Output);
+        Assert.Contains("class Bar", result.Output);
+    }
+
+    // ========== Go (gofumpt) ==========
+
+    [Fact]
+    public async Task Go_FormatsSimpleFunction()
+    {
+        var input = "package main\nfunc main(){fmt.Println(\"hello\")}";
+        var result = await _formatterService.FormatAsync(input, Language.Go);
+
+        Assert.True(result.Success, $"Format failed: {result.Output}");
+        Assert.Contains("package main", result.Output);
+        Assert.Contains("func main()", result.Output);
+    }
+
+    [Fact]
+    public async Task Go_FormatsStruct()
+    {
+        var input = "package main\ntype Point struct{X int\nY int}";
+        var result = await _formatterService.FormatAsync(input, Language.Go);
+
+        Assert.True(result.Success, $"Format failed: {result.Output}");
+        Assert.Contains("type Point struct", result.Output);
+        Assert.Contains("X int", result.Output);
+        Assert.Contains("Y int", result.Output);
+    }
+
+    [Fact]
+    public async Task Go_FormatsImport()
+    {
+        var input = "package main\nimport \"fmt\"\nfunc main(){fmt.Println(\"hi\")}";
+        var result = await _formatterService.FormatAsync(input, Language.Go);
+
+        Assert.True(result.Success, $"Format failed: {result.Output}");
+        Assert.Contains("import \"fmt\"", result.Output);
+    }
+
+    // ========== Shell/Bash (shfmt) ==========
+
+    [Fact]
+    public async Task Shell_FormatsIfStatement()
+    {
+        var input = "#!/bin/bash\nif [ $x = 1 ];then\necho hello\nfi";
+        var result = await _formatterService.FormatAsync(input, Language.Shell);
+
+        Assert.True(result.Success, $"Format failed: {result.Output}");
+        Assert.Contains("if [", result.Output);
+        Assert.Contains("then", result.Output);
+        Assert.Contains("fi", result.Output);
+    }
+
+    [Fact]
+    public async Task Shell_FormatsForLoop()
+    {
+        var input = "#!/bin/bash\nfor i in 1 2 3;do\necho $i\ndone";
+        var result = await _formatterService.FormatAsync(input, Language.Shell);
+
+        Assert.True(result.Success, $"Format failed: {result.Output}");
+        Assert.Contains("for i in", result.Output);
+        Assert.Contains("do", result.Output);
+        Assert.Contains("done", result.Output);
+    }
+
+    [Fact]
+    public async Task Shell_FormatsFunction()
+    {
+        var input = "#!/bin/bash\nmy_func(){\necho hello\n}";
+        var result = await _formatterService.FormatAsync(input, Language.Shell);
+
+        Assert.True(result.Success, $"Format failed: {result.Output}");
+        Assert.Contains("my_func()", result.Output);
+        Assert.Contains("echo hello", result.Output);
+    }
+
+    [Fact]
+    public async Task Shell_FormatsCaseStatement()
+    {
+        var input = "#!/bin/bash\ncase $x in\n1)echo one;;\n2)echo two;;\nesac";
+        var result = await _formatterService.FormatAsync(input, Language.Shell);
+
+        Assert.True(result.Success, $"Format failed: {result.Output}");
+        Assert.Contains("case", result.Output);
+        Assert.Contains("esac", result.Output);
+    }
 }

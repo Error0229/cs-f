@@ -10,8 +10,8 @@ namespace CodeFormatter;
 [Export(typeof(IGuiTool))]
 [Name("CodeFormatter")]
 [ToolDisplayInformation(
-    IconFontName = "FluentSystemIcons",
-    IconGlyph = '\uE943',
+    IconFontName = "CodeFormatterIcons",
+    IconGlyph = '\uE000',
     GroupName = PredefinedCommonToolGroupNames.Formatters,
     ResourceManagerAssemblyIdentifier = nameof(CodeFormatterResourceIdentifier),
     ResourceManagerBaseName = "CodeFormatter.Resources.CodeFormatterStrings",
@@ -140,7 +140,11 @@ internal sealed class CodeFormatterTool : IGuiTool
         Item(Language.GraphQL.ToDisplayName(), Language.GraphQL),
         Item(Language.Dockerfile.ToDisplayName(), Language.Dockerfile),
         Item(Language.Java.ToDisplayName(), Language.Java),
-        Item(Language.Sql.ToDisplayName(), Language.Sql)
+        Item(Language.Sql.ToDisplayName(), Language.Sql),
+        Item(Language.C.ToDisplayName(), Language.C),
+        Item(Language.Cpp.ToDisplayName(), Language.Cpp),
+        Item(Language.Go.ToDisplayName(), Language.Go),
+        Item(Language.Shell.ToDisplayName(), Language.Shell)
     ];
 
     private static string GetMonacoLanguage(Language language) => language switch
@@ -163,6 +167,10 @@ internal sealed class CodeFormatterTool : IGuiTool
         Language.Dockerfile => "dockerfile",
         Language.Java => "java",
         Language.Sql => "sql",
+        Language.C => "c",
+        Language.Cpp => "cpp",
+        Language.Go => "go",
+        Language.Shell => "shell",
         _ => "plaintext"
     };
 

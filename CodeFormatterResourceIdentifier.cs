@@ -1,5 +1,6 @@
 using DevToys.Api;
 using System.ComponentModel.Composition;
+using System.Reflection;
 
 namespace CodeFormatter;
 
@@ -9,6 +10,15 @@ internal sealed class CodeFormatterResourceIdentifier : IResourceAssemblyIdentif
 {
     public ValueTask<FontDefinition[]> GetFontDefinitionsAsync()
     {
-        return new ValueTask<FontDefinition[]>([]);
+        var assembly = Assembly.GetExecutingAssembly();
+        var fontStream = assembly.GetManifestResourceStream("CodeFormatter.Assets.CodeFormatterIcons.ttf");
+
+        if (fontStream is null)
+            return new ValueTask<FontDefinition[]>([]);
+
+        return new ValueTask<FontDefinition[]>(
+        [
+            new FontDefinition("CodeFormatterIcons", fontStream)
+        ]);
     }
 }
