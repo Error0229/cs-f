@@ -270,8 +270,9 @@ public class FormatterIntegrationTests
     }
 
     // ========== Java (npx prettier-java) ==========
+    // Requires Node.js with prettier and prettier-plugin-java installed globally
 
-    [Fact]
+    [Fact(Skip = "Requires Node.js with prettier-plugin-java installed globally")]
     public async Task Java_FormatsClass()
     {
         var input = "public class Foo{public static void main(String[] args){}}";
@@ -282,8 +283,9 @@ public class FormatterIntegrationTests
     }
 
     // ========== SQL (npx sql-formatter) ==========
+    // Requires Node.js with sql-formatter installed globally
 
-    [Fact]
+    [Fact(Skip = "Requires Node.js with sql-formatter installed globally")]
     public async Task Sql_FormatsSelect()
     {
         var input = "select id,name from users where active=true";
