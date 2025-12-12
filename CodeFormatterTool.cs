@@ -31,6 +31,7 @@ internal sealed class CodeFormatterTool : IGuiTool
     // Config dialog state
     private Language _configSelectedLanguage;
     private Dictionary<string, object> _pendingSettings = new();
+    private bool _isOpeningConfigDialog;
 
     // Auto-format debounce
     private CancellationTokenSource? _formatCts;
@@ -421,6 +422,10 @@ internal sealed class CodeFormatterTool : IGuiTool
 
     private async void OnConfigLanguageSelectedAsync(IUIDropDownListItem? item)
     {
+        // Prevent re-entry during dialog open/close
+        if (_isOpeningConfigDialog)
+            return;
+
         if (item?.Value is not Language language || language == _configSelectedLanguage)
             return;
 
@@ -428,8 +433,16 @@ internal sealed class CodeFormatterTool : IGuiTool
         _pendingSettings = _configManager.GetSettingsWithDefaults(_configSelectedLanguage);
 
         // Close and reopen dialog with new settings
-        _view.CurrentOpenedDialog?.Close();
-        await OpenConfigDialogAsync();
+        _isOpeningConfigDialog = true;
+        try
+        {
+            _view.CurrentOpenedDialog?.Close();
+            await OpenConfigDialogAsync();
+        }
+        finally
+        {
+            _isOpeningConfigDialog = false;
+        }
     }
 
     private void OnConfigSaveClick()
@@ -440,12 +453,23 @@ internal sealed class CodeFormatterTool : IGuiTool
 
     private async void OnConfigResetClickAsync()
     {
+        if (_isOpeningConfigDialog)
+            return;
+
         _configManager.ResetSettings(_configSelectedLanguage);
         _pendingSettings = _configManager.GetSettingsWithDefaults(_configSelectedLanguage);
 
         // Reopen dialog to refresh UI
-        _view.CurrentOpenedDialog?.Close();
-        await OpenConfigDialogAsync();
+        _isOpeningConfigDialog = true;
+        try
+        {
+            _view.CurrentOpenedDialog?.Close();
+            await OpenConfigDialogAsync();
+        }
+        finally
+        {
+            _isOpeningConfigDialog = false;
+        }
     }
 
     #endregion
