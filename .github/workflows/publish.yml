@@ -25,9 +25,6 @@ jobs:
           echo "VERSION=$version" >> $env:GITHUB_OUTPUT
         shell: pwsh
 
-      - name: Install LLVM (for clang-format)
-        run: choco install llvm --version=19.1.0 -y
-
       - name: Download formatter binaries
         run: |
           mkdir -p Binaries

@@ -18,9 +18,6 @@ jobs:
         with:
           dotnet-version: 8.0.x
 
-      - name: Install LLVM (for clang-format)
-        run: choco install llvm --version=19.1.0 -y
-
       - name: Download formatter binaries
         run: |
           mkdir -p Binaries
