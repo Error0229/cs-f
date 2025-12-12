@@ -7,6 +7,7 @@ on:
 
 permissions:
   contents: write
+  packages: write
 
 jobs:
   publish:
@@ -63,10 +64,16 @@ jobs:
       - name: Pack
         run: dotnet pack ./cs-f.csproj --configuration Release --no-build -p:Version=${{ steps.version.outputs.VERSION }} --output ./nupkg
 
-      - name: Push to NuGet
+      - name: Push to NuGet.org
         run: |
           $package = Get-ChildItem -Path ./nupkg -Filter *.nupkg | Select-Object -First 1
           dotnet nuget push $package.FullName --api-key ${{ secrets.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json --skip-duplicate
+        shell: pwsh
+
+      - name: Push to GitHub Packages
+        run: |
+          $package = Get-ChildItem -Path ./nupkg -Filter *.nupkg | Select-Object -First 1
+          dotnet nuget push $package.FullName --api-key ${{ secrets.GITHUB_TOKEN }} --source https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json --skip-duplicate
         shell: pwsh
 
       - name: Create GitHub Release
