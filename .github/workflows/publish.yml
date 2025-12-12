@@ -25,6 +25,9 @@ jobs:
           echo "VERSION=$version" >> $env:GITHUB_OUTPUT
         shell: pwsh
 
+      - name: Install LLVM (for clang-format)
+        run: choco install llvm --version=19.1.0 -y
+
       - name: Download formatter binaries
         run: |
           mkdir -p Binaries
@@ -32,7 +35,6 @@ jobs:
           # Download ruff
           curl -L -o ruff.zip "https://github.com/astral-sh/ruff/releases/download/0.8.4/ruff-x86_64-pc-windows-msvc.zip"
           unzip ruff.zip -d Binaries
-          mv Binaries/ruff.exe Binaries/ruff.exe 2>/dev/null || true
           rm -f ruff.zip
 
           # Download dprint
@@ -40,8 +42,8 @@ jobs:
           unzip dprint.zip -d Binaries
           rm -f dprint.zip
 
-          # Download clang-format (from muttleyxd static binaries)
-          curl -L -o Binaries/clang-format.exe "https://github.com/muttleyxd/clang-tools-static-binaries/releases/download/master-1a1f9bb4/clang-format-19_windows-amd64.exe"
+          # Copy clang-format from LLVM installation
+          cp "/c/Program Files/LLVM/bin/clang-format.exe" Binaries/clang-format.exe
 
           # Download gofumpt
           curl -L -o Binaries/gofumpt.exe "https://github.com/mvdan/gofumpt/releases/download/v0.7.0/gofumpt_v0.7.0_windows_amd64.exe"

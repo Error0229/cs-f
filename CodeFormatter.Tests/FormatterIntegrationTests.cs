@@ -297,10 +297,8 @@ public class FormatterIntegrationTests
     }
 
     // ========== C (clang-format) ==========
-    // Note: clang-format binaries are difficult to obtain reliably in CI
-    // These tests are skipped in CI but work locally with clang-format installed
 
-    [Fact(Skip = "Requires clang-format installed - CI binary issues")]
+    [Fact]
     public async Task C_FormatsSimpleFunction()
     {
         var input = "int main(){int x=1;return 0;}";
@@ -312,7 +310,7 @@ public class FormatterIntegrationTests
         Assert.Contains("return 0;", result.Output);
     }
 
-    [Fact(Skip = "Requires clang-format installed - CI binary issues")]
+    [Fact]
     public async Task C_FormatsStruct()
     {
         var input = "struct Point{int x;int y;};";
@@ -324,7 +322,7 @@ public class FormatterIntegrationTests
         Assert.Contains("int y;", result.Output);
     }
 
-    [Fact(Skip = "Requires clang-format installed - CI binary issues")]
+    [Fact]
     public async Task C_FormatsIfStatement()
     {
         var input = "void foo(){if(x>0){y=1;}else{y=2;}}";
@@ -337,7 +335,7 @@ public class FormatterIntegrationTests
 
     // ========== C++ (clang-format) ==========
 
-    [Fact(Skip = "Requires clang-format installed - CI binary issues")]
+    [Fact]
     public async Task Cpp_FormatsClass()
     {
         var input = "class Foo{public:int bar();private:int x;};";
@@ -349,7 +347,7 @@ public class FormatterIntegrationTests
         Assert.Contains("private:", result.Output);
     }
 
-    [Fact(Skip = "Requires clang-format installed - CI binary issues")]
+    [Fact]
     public async Task Cpp_FormatsTemplate()
     {
         var input = "template<typename T>T max(T a,T b){return a>b?a:b;}";
@@ -360,7 +358,7 @@ public class FormatterIntegrationTests
         Assert.Contains("typename T", result.Output);
     }
 
-    [Fact(Skip = "Requires clang-format installed - CI binary issues")]
+    [Fact]
     public async Task Cpp_FormatsNamespace()
     {
         var input = "namespace foo{class Bar{};}";
