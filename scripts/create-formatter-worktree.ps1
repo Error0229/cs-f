@@ -10,8 +10,18 @@ param(
 $branchName = "formatter/$Language-$FormatterName"
 $worktreePath = "../cs-f-$Language-$FormatterName"
 
-# Create orphan branch and worktree
+# Create branch and worktree
 git worktree add -b $branchName $worktreePath
+if ($LASTEXITCODE -ne 0) {
+    Write-Error "Failed to create git worktree"
+    exit 1
+}
+
+if (-not (Test-Path $worktreePath)) {
+    Write-Error "Worktree path does not exist: $worktreePath"
+    exit 1
+}
+
 Set-Location $worktreePath
 
 # Create standard directory structure
