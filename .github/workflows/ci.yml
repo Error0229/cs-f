@@ -17,7 +17,6 @@ jobs:
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: 8.0.x
-          cache: true
 
       - name: Restore dependencies
         run: dotnet restore
@@ -26,4 +25,4 @@ jobs:
         run: dotnet build --configuration Release --no-restore
 
       - name: Test
-        run: dotnet test ./cs-f.csproj --configuration Release --no-build --verbosity normal
+        run: dotnet test ./CodeFormatter.Tests/CodeFormatter.Tests.csproj --configuration Release --no-build --verbosity normal
