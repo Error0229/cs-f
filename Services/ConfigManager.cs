@@ -279,37 +279,37 @@ public class ConfigManager
             ["python"] = new() { Command = "ruff", Args = ["format", "-"] },
 
             // JavaScript/TypeScript - dprint typescript plugin
-            ["javascript"] = new() { Command = "dprint", Args = ["fmt", "--stdin", "file.js", "--plugins", DprintPluginTypeScript, "--config-discovery=false"] },
-            ["typescript"] = new() { Command = "dprint", Args = ["fmt", "--stdin", "file.ts", "--plugins", DprintPluginTypeScript, "--config-discovery=false"] },
+            ["javascript"] = new() { Command = "dprint", Args = ["fmt", "--stdin", "file.js", "--plugins", DprintPluginTypeScript] },
+            ["typescript"] = new() { Command = "dprint", Args = ["fmt", "--stdin", "file.ts", "--plugins", DprintPluginTypeScript] },
 
             // JSON - dprint json plugin
-            ["json"] = new() { Command = "dprint", Args = ["fmt", "--stdin", "file.json", "--plugins", DprintPluginJson, "--config-discovery=false"] },
+            ["json"] = new() { Command = "dprint", Args = ["fmt", "--stdin", "file.json", "--plugins", DprintPluginJson] },
 
             // Markdown - dprint markdown plugin
-            ["markdown"] = new() { Command = "dprint", Args = ["fmt", "--stdin", "file.md", "--plugins", DprintPluginMarkdown, "--config-discovery=false"] },
+            ["markdown"] = new() { Command = "dprint", Args = ["fmt", "--stdin", "file.md", "--plugins", DprintPluginMarkdown] },
 
             // TOML - dprint toml plugin
-            ["toml"] = new() { Command = "dprint", Args = ["fmt", "--stdin", "file.toml", "--plugins", DprintPluginToml, "--config-discovery=false"] },
+            ["toml"] = new() { Command = "dprint", Args = ["fmt", "--stdin", "file.toml", "--plugins", DprintPluginToml] },
 
             // CSS family - dprint malva plugin
-            ["css"] = new() { Command = "dprint", Args = ["fmt", "--stdin", "file.css", "--plugins", DprintPluginMalva, "--config-discovery=false"] },
-            ["scss"] = new() { Command = "dprint", Args = ["fmt", "--stdin", "file.scss", "--plugins", DprintPluginMalva, "--config-discovery=false"] },
-            ["less"] = new() { Command = "dprint", Args = ["fmt", "--stdin", "file.less", "--plugins", DprintPluginMalva, "--config-discovery=false"] },
+            ["css"] = new() { Command = "dprint", Args = ["fmt", "--stdin", "file.css", "--plugins", DprintPluginMalva] },
+            ["scss"] = new() { Command = "dprint", Args = ["fmt", "--stdin", "file.scss", "--plugins", DprintPluginMalva] },
+            ["less"] = new() { Command = "dprint", Args = ["fmt", "--stdin", "file.less", "--plugins", DprintPluginMalva] },
 
             // HTML family - dprint markup_fmt plugin
-            ["html"] = new() { Command = "dprint", Args = ["fmt", "--stdin", "file.html", "--plugins", DprintPluginMarkupFmt, "--config-discovery=false"] },
-            ["vue"] = new() { Command = "dprint", Args = ["fmt", "--stdin", "file.vue", "--plugins", DprintPluginMarkupFmt, "--config-discovery=false"] },
-            ["svelte"] = new() { Command = "dprint", Args = ["fmt", "--stdin", "file.svelte", "--plugins", DprintPluginMarkupFmt, "--config-discovery=false"] },
-            ["astro"] = new() { Command = "dprint", Args = ["fmt", "--stdin", "file.astro", "--plugins", DprintPluginMarkupFmt, "--config-discovery=false"] },
+            ["html"] = new() { Command = "dprint", Args = ["fmt", "--stdin", "file.html", "--plugins", DprintPluginMarkupFmt] },
+            ["vue"] = new() { Command = "dprint", Args = ["fmt", "--stdin", "file.vue", "--plugins", DprintPluginMarkupFmt] },
+            ["svelte"] = new() { Command = "dprint", Args = ["fmt", "--stdin", "file.svelte", "--plugins", DprintPluginMarkupFmt] },
+            ["astro"] = new() { Command = "dprint", Args = ["fmt", "--stdin", "file.astro", "--plugins", DprintPluginMarkupFmt] },
 
             // YAML - dprint pretty_yaml plugin
-            ["yaml"] = new() { Command = "dprint", Args = ["fmt", "--stdin", "file.yaml", "--plugins", DprintPluginYaml, "--config-discovery=false"] },
+            ["yaml"] = new() { Command = "dprint", Args = ["fmt", "--stdin", "file.yaml", "--plugins", DprintPluginYaml] },
 
             // GraphQL - dprint pretty_graphql plugin
-            ["graphql"] = new() { Command = "dprint", Args = ["fmt", "--stdin", "file.graphql", "--plugins", DprintPluginGraphQL, "--config-discovery=false"] },
+            ["graphql"] = new() { Command = "dprint", Args = ["fmt", "--stdin", "file.graphql", "--plugins", DprintPluginGraphQL] },
 
             // Dockerfile - dprint dockerfile plugin
-            ["dockerfile"] = new() { Command = "dprint", Args = ["fmt", "--stdin", "Dockerfile", "--plugins", DprintPluginDockerfile, "--config-discovery=false"] },
+            ["dockerfile"] = new() { Command = "dprint", Args = ["fmt", "--stdin", "Dockerfile", "--plugins", DprintPluginDockerfile] },
 
             // Java/SQL - Node.js required
             // Java requires: npm install -g prettier prettier-plugin-java
