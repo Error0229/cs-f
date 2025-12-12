@@ -43,6 +43,9 @@ public static class FormatterSettingsDefinitions
         Language.Dockerfile => DockerfileSettings,
         Language.Java => JavaSettings,
         Language.Sql => SqlSettings,
+        Language.C or Language.Cpp => ClangFormatSettings,
+        Language.Go => GoSettings,
+        Language.Shell => ShellSettings,
         _ => []
     };
 
@@ -227,5 +230,43 @@ public static class FormatterSettingsDefinitions
         new("language", "SQL Dialect", SettingType.Choice, "postgresql",
             Choices: ["sql", "postgresql", "mysql", "mariadb", "transactsql", "sqlite", "bigquery", "spark", "redshift"],
             Description: "SQL dialect to use")
+    ];
+
+    /// <summary>
+    /// clang-format settings for C/C++
+    /// </summary>
+    private static readonly SettingDefinition[] ClangFormatSettings =
+    [
+        new("style", "Style", SettingType.Choice, "LLVM",
+            Choices: ["LLVM", "Google", "Chromium", "Mozilla", "WebKit", "Microsoft", "GNU"],
+            Description: "Base coding style")
+    ];
+
+    /// <summary>
+    /// gofumpt settings for Go (gofumpt is stricter gofmt, minimal options)
+    /// </summary>
+    private static readonly SettingDefinition[] GoSettings =
+    [
+        new("extra", "Extra Rules", SettingType.Boolean, false,
+            Description: "Enable extra formatting rules")
+    ];
+
+    /// <summary>
+    /// shfmt settings for Shell/Bash
+    /// </summary>
+    private static readonly SettingDefinition[] ShellSettings =
+    [
+        new("indent", "Indent Width", SettingType.Integer, 2, Min: 0, Max: 16,
+            Description: "Number of spaces for indentation (0 for tabs)"),
+        new("binaryNextLine", "Binary Next Line", SettingType.Boolean, true,
+            Description: "Place binary operators at start of next line"),
+        new("caseIndent", "Case Indent", SettingType.Boolean, true,
+            Description: "Indent case labels"),
+        new("spaceRedirects", "Space Redirects", SettingType.Boolean, false,
+            Description: "Add space after redirect operators"),
+        new("keepPadding", "Keep Padding", SettingType.Boolean, false,
+            Description: "Keep column alignment padding"),
+        new("funcNextLine", "Function Next Line", SettingType.Boolean, false,
+            Description: "Place function opening brace on next line")
     ];
 }

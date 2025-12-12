@@ -1,11 +1,11 @@
 # Code Formatter for DevToys
 
-A code formatting extension for [DevToys 2.0](https://devtoys.app/) that supports 18 programming languages with automatic live formatting.
+A code formatting extension for [DevToys 2.0](https://devtoys.app/) that supports 22 programming languages with automatic live formatting.
 
 ## Features
 
 - **Live Auto-Format**: Code is automatically formatted as you type (500ms debounce)
-- **18 Languages**: Python, JavaScript, TypeScript, JSON, Markdown, TOML, CSS, SCSS, Less, HTML, Vue, Svelte, Astro, YAML, GraphQL, Dockerfile, Java, SQL
+- **22 Languages**: Python, JavaScript, TypeScript, JSON, Markdown, TOML, CSS, SCSS, Less, HTML, Vue, Svelte, Astro, YAML, GraphQL, Dockerfile, Java, SQL, C, C++, Go, Shell/Bash
 - **Per-Language Settings**: Configure formatting options for each language
 - **Swap & Clear**: Quickly swap input/output or clear both editors
 - **File Loading**: Load code directly from files
@@ -32,6 +32,10 @@ A code formatting extension for [DevToys 2.0](https://devtoys.app/) that support
 | Dockerfile | [dprint](https://dprint.dev/) | Bundled binary |
 | Java | [Prettier](https://prettier.io/) + [prettier-plugin-java](https://github.com/jhipster/prettier-java) | Requires Node.js |
 | SQL | [sql-formatter](https://github.com/sql-formatter-org/sql-formatter) | Requires Node.js |
+| C | [clang-format](https://clang.llvm.org/docs/ClangFormat.html) | Bundled binary |
+| C++ | [clang-format](https://clang.llvm.org/docs/ClangFormat.html) | Bundled binary |
+| Go | [gofumpt](https://github.com/mvdan/gofumpt) | Bundled binary |
+| Shell/Bash | [shfmt](https://github.com/mvdan/sh) | Bundled binary |
 
 ## Requirements
 
@@ -102,6 +106,20 @@ Click the gear icon to open settings for any language. Available options vary by
 - Data Type Case
 - Function Case
 
+### C/C++ (clang-format)
+- Style (LLVM, Google, Chromium, Mozilla, WebKit, Microsoft, GNU)
+
+### Go (gofumpt)
+- Extra Rules (stricter formatting)
+
+### Shell/Bash (shfmt)
+- Indent Width (0 for tabs)
+- Binary Next Line
+- Case Indent
+- Space Redirects
+- Keep Padding
+- Function Next Line
+
 Settings are saved to `~/.config/code-formatter/config.toml` (or equivalent on your OS).
 
 ## Building from Source
@@ -158,7 +176,10 @@ cs-f/
 │   └── CodeFormatterStrings.resx  # Localized strings
 ├── Binaries/                 # Bundled formatter executables
 │   ├── ruff.exe
-│   └── dprint.exe
+│   ├── dprint.exe
+│   ├── clang-format.exe
+│   ├── gofumpt.exe
+│   └── shfmt.exe
 └── CodeFormatter.Tests/      # Integration tests
 ```
 
@@ -173,3 +194,6 @@ MIT
 - [dprint](https://dprint.dev/) - Pluggable code formatter
 - [Prettier](https://prettier.io/) - Opinionated code formatter
 - [sql-formatter](https://github.com/sql-formatter-org/sql-formatter) - SQL formatter
+- [clang-format](https://clang.llvm.org/docs/ClangFormat.html) - LLVM C/C++ formatter
+- [gofumpt](https://github.com/mvdan/gofumpt) - Stricter gofmt for Go
+- [shfmt](https://github.com/mvdan/sh) - Shell script formatter

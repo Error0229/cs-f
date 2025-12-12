@@ -40,7 +40,13 @@ public enum Language
 
     // Node.js required
     Java,
-    Sql
+    Sql,
+
+    // Standalone formatters (bundled)
+    C,
+    Cpp,
+    Go,
+    Shell
 }
 
 public static class LanguageExtensions
@@ -65,6 +71,10 @@ public static class LanguageExtensions
         Language.Dockerfile => "Dockerfile",
         Language.Java => "Java",
         Language.Sql => "SQL",
+        Language.C => "C",
+        Language.Cpp => "C++",
+        Language.Go => "Go",
+        Language.Shell => "Shell/Bash",
         _ => language.ToString()
     };
 
@@ -88,6 +98,10 @@ public static class LanguageExtensions
         Language.Dockerfile => "dockerfile",
         Language.Java => "java",
         Language.Sql => "sql",
+        Language.C => "c",
+        Language.Cpp => "cpp",
+        Language.Go => "go",
+        Language.Shell => "shell",
         _ => language.ToString().ToLowerInvariant()
     };
 
@@ -111,6 +125,10 @@ public static class LanguageExtensions
         Language.Dockerfile => "Dockerfile",
         Language.Java => "java",
         Language.Sql => "sql",
+        Language.C => "c",
+        Language.Cpp => "cpp",
+        Language.Go => "go",
+        Language.Shell => "sh",
         _ => "txt"
     };
 }

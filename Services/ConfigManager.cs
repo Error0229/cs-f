@@ -30,7 +30,27 @@ public class ConfigManager
 
         var toml = File.ReadAllText(_configPath);
         _cachedConfig = ParseConfig(toml);
+
+        // Merge any missing formatters from default config (for version upgrades)
+        var defaultConfig = CreateDefaultConfig();
+        foreach (var (key, entry) in defaultConfig.Formatters)
+        {
+            if (!_cachedConfig.Formatters.ContainsKey(key))
+            {
+                _cachedConfig.Formatters[key] = entry;
+            }
+        }
+
         return _cachedConfig;
+    }
+
+    /// <summary>
+    /// Clears the cached config, forcing a reload on next access.
+    /// Useful for testing.
+    /// </summary>
+    public void ClearCache()
+    {
+        _cachedConfig = null;
     }
 
     public void SaveLastLanguage(Language language)
@@ -63,6 +83,10 @@ public class ConfigManager
             "dockerfile" => Language.Dockerfile,
             "java" => Language.Java,
             "sql" => Language.Sql,
+            "c" => Language.C,
+            "cpp" => Language.Cpp,
+            "go" => Language.Go,
+            "shell" => Language.Shell,
             _ => Language.Python
         };
     }
@@ -293,7 +317,18 @@ public class ConfigManager
             // On Windows, use powershell to properly handle stdin piping to .cmd files
             // Working directory is set to npm global root by FormatterService
             ["java"] = new() { Command = "powershell", Args = ["-NoProfile", "-NonInteractive", "-Command", "& prettier --plugin=prettier-plugin-java --parser java"], RequiresNode = true },
-            ["sql"] = new() { Command = "powershell", Args = ["-NoProfile", "-NonInteractive", "-Command", "& sql-formatter --language postgresql"], RequiresNode = true }
+            ["sql"] = new() { Command = "powershell", Args = ["-NoProfile", "-NonInteractive", "-Command", "& sql-formatter --language postgresql"], RequiresNode = true },
+
+            // Standalone formatters (bundled binaries)
+            // C/C++ - clang-format (LLVM)
+            ["c"] = new() { Command = "clang-format", Args = ["--assume-filename=file.c"] },
+            ["cpp"] = new() { Command = "clang-format", Args = ["--assume-filename=file.cpp"] },
+
+            // Go - gofumpt (stricter gofmt, backwards compatible)
+            ["go"] = new() { Command = "gofumpt", Args = [] },
+
+            // Shell/Bash - shfmt
+            ["shell"] = new() { Command = "shfmt", Args = ["--filename", "script.sh"] }
         }
     };
 

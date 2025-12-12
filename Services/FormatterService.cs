@@ -205,6 +205,9 @@ public class FormatterService
             Language.Dockerfile => BuildDprintArgs(baseArgs, settings),
             Language.Java => BuildPrettierArgs(baseArgs, settings),
             Language.Sql => BuildSqlFormatterArgs(baseArgs, settings),
+            Language.C or Language.Cpp => BuildClangFormatArgs(baseArgs, settings),
+            Language.Go => BuildGofumptArgs(baseArgs, settings),
+            Language.Shell => BuildShfmtArgs(baseArgs, settings),
             _ => baseArgs
         };
     }
@@ -333,6 +336,89 @@ public class FormatterService
             {
                 result.Add(arg);
             }
+        }
+
+        return result.ToArray();
+    }
+
+    /// <summary>
+    /// Build args for clang-format (C/C++): --style=LLVM
+    /// </summary>
+    private static string[] BuildClangFormatArgs(string[] baseArgs, Dictionary<string, object> settings)
+    {
+        var result = new List<string>(baseArgs);
+
+        if (settings.TryGetValue("style", out var style) && style is string styleStr)
+        {
+            result.Add($"--style={styleStr}");
+        }
+
+        return result.ToArray();
+    }
+
+    /// <summary>
+    /// Build args for gofumpt (Go): -extra flag
+    /// </summary>
+    private static string[] BuildGofumptArgs(string[] baseArgs, Dictionary<string, object> settings)
+    {
+        var result = new List<string>(baseArgs);
+
+        if (settings.TryGetValue("extra", out var extra) && extra is bool extraBool && extraBool)
+        {
+            result.Add("-extra");
+        }
+
+        return result.ToArray();
+    }
+
+    /// <summary>
+    /// Build args for shfmt (Shell/Bash): -i, -bn, -ci, -sr, -kp, -fn flags
+    /// </summary>
+    private static string[] BuildShfmtArgs(string[] baseArgs, Dictionary<string, object> settings)
+    {
+        var result = new List<string>(baseArgs);
+
+        // Indent width: -i N (0 for tabs)
+        if (settings.TryGetValue("indent", out var indent))
+        {
+            var indentVal = indent switch
+            {
+                int i => i,
+                long l => (int)l,
+                _ => 2
+            };
+            result.Add("-i");
+            result.Add(indentVal.ToString());
+        }
+
+        // Binary operators at start of line: -bn
+        if (settings.TryGetValue("binaryNextLine", out var bn) && bn is bool bnBool && bnBool)
+        {
+            result.Add("-bn");
+        }
+
+        // Case indent: -ci
+        if (settings.TryGetValue("caseIndent", out var ci) && ci is bool ciBool && ciBool)
+        {
+            result.Add("-ci");
+        }
+
+        // Space after redirects: -sr
+        if (settings.TryGetValue("spaceRedirects", out var sr) && sr is bool srBool && srBool)
+        {
+            result.Add("-sr");
+        }
+
+        // Keep padding: -kp
+        if (settings.TryGetValue("keepPadding", out var kp) && kp is bool kpBool && kpBool)
+        {
+            result.Add("-kp");
+        }
+
+        // Function opening brace on next line: -fn
+        if (settings.TryGetValue("funcNextLine", out var fn) && fn is bool fnBool && fnBool)
+        {
+            result.Add("-fn");
         }
 
         return result.ToArray();
