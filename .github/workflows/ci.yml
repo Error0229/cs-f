@@ -18,11 +18,40 @@ jobs:
         with:
           dotnet-version: 8.0.x
 
+      - name: Download formatter binaries
+        run: |
+          mkdir -p Binaries
+
+          # Download ruff
+          curl -L -o ruff.zip "https://github.com/astral-sh/ruff/releases/download/0.8.4/ruff-x86_64-pc-windows-msvc.zip"
+          unzip ruff.zip -d Binaries
+          rm -f ruff.zip
+
+          # Download dprint
+          curl -L -o dprint.zip "https://github.com/dprint/dprint/releases/download/0.48.0/dprint-x86_64-pc-windows-msvc.zip"
+          unzip dprint.zip -d Binaries
+          rm -f dprint.zip
+
+          # Download clang-format
+          curl -L -o clang-format.exe "https://github.com/nickvdyck/clang-format-binaries/releases/download/llvm-19.1.0/clang-format-19.1.0_windows-amd64.exe"
+          mv clang-format.exe Binaries/clang-format.exe
+
+          # Download gofumpt
+          curl -L -o Binaries/gofumpt.exe "https://github.com/mvdan/gofumpt/releases/download/v0.7.0/gofumpt_v0.7.0_windows_amd64.exe"
+
+          # Download shfmt
+          curl -L -o Binaries/shfmt.exe "https://github.com/mvdan/sh/releases/download/v3.10.0/shfmt_v3.10.0_windows_amd64.exe"
+        shell: bash
+
       - name: Restore dependencies
-        run: dotnet restore
+        run: |
+          dotnet restore ./cs-f.csproj
+          dotnet restore ./CodeFormatter.Tests/CodeFormatter.Tests.csproj
 
       - name: Build
-        run: dotnet build --configuration Release --no-restore
+        run: |
+          dotnet build ./cs-f.csproj --configuration Release --no-restore
+          dotnet build ./CodeFormatter.Tests/CodeFormatter.Tests.csproj --configuration Release --no-restore
 
       - name: Test
         run: dotnet test ./CodeFormatter.Tests/CodeFormatter.Tests.csproj --configuration Release --no-build --verbosity normal
