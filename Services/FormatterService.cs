@@ -208,6 +208,17 @@ public class FormatterService
             Language.C or Language.Cpp => BuildClangFormatArgs(baseArgs, settings),
             Language.Go => BuildGofumptArgs(baseArgs, settings),
             Language.Shell => BuildShfmtArgs(baseArgs, settings),
+            Language.Lua => baseArgs,
+            Language.R => baseArgs,
+            Language.Delphi => baseArgs,
+            Language.CSharpFormatted => baseArgs,
+            Language.Assembly => baseArgs,
+            Language.ObjectiveC => baseArgs,
+            Language.Kotlin => baseArgs,
+            Language.Haskell => baseArgs,
+            Language.Perl => baseArgs,
+            Language.Php => baseArgs,
+            Language.Matlab => baseArgs,
             _ => baseArgs
         };
     }

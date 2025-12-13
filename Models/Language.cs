@@ -46,7 +46,20 @@ public enum Language
     C,
     Cpp,
     Go,
-    Shell
+    Shell,
+
+    // New formatters (standalone binaries)
+    Lua,
+    R,
+    Delphi,
+    CSharpFormatted,  // Avoid conflict with existing C# types
+    Assembly,
+    ObjectiveC,
+    Kotlin,
+    Haskell,
+    Perl,
+    Php,
+    Matlab
 }
 
 public static class LanguageExtensions
@@ -75,6 +88,17 @@ public static class LanguageExtensions
         Language.Cpp => "C++",
         Language.Go => "Go",
         Language.Shell => "Shell/Bash",
+        Language.Lua => "Lua",
+        Language.R => "R",
+        Language.Delphi => "Delphi/Pascal",
+        Language.CSharpFormatted => "C#",
+        Language.Assembly => "Assembly",
+        Language.ObjectiveC => "Objective-C",
+        Language.Kotlin => "Kotlin",
+        Language.Haskell => "Haskell",
+        Language.Perl => "Perl",
+        Language.Php => "PHP",
+        Language.Matlab => "MATLAB",
         _ => language.ToString()
     };
 
@@ -102,6 +126,17 @@ public static class LanguageExtensions
         Language.Cpp => "cpp",
         Language.Go => "go",
         Language.Shell => "shell",
+        Language.Lua => "lua",
+        Language.R => "r",
+        Language.Delphi => "delphi",
+        Language.CSharpFormatted => "csharp",
+        Language.Assembly => "assembly",
+        Language.ObjectiveC => "objc",
+        Language.Kotlin => "kotlin",
+        Language.Haskell => "haskell",
+        Language.Perl => "perl",
+        Language.Php => "php",
+        Language.Matlab => "matlab",
         _ => language.ToString().ToLowerInvariant()
     };
 
@@ -129,6 +164,17 @@ public static class LanguageExtensions
         Language.Cpp => "cpp",
         Language.Go => "go",
         Language.Shell => "sh",
+        Language.Lua => "lua",
+        Language.R => "r",
+        Language.Delphi => "pas",
+        Language.CSharpFormatted => "cs",
+        Language.Assembly => "asm",
+        Language.ObjectiveC => "m",
+        Language.Kotlin => "kt",
+        Language.Haskell => "hs",
+        Language.Perl => "pl",
+        Language.Php => "php",
+        Language.Matlab => "m",
         _ => "txt"
     };
 }

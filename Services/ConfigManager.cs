@@ -87,6 +87,17 @@ public class ConfigManager
             "cpp" => Language.Cpp,
             "go" => Language.Go,
             "shell" => Language.Shell,
+            "lua" => Language.Lua,
+            "r" => Language.R,
+            "delphi" => Language.Delphi,
+            "csharp" => Language.CSharpFormatted,
+            "assembly" => Language.Assembly,
+            "objc" => Language.ObjectiveC,
+            "kotlin" => Language.Kotlin,
+            "haskell" => Language.Haskell,
+            "perl" => Language.Perl,
+            "php" => Language.Php,
+            "matlab" => Language.Matlab,
             _ => Language.Python
         };
     }
@@ -328,7 +339,41 @@ public class ConfigManager
             ["go"] = new() { Command = "gofumpt", Args = [] },
 
             // Shell/Bash - shfmt
-            ["shell"] = new() { Command = "shfmt", Args = ["--filename", "script.sh"] }
+            ["shell"] = new() { Command = "shfmt", Args = ["--filename", "script.sh"] },
+
+            // New standalone formatters
+            // Lua - stylua (reads from stdin with -)
+            ["lua"] = new() { Command = "stylua", Args = ["-"] },
+
+            // R - air (format subcommand with --stdin)
+            ["r"] = new() { Command = "air", Args = ["format", "--stdin"] },
+
+            // Delphi - pasfmt (reads stdin by default)
+            ["delphi"] = new() { Command = "pasfmt", Args = [] },
+
+            // C# - csharpier (--write-stdout for stdin formatting)
+            ["csharp"] = new() { Command = "csharpier", Args = ["--write-stdout"] },
+
+            // Assembly - asmfmt (reads stdin by default)
+            ["assembly"] = new() { Command = "asmfmt", Args = [] },
+
+            // Objective-C - uncrustify (-l OC for language, -q for quiet)
+            ["objc"] = new() { Command = "uncrustify", Args = ["-l", "OC", "-q"] },
+
+            // Kotlin - ktlint (--stdin with --format)
+            ["kotlin"] = new() { Command = "ktlint", Args = ["--stdin", "--format"] },
+
+            // Haskell - ormolu (--stdin-input-file to specify stdin)
+            ["haskell"] = new() { Command = "ormolu", Args = ["--stdin-input-file", "stdin.hs"] },
+
+            // Perl - perltidy (-st for stdout, -se for stderr)
+            ["perl"] = new() { Command = "perltidy", Args = ["-st", "-se"] },
+
+            // PHP - php-cs-fixer (fix with --using-cache=no and - for stdin)
+            ["php"] = new() { Command = "php-cs-fixer", Args = ["fix", "--using-cache=no", "-"] },
+
+            // MATLAB - mh_style (--single for single file, - for stdin)
+            ["matlab"] = new() { Command = "mh_style", Args = ["--single", "-"] }
         }
     };
 
