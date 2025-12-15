@@ -11,7 +11,7 @@
     <!-- NuGet Package Properties -->
     <IsPackable>true</IsPackable>
     <PackageId>CodeFormatter.DevToys</PackageId>
-    <Version>1.1.3</Version>
+    <Version>1.2.0</Version>
     <Title>Code Formatter for DevToys</Title>
     <Authors>Error0229</Authors>
     <Description>A DevToys extension that formats code in 34 languages with live auto-formatting. Supports Python, JavaScript, TypeScript, JSON, Markdown, TOML, CSS, SCSS, Less, HTML, Vue, Svelte, Astro, YAML, GraphQL, Dockerfile, Java, SQL, C, C++, C#, Go, Go Assembly, Shell/Bash, Lua, R, Delphi/Pascal, Kotlin, Perl, PHP, MATLAB, Ruby, Objective-C, and Haskell. All formatters bundled as native binaries - no external dependencies required.</Description>

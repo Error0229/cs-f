@@ -63,44 +63,8 @@ public class ConfigManager
     public Language GetLastLanguage()
     {
         var config = LoadConfig();
-        return config.Defaults.LastLanguage.ToLowerInvariant() switch
-        {
-            "python" => Language.Python,
-            "javascript" => Language.JavaScript,
-            "typescript" => Language.TypeScript,
-            "json" => Language.Json,
-            "markdown" => Language.Markdown,
-            "toml" => Language.Toml,
-            "css" => Language.Css,
-            "scss" => Language.Scss,
-            "less" => Language.Less,
-            "html" => Language.Html,
-            "vue" => Language.Vue,
-            "svelte" => Language.Svelte,
-            "astro" => Language.Astro,
-            "yaml" => Language.Yaml,
-            "graphql" => Language.GraphQL,
-            "dockerfile" => Language.Dockerfile,
-            "java" => Language.Java,
-            "sql" => Language.Sql,
-            "c" => Language.C,
-            "cpp" => Language.Cpp,
-            "go" => Language.Go,
-            "shell" => Language.Shell,
-            "lua" => Language.Lua,
-            "r" => Language.R,
-            "delphi" => Language.Delphi,
-            "csharp" => Language.CSharpFormatted,
-            "assembly" => Language.Assembly,
-            "objc" => Language.ObjectiveC,
-            "kotlin" => Language.Kotlin,
-            "haskell" => Language.Haskell,
-            "perl" => Language.Perl,
-            "php" => Language.Php,
-            "matlab" => Language.Matlab,
-            "ruby" => Language.Ruby,
-            _ => Language.Python
-        };
+        var info = LanguageRegistry.GetByConfigKey(config.Defaults.LastLanguage);
+        return info?.Language ?? Language.Python;
     }
 
     public FormatterEntry? GetFormatterEntry(Language language)

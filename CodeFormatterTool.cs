@@ -29,9 +29,7 @@ internal sealed class CodeFormatterTool : IGuiTool
     private Language _selectedLanguage;
 
     // Config dialog state
-    private Language _configSelectedLanguage;
     private Dictionary<string, object> _pendingSettings = new();
-    private bool _isOpeningConfigDialog;
 
     // Auto-format debounce
     private CancellationTokenSource? _formatCts;
@@ -44,7 +42,6 @@ internal sealed class CodeFormatterTool : IGuiTool
     {
         _formatterService = new FormatterService(_configManager, new ProcessRunner());
         _selectedLanguage = _configManager.GetLastLanguage();
-        _configSelectedLanguage = _selectedLanguage;
     }
 
     public UIToolView View
@@ -123,57 +120,12 @@ internal sealed class CodeFormatterTool : IGuiTool
     }
 
     private static IUIDropDownListItem[] GetLanguageItems() =>
-    [
-        Item(Language.Python.ToDisplayName(), Language.Python),
-        Item(Language.JavaScript.ToDisplayName(), Language.JavaScript),
-        Item(Language.TypeScript.ToDisplayName(), Language.TypeScript),
-        Item(Language.Json.ToDisplayName(), Language.Json),
-        Item(Language.Markdown.ToDisplayName(), Language.Markdown),
-        Item(Language.Toml.ToDisplayName(), Language.Toml),
-        Item(Language.Css.ToDisplayName(), Language.Css),
-        Item(Language.Scss.ToDisplayName(), Language.Scss),
-        Item(Language.Less.ToDisplayName(), Language.Less),
-        Item(Language.Html.ToDisplayName(), Language.Html),
-        Item(Language.Vue.ToDisplayName(), Language.Vue),
-        Item(Language.Svelte.ToDisplayName(), Language.Svelte),
-        Item(Language.Astro.ToDisplayName(), Language.Astro),
-        Item(Language.Yaml.ToDisplayName(), Language.Yaml),
-        Item(Language.GraphQL.ToDisplayName(), Language.GraphQL),
-        Item(Language.Dockerfile.ToDisplayName(), Language.Dockerfile),
-        Item(Language.Java.ToDisplayName(), Language.Java),
-        Item(Language.Sql.ToDisplayName(), Language.Sql),
-        Item(Language.C.ToDisplayName(), Language.C),
-        Item(Language.Cpp.ToDisplayName(), Language.Cpp),
-        Item(Language.Go.ToDisplayName(), Language.Go),
-        Item(Language.Shell.ToDisplayName(), Language.Shell)
-    ];
+        LanguageRegistry.All
+            .Select(info => Item(info.DisplayName, info.Language))
+            .ToArray();
 
-    private static string GetMonacoLanguage(Language language) => language switch
-    {
-        Language.Python => "python",
-        Language.JavaScript => "javascript",
-        Language.TypeScript => "typescript",
-        Language.Json => "json",
-        Language.Markdown => "markdown",
-        Language.Toml => "toml",
-        Language.Css => "css",
-        Language.Scss => "scss",
-        Language.Less => "less",
-        Language.Html => "html",
-        Language.Vue => "html",
-        Language.Svelte => "html",
-        Language.Astro => "html",
-        Language.Yaml => "yaml",
-        Language.GraphQL => "graphql",
-        Language.Dockerfile => "dockerfile",
-        Language.Java => "java",
-        Language.Sql => "sql",
-        Language.C => "c",
-        Language.Cpp => "cpp",
-        Language.Go => "go",
-        Language.Shell => "shell",
-        _ => "plaintext"
-    };
+    private static string GetMonacoLanguage(Language language) =>
+        language.ToMonacoLanguage();
 
     private async void OnLanguageSelectedAsync(IUIDropDownListItem? item)
     {
@@ -268,15 +220,13 @@ internal sealed class CodeFormatterTool : IGuiTool
 
     private async ValueTask OnConfigClickAsync()
     {
-        _configSelectedLanguage = _selectedLanguage;
-        _pendingSettings = _configManager.GetSettingsWithDefaults(_configSelectedLanguage);
-
+        _pendingSettings = _configManager.GetSettingsWithDefaults(_selectedLanguage);
         await OpenConfigDialogAsync();
     }
 
     private async Task OpenConfigDialogAsync()
     {
-        var definitions = FormatterSettingsDefinitions.GetSettings(_configSelectedLanguage);
+        var definitions = FormatterSettingsDefinitions.GetSettings(_selectedLanguage);
         var settingsControls = BuildSettingsControls(definitions);
 
         await _view.OpenDialogAsync(
@@ -287,21 +237,8 @@ internal sealed class CodeFormatterTool : IGuiTool
                     .WithChildren(
                         Label()
                             .Style(UILabelStyle.Subtitle)
-                            .Text($"{_configSelectedLanguage.ToDisplayName()} Settings"),
+                            .Text($"{_selectedLanguage.ToDisplayName()} Settings"),
 
-                        // Language selector
-                        Stack()
-                            .Horizontal()
-                            .SmallSpacing()
-                            .AlignVertically(UIVerticalAlignment.Center)
-                            .WithChildren(
-                                Label().Text("Language:"),
-                                SelectDropDownList("config-language")
-                                    .WithItems(GetLanguageItems())
-                                    .Select((int)_configSelectedLanguage)
-                                    .OnItemSelected(OnConfigLanguageSelectedAsync)),
-
-                        // Settings section
                         settingsControls.Length > 0
                             ? Stack()
                                 .Vertical()
@@ -420,56 +357,20 @@ internal sealed class CodeFormatterTool : IGuiTool
                     }));
     }
 
-    private async void OnConfigLanguageSelectedAsync(IUIDropDownListItem? item)
-    {
-        // Prevent re-entry during dialog open/close
-        if (_isOpeningConfigDialog)
-            return;
-
-        if (item?.Value is not Language language || language == _configSelectedLanguage)
-            return;
-
-        _configSelectedLanguage = language;
-        _pendingSettings = _configManager.GetSettingsWithDefaults(_configSelectedLanguage);
-
-        // Close and reopen dialog with new settings
-        _isOpeningConfigDialog = true;
-        try
-        {
-            _view.CurrentOpenedDialog?.Close();
-            await OpenConfigDialogAsync();
-        }
-        finally
-        {
-            _isOpeningConfigDialog = false;
-        }
-    }
-
     private void OnConfigSaveClick()
     {
-        _configManager.SaveAllSettings(_configSelectedLanguage, _pendingSettings);
+        _configManager.SaveAllSettings(_selectedLanguage, _pendingSettings);
         _view.CurrentOpenedDialog?.Close();
     }
 
     private async void OnConfigResetClickAsync()
     {
-        if (_isOpeningConfigDialog)
-            return;
-
-        _configManager.ResetSettings(_configSelectedLanguage);
-        _pendingSettings = _configManager.GetSettingsWithDefaults(_configSelectedLanguage);
+        _configManager.ResetSettings(_selectedLanguage);
+        _pendingSettings = _configManager.GetSettingsWithDefaults(_selectedLanguage);
 
         // Reopen dialog to refresh UI
-        _isOpeningConfigDialog = true;
-        try
-        {
-            _view.CurrentOpenedDialog?.Close();
-            await OpenConfigDialogAsync();
-        }
-        finally
-        {
-            _isOpeningConfigDialog = false;
-        }
+        _view.CurrentOpenedDialog?.Close();
+        await OpenConfigDialogAsync();
     }
 
     #endregion
