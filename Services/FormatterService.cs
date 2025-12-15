@@ -212,8 +212,8 @@ public class FormatterService
             Language.Yaml => BuildDprintArgs(baseArgs, settings),
             Language.GraphQL => BuildDprintArgs(baseArgs, settings),
             Language.Dockerfile => BuildDprintArgs(baseArgs, settings),
-            Language.Java => BuildPrettierArgs(baseArgs, settings),
-            Language.Sql => BuildSqlFormatterArgs(baseArgs, settings),
+            Language.Java => baseArgs, // google-java-format (no settings support)
+            Language.Sql => baseArgs, // sqruff (no settings support yet)
             Language.C or Language.Cpp => BuildClangFormatArgs(baseArgs, settings),
             Language.Go => BuildGofumptArgs(baseArgs, settings),
             Language.Shell => BuildShfmtArgs(baseArgs, settings),
