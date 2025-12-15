@@ -1,11 +1,12 @@
 # Code Formatter for DevToys
 
-A code formatting extension for [DevToys 2.0](https://devtoys.app/) that supports 22 programming languages with automatic live formatting.
+A code formatting extension for [DevToys 2.0](https://devtoys.app/) that supports 34 programming languages with automatic live formatting.
 
 ## Features
 
 - **Live Auto-Format**: Code is automatically formatted as you type (500ms debounce)
-- **22 Languages**: Python, JavaScript, TypeScript, JSON, Markdown, TOML, CSS, SCSS, Less, HTML, Vue, Svelte, Astro, YAML, GraphQL, Dockerfile, Java, SQL, C, C++, Go, Shell/Bash
+- **34 Languages**: Python, JavaScript, TypeScript, JSON, Markdown, TOML, CSS, SCSS, Less, HTML, Vue, Svelte, Astro, YAML, GraphQL, Dockerfile, Java, SQL, C, C++, C#, Go, Go Assembly, Shell/Bash, Lua, R, Delphi/Pascal, Kotlin, Perl, PHP, MATLAB, Ruby, Objective-C, Haskell
+- **No External Dependencies**: All formatters are bundled as native binaries
 - **Per-Language Settings**: Configure formatting options for each language
 - **Swap & Clear**: Quickly swap input/output or clear both editors
 - **File Loading**: Load code directly from files
@@ -30,20 +31,29 @@ A code formatting extension for [DevToys 2.0](https://devtoys.app/) that support
 | YAML | [dprint](https://dprint.dev/) | Bundled binary |
 | GraphQL | [dprint](https://dprint.dev/) | Bundled binary |
 | Dockerfile | [dprint](https://dprint.dev/) | Bundled binary |
-| Java | [Prettier](https://prettier.io/) + [prettier-plugin-java](https://github.com/jhipster/prettier-java) | Requires Node.js |
-| SQL | [sql-formatter](https://github.com/sql-formatter-org/sql-formatter) | Requires Node.js |
+| Java | [google-java-format](https://github.com/google/google-java-format) | Native GraalVM binary |
+| SQL | [sqruff](https://github.com/quarylabs/sqruff) | Native Rust binary |
 | C | [clang-format](https://clang.llvm.org/docs/ClangFormat.html) | Bundled binary |
 | C++ | [clang-format](https://clang.llvm.org/docs/ClangFormat.html) | Bundled binary |
+| C# | [CSharpier](https://csharpier.com/) | Bundled binary |
 | Go | [gofumpt](https://github.com/mvdan/gofumpt) | Bundled binary |
+| Go Assembly | [asmfmt](https://github.com/klauspost/asmfmt) | Bundled binary |
 | Shell/Bash | [shfmt](https://github.com/mvdan/sh) | Bundled binary |
+| Lua | [StyLua](https://github.com/JohnnyMorganz/StyLua) | Bundled binary |
+| R | [air](https://github.com/posit-dev/air) | Bundled binary |
+| Delphi/Pascal | [pasfmt](https://github.com/AntumDeluge/pasfmt) | Bundled binary |
+| Kotlin | [ktlint](https://github.com/pinterest/ktlint) | Bundled binary |
+| Perl | [Perl::Tidy](https://github.com/perltidy/perltidy) | Bundled binary |
+| PHP | [PHP-CS-Fixer](https://github.com/PHP-CS-Fixer/PHP-CS-Fixer) | Bundled binary |
+| MATLAB | [MH Style](https://github.com/florianschanda/miss_hit) | Bundled binary |
+| Ruby | [Rufo](https://github.com/ruby-formatter/rufo) | Bundled binary |
+| Objective-C | [Uncrustify](https://github.com/uncrustify/uncrustify) | Bundled binary |
+| Haskell | [Ormolu](https://github.com/tweag/ormolu) | Bundled binary |
 
 ## Requirements
 
 - [DevToys 2.0](https://devtoys.app/) (Preview or later)
-- **For Java/SQL formatting**: Node.js with npm packages:
-  ```bash
-  npm install -g prettier prettier-plugin-java sql-formatter
-  ```
+- Windows x64 (all formatters are bundled as native binaries)
 
 ## Installation
 
@@ -58,8 +68,6 @@ A code formatting extension for [DevToys 2.0](https://devtoys.app/) that support
 
 1. Extract the `.nupkg` (it's a ZIP file) to:
    - **Windows**: `%LocalAppData%\DevToys\Plugins\CodeFormatter.DevToys.1.0.0\`
-   - **macOS**: `~/Library/com.devtoys/Plugins/CodeFormatter.DevToys.1.0.0/`
-   - **Linux**: `~/.local/share/devtoys/Plugins/CodeFormatter.DevToys.1.0.0/`
 2. Restart DevToys
 
 ## Usage
@@ -99,12 +107,8 @@ Click the gear icon to open settings for any language. Available options vary by
 - Use Tabs
 - Trailing Commas
 
-### SQL (sql-formatter)
-- Language dialect (PostgreSQL, MySQL, SQLite, etc.)
-- Tab Width
-- Keyword Case
-- Data Type Case
-- Function Case
+### SQL (sqruff)
+- Uses ANSI SQL standard formatting
 
 ### C/C++ (clang-format)
 - Style (LLVM, Google, Chromium, Mozilla, WebKit, Microsoft, GNU)
@@ -127,14 +131,17 @@ Settings are saved to `~/.config/code-formatter/config.toml` (or equivalent on y
 ### Prerequisites
 
 - .NET 8.0 SDK
-- Node.js (for Java/SQL formatting tests)
 
 ### Build
 
 ```bash
 # Clone the repository
-git clone https://github.com/user/cs-f.git
+git clone https://github.com/Error0229/cs-f.git
 cd cs-f
+
+# Download formatter binaries (from GitHub Release)
+curl -L -o formatter-binaries.zip "https://github.com/Error0229/cs-f/releases/download/binaries-v1/formatter-binaries.zip"
+unzip formatter-binaries.zip -d Binaries
 
 # Build
 dotnet build -c Release
@@ -174,12 +181,26 @@ cs-f/
 │   └── ProcessRunner.cs      # External process execution
 ├── Resources/
 │   └── CodeFormatterStrings.resx  # Localized strings
-├── Binaries/                 # Bundled formatter executables
-│   ├── ruff.exe
-│   ├── dprint.exe
-│   ├── clang-format.exe
-│   ├── gofumpt.exe
-│   └── shfmt.exe
+├── Binaries/                 # Bundled formatter executables (19 binaries)
+│   ├── ruff.exe              # Python
+│   ├── dprint.exe            # JS/TS/JSON/Markdown/TOML/CSS/HTML/Vue/Svelte/Astro/YAML/GraphQL/Dockerfile
+│   ├── clang-format.exe      # C/C++
+│   ├── gofumpt.exe           # Go
+│   ├── shfmt.exe             # Shell/Bash
+│   ├── google-java-format.exe # Java
+│   ├── sqruff.exe            # SQL
+│   ├── csharpier.exe         # C#
+│   ├── stylua.exe            # Lua
+│   ├── air.exe               # R
+│   ├── pasfmt.exe            # Delphi/Pascal
+│   ├── ktlint.exe            # Kotlin
+│   ├── perltidy.exe          # Perl
+│   ├── php-cs-fixer.exe      # PHP
+│   ├── mh_style.exe          # MATLAB
+│   ├── rufo.exe              # Ruby
+│   ├── asmfmt.exe            # Go Assembly
+│   ├── uncrustify.exe        # Objective-C
+│   └── ormolu.exe            # Haskell
 └── CodeFormatter.Tests/      # Integration tests
 ```
 
@@ -192,8 +213,20 @@ MIT
 - [DevToys](https://devtoys.app/) - The extensible developer toolbox
 - [Ruff](https://github.com/astral-sh/ruff) - Fast Python formatter
 - [dprint](https://dprint.dev/) - Pluggable code formatter
-- [Prettier](https://prettier.io/) - Opinionated code formatter
-- [sql-formatter](https://github.com/sql-formatter-org/sql-formatter) - SQL formatter
 - [clang-format](https://clang.llvm.org/docs/ClangFormat.html) - LLVM C/C++ formatter
 - [gofumpt](https://github.com/mvdan/gofumpt) - Stricter gofmt for Go
 - [shfmt](https://github.com/mvdan/sh) - Shell script formatter
+- [google-java-format](https://github.com/google/google-java-format) - Java formatter with GraalVM native binary
+- [sqruff](https://github.com/quarylabs/sqruff) - Native Rust SQL linter and formatter
+- [CSharpier](https://csharpier.com/) - Opinionated C# formatter
+- [StyLua](https://github.com/JohnnyMorganz/StyLua) - Lua code formatter
+- [air](https://github.com/posit-dev/air) - R formatter by Posit
+- [pasfmt](https://github.com/AntumDeluge/pasfmt) - Delphi/Pascal formatter
+- [ktlint](https://github.com/pinterest/ktlint) - Kotlin linter and formatter
+- [Perl::Tidy](https://github.com/perltidy/perltidy) - Perl code beautifier
+- [PHP-CS-Fixer](https://github.com/PHP-CS-Fixer/PHP-CS-Fixer) - PHP coding standards fixer
+- [MH Style](https://github.com/florianschanda/miss_hit) - MATLAB formatter
+- [Rufo](https://github.com/ruby-formatter/rufo) - Ruby formatter
+- [asmfmt](https://github.com/klauspost/asmfmt) - Go assembly formatter
+- [Uncrustify](https://github.com/uncrustify/uncrustify) - Code beautifier for C-style languages
+- [Ormolu](https://github.com/tweag/ormolu) - Haskell formatter
