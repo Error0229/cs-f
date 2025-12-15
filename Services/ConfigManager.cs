@@ -406,6 +406,10 @@ public class ConfigManager
                         entry.Args = args.Select(a => a?.ToString() ?? "").ToArray();
                     if (formatterTable.TryGetValue("requiresNode", out var reqNode))
                         entry.RequiresNode = reqNode is bool b && b;
+                    if (formatterTable.TryGetValue("usesTempFile", out var usesTempFile))
+                        entry.UsesTempFile = usesTempFile is bool utf && utf;
+                    if (formatterTable.TryGetValue("tempFileExtension", out var tempExt))
+                        entry.TempFileExtension = tempExt?.ToString() ?? "txt";
 
                     // Parse settings
                     if (formatterTable.TryGetValue("settings", out var settingsObj) && settingsObj is TomlTable settings)
@@ -462,6 +466,11 @@ public class ConfigManager
             sb.AppendLine($"args = [{argsStr}]");
             if (entry.RequiresNode)
                 sb.AppendLine("requiresNode = true");
+            if (entry.UsesTempFile)
+            {
+                sb.AppendLine("usesTempFile = true");
+                sb.AppendLine($"tempFileExtension = \"{entry.TempFileExtension}\"");
+            }
 
             // Write settings if any exist
             if (entry.Settings.Count > 0)

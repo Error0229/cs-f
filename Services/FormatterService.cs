@@ -104,9 +104,6 @@ public class FormatterService
                 ? "Unknown formatting error occurred."
                 : result.Error;
 
-            // Debug: show temp file mode info
-            errorMessage += $"\n\nDebug: UsesTempFile={entry.UsesTempFile}, TempExt={entry.TempFileExtension}, Args=[{string.Join(", ", entry.Args)}]";
-
             // Add debug info for troubleshooting
             if (entry.RequiresNode)
             {
