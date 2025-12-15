@@ -328,7 +328,8 @@ public class ConfigManager
             // SQL requires: npm install -g sql-formatter
             // On Windows, use powershell to properly handle stdin piping to .cmd files
             // Working directory is set to npm global root by FormatterService
-            ["java"] = new() { Command = "powershell", Args = ["-NoProfile", "-NonInteractive", "-Command", "& prettier --plugin=prettier-plugin-java --parser java"], RequiresNode = true },
+            // Java - google-java-format (native binary, no JVM required)
+            ["java"] = new() { Command = "google-java-format", Args = ["-"] },
             ["sql"] = new() { Command = "powershell", Args = ["-NoProfile", "-NonInteractive", "-Command", "& sql-formatter --language postgresql"], RequiresNode = true },
 
             // Standalone formatters (bundled binaries)

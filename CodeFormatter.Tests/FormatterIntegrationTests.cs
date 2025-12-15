@@ -269,10 +269,9 @@ public class FormatterIntegrationTests
         Assert.Contains("No code to format", result.Output);
     }
 
-    // ========== Java (npx prettier-java) ==========
-    // Requires Node.js with prettier and prettier-plugin-java installed globally
+    // ========== Java (google-java-format native binary) ==========
 
-    [Fact(Skip = "Requires Node.js with prettier-plugin-java installed globally")]
+    [Fact]
     public async Task Java_FormatsClass()
     {
         var input = "public class Foo{public static void main(String[] args){}}";
@@ -280,6 +279,29 @@ public class FormatterIntegrationTests
 
         Assert.True(result.Success, $"Format failed: {result.Output}");
         Assert.Contains("public class Foo", result.Output);
+        Assert.Contains("public static void main", result.Output);
+    }
+
+    [Fact]
+    public async Task Java_FormatsMethod()
+    {
+        var input = "public class Test{public int add(int a,int b){return a+b;}}";
+        var result = await _formatterService.FormatAsync(input, Language.Java);
+
+        Assert.True(result.Success, $"Format failed: {result.Output}");
+        Assert.Contains("public int add(int a, int b)", result.Output);
+        Assert.Contains("return a + b;", result.Output);
+    }
+
+    [Fact]
+    public async Task Java_FormatsImports()
+    {
+        var input = "import java.util.List;import java.util.Map;public class Foo{}";
+        var result = await _formatterService.FormatAsync(input, Language.Java);
+
+        Assert.True(result.Success, $"Format failed: {result.Output}");
+        Assert.Contains("import java.util.List;", result.Output);
+        Assert.Contains("import java.util.Map;", result.Output);
     }
 
     // ========== SQL (npx sql-formatter) ==========

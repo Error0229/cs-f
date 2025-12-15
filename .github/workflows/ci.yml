@@ -65,6 +65,9 @@ jobs:
           unzip ormolu.zip -d ormolu-temp
           cp ormolu-temp/ormolu.exe Binaries/
           rm -rf ormolu-temp ormolu.zip
+
+          # Download google-java-format (Java formatter - native binary, no JVM required)
+          curl -L -o Binaries/google-java-format.exe "https://github.com/google/google-java-format/releases/download/v1.33.0/google-java-format_windows-x86-64.exe"
         shell: bash
 
       - name: Install CSharpier
