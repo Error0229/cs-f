@@ -40,7 +40,41 @@ jobs:
 
           # Download shfmt
           curl -L -o Binaries/shfmt.exe "https://github.com/mvdan/sh/releases/download/v3.10.0/shfmt_v3.10.0_windows_amd64.exe"
+
+          # Download stylua (Lua formatter)
+          curl -L -o stylua.zip "https://github.com/JohnnyMorganz/StyLua/releases/download/v2.0.2/stylua-windows-x86_64.zip"
+          unzip stylua.zip -d Binaries
+          rm -f stylua.zip
+
+          # Download air (R formatter)
+          curl -L -o air.zip "https://github.com/posit-dev/air/releases/download/0.4.0/air-0.4.0-x86_64-pc-windows-msvc.zip"
+          unzip air.zip -d Binaries
+          rm -f air.zip
+
+          # Download asmfmt (Go Assembly formatter)
+          curl -L -o Binaries/asmfmt.exe "https://github.com/klauspost/asmfmt/releases/download/v1.3.2/asmfmt-Win-x64.exe"
+
+          # Download uncrustify (Objective-C formatter)
+          curl -L -o uncrustify.zip "https://github.com/uncrustify/uncrustify/releases/download/uncrustify-0.79.0/uncrustify-0.79.0-win64.zip"
+          unzip uncrustify.zip
+          cp uncrustify-0.79.0-win64/uncrustify.exe Binaries/
+          rm -rf uncrustify-0.79.0-win64 uncrustify.zip
+
+          # Download ormolu (Haskell formatter)
+          curl -L -o ormolu.zip "https://github.com/tweag/ormolu/releases/download/0.8.0.0/ormolu-Windows.zip"
+          unzip ormolu.zip -d ormolu-temp
+          cp ormolu-temp/ormolu.exe Binaries/
+          rm -rf ormolu-temp ormolu.zip
         shell: bash
+
+      - name: Install CSharpier
+        run: |
+          dotnet tool install --global csharpier
+          $env:PATH = "$env:USERPROFILE\.dotnet\tools;$env:PATH"
+          csharpier --version
+          # Copy to Binaries for consistency
+          Copy-Item "$env:USERPROFILE\.dotnet\tools\csharpier.exe" -Destination "Binaries\csharpier.exe" -Force
+        shell: pwsh
 
       - name: Restore dependencies
         run: |
@@ -53,4 +87,7 @@ jobs:
           dotnet build ./CodeFormatter.Tests/CodeFormatter.Tests.csproj --configuration Release --no-restore
 
       - name: Test
-        run: dotnet test ./CodeFormatter.Tests/CodeFormatter.Tests.csproj --configuration Release --no-build --verbosity normal
+        run: |
+          # Run tests excluding formatters that require custom-built binaries not available in CI
+          # Excluded: Delphi (pasfmt), Kotlin (ktlint), Perl (perltidy), PHP (php-cs-fixer), MATLAB (mh_style), Ruby (rufo)
+          dotnet test ./CodeFormatter.Tests/CodeFormatter.Tests.csproj --configuration Release --no-build --verbosity normal --filter "FullyQualifiedName!~Delphi_&FullyQualifiedName!~Kotlin_&FullyQualifiedName!~Perl_&FullyQualifiedName!~Php_&FullyQualifiedName!~Matlab_&FullyQualifiedName!~Ruby_"

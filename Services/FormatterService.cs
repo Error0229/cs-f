@@ -87,7 +87,16 @@ public class FormatterService
             args = ResolveNpmBinaryPaths(args, workingDirectory);
         }
 
-        var result = await _processRunner.RunAsync(command, args, code, workingDirectory, cancellationToken);
+        // Use temp file approach for formatters that don't support stdin
+        ProcessResult result;
+        if (entry.UsesTempFile)
+        {
+            result = await _processRunner.RunWithTempFileAsync(command, args, code, entry.TempFileExtension, workingDirectory, cancellationToken);
+        }
+        else
+        {
+            result = await _processRunner.RunAsync(command, args, code, workingDirectory, cancellationToken);
+        }
 
         if (!result.Success)
         {

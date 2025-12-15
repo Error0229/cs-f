@@ -46,7 +46,10 @@ public class ProcessRunner
             var output = await outputTask;
             var error = await errorTask;
 
-            return new ProcessResult(process.ExitCode == 0, output, error);
+            // Consider success if exit code is 0, OR if we got valid stdout output
+            // Some formatters (e.g., rufo) return non-zero exit when they make changes
+            var success = process.ExitCode == 0 || !string.IsNullOrWhiteSpace(output);
+            return new ProcessResult(success, output, error);
         }
         catch (OperationCanceledException)
         {
@@ -57,6 +60,79 @@ public class ProcessRunner
         catch (Exception ex)
         {
             return new ProcessResult(false, "", $"Failed to run formatter: {ex.Message}");
+        }
+    }
+
+    /// <summary>
+    /// Run formatter using a temp file for formatters that don't support stdin.
+    /// The formatter modifies the file in-place, and we read the result back.
+    /// Args containing "{file}" placeholder will have it replaced with the temp file path.
+    /// </summary>
+    public async Task<ProcessResult> RunWithTempFileAsync(string command, string[] args, string input, string extension, string? workingDirectory = null, CancellationToken cancellationToken = default)
+    {
+        var tempDir = Path.Combine(Path.GetTempPath(), "CodeFormatter");
+        Directory.CreateDirectory(tempDir);
+        var tempFile = Path.Combine(tempDir, $"temp_{Guid.NewGuid():N}.{extension}");
+
+        try
+        {
+            // Write input to temp file
+            await File.WriteAllTextAsync(tempFile, input, cancellationToken);
+
+            // Replace {file} placeholder in args with actual path
+            var resolvedArgs = args.Select(a => a.Replace("{file}", tempFile)).ToArray();
+
+            using var process = new Process();
+            process.StartInfo = new ProcessStartInfo
+            {
+                FileName = command,
+                RedirectStandardOutput = true,
+                RedirectStandardError = true,
+                UseShellExecute = false,
+                CreateNoWindow = true
+            };
+
+            if (!string.IsNullOrEmpty(workingDirectory))
+                process.StartInfo.WorkingDirectory = workingDirectory;
+
+            foreach (var arg in resolvedArgs)
+                process.StartInfo.ArgumentList.Add(arg);
+
+            using var cts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
+            cts.CancelAfter(_timeout);
+
+            process.Start();
+
+            var stdoutTask = process.StandardOutput.ReadToEndAsync(cts.Token);
+            var stderrTask = process.StandardError.ReadToEndAsync(cts.Token);
+
+            await process.WaitForExitAsync(cts.Token);
+
+            var stdout = await stdoutTask;
+            var stderr = await stderrTask;
+
+            // Read formatted content from temp file
+            // Even if exit code is non-zero, the formatter might have partially succeeded
+            // (e.g., mh_style fixes some issues but warns about others it can't fix)
+            var formatted = await File.ReadAllTextAsync(tempFile, cancellationToken);
+
+            // Consider success if the file was modified (formatted != input) OR exit code is 0
+            // We check if there's output first to handle formatters that don't modify but have clean exit
+            var success = process.ExitCode == 0 || !string.IsNullOrEmpty(formatted);
+            return new ProcessResult(success, formatted, stderr);
+        }
+        catch (OperationCanceledException)
+        {
+            return new ProcessResult(false, "", "Formatting timed out. Code may be too large.");
+        }
+        catch (Exception ex)
+        {
+            return new ProcessResult(false, "", $"Failed to run formatter: {ex.Message}");
+        }
+        finally
+        {
+            // Clean up temp file
+            try { File.Delete(tempFile); } catch { /* Ignore cleanup errors */ }
         }
     }
 

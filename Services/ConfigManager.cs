@@ -346,20 +346,20 @@ public class ConfigManager
             // Lua - stylua (reads from stdin with -)
             ["lua"] = new() { Command = "stylua", Args = ["-"] },
 
-            // R - air (format subcommand with --stdin)
-            ["r"] = new() { Command = "air", Args = ["format", "--stdin"] },
+            // R - air (uses temp file - no stdin support)
+            ["r"] = new() { Command = "air", Args = ["format", "{file}"], UsesTempFile = true, TempFileExtension = "r" },
 
             // Delphi - pasfmt (reads stdin by default)
             ["delphi"] = new() { Command = "pasfmt", Args = [] },
 
-            // C# - csharpier (--write-stdout for stdin formatting)
-            ["csharp"] = new() { Command = "csharpier", Args = ["--write-stdout"] },
+            // C# - csharpier (uses temp file - doesn't support stdin well)
+            ["csharp"] = new() { Command = "csharpier", Args = ["format", "{file}"], UsesTempFile = true, TempFileExtension = "cs" },
 
             // Assembly - asmfmt (reads stdin by default)
             ["assembly"] = new() { Command = "asmfmt", Args = [] },
 
-            // Objective-C - uncrustify (-l OC for language, -q for quiet)
-            ["objc"] = new() { Command = "uncrustify", Args = ["-l", "OC", "-q"] },
+            // Objective-C - uncrustify (-l OC for language, -c - for default config, -q for quiet)
+            ["objc"] = new() { Command = "uncrustify", Args = ["-l", "OC", "-c", "-", "-q"] },
 
             // Kotlin - ktlint (--stdin with --format)
             ["kotlin"] = new() { Command = "ktlint", Args = ["--stdin", "--format"] },
@@ -370,11 +370,11 @@ public class ConfigManager
             // Perl - perltidy (-st for stdout, -se for stderr)
             ["perl"] = new() { Command = "perltidy", Args = ["-st", "-se"] },
 
-            // PHP - php-cs-fixer (fix with --using-cache=no and - for stdin)
-            ["php"] = new() { Command = "php-cs-fixer", Args = ["fix", "--using-cache=no", "-"] },
+            // PHP - php-cs-fixer (uses temp file - needs file path and explicit rules to avoid config lookup)
+            ["php"] = new() { Command = "php-cs-fixer", Args = ["fix", "{file}", "--rules=@PSR12", "--using-cache=no", "--quiet"], UsesTempFile = true, TempFileExtension = "php" },
 
-            // MATLAB - mh_style (--single for single file, - for stdin)
-            ["matlab"] = new() { Command = "mh_style", Args = ["--single", "-"] },
+            // MATLAB - mh_style (uses temp file - doesn't support stdin)
+            ["matlab"] = new() { Command = "mh_style", Args = ["--single", "--fix", "{file}"], UsesTempFile = true, TempFileExtension = "m" },
 
             // Ruby - rufo (reads from stdin by default)
             ["ruby"] = new() { Command = "rufo", Args = [] }

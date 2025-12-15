@@ -451,4 +451,392 @@ public class FormatterIntegrationTests
         Assert.Contains("case", result.Output);
         Assert.Contains("esac", result.Output);
     }
+
+    // ========== Lua (StyLua) ==========
+
+    [Fact]
+    public async Task Lua_FormatsSimpleAssignment()
+    {
+        var input = "local x=1";
+        var result = await _formatterService.FormatAsync(input, Language.Lua);
+
+        Assert.True(result.Success, $"Format failed: {result.Output}");
+        Assert.Contains("local x = 1", result.Output);
+    }
+
+    [Fact]
+    public async Task Lua_FormatsFunction()
+    {
+        var input = "function hello(name)print(\"Hello \"..name)end";
+        var result = await _formatterService.FormatAsync(input, Language.Lua);
+
+        Assert.True(result.Success, $"Format failed: {result.Output}");
+        Assert.Contains("function hello(name)", result.Output);
+        Assert.Contains("print(", result.Output);
+        Assert.Contains("end", result.Output);
+    }
+
+    [Fact]
+    public async Task Lua_FormatsTable()
+    {
+        var input = "local t={a=1,b=2,c=3}";
+        var result = await _formatterService.FormatAsync(input, Language.Lua);
+
+        Assert.True(result.Success, $"Format failed: {result.Output}");
+        Assert.Contains("local t =", result.Output);
+        Assert.Contains("a = 1", result.Output);
+    }
+
+    // ========== R (Air) ==========
+
+    [Fact]
+    public async Task R_FormatsSimpleAssignment()
+    {
+        var input = "x<-1";
+        var result = await _formatterService.FormatAsync(input, Language.R);
+
+        Assert.True(result.Success, $"Format failed: {result.Output}");
+        Assert.Contains("x <- 1", result.Output);
+    }
+
+    [Fact]
+    public async Task R_FormatsFunction()
+    {
+        var input = "add<-function(a,b){return(a+b)}";
+        var result = await _formatterService.FormatAsync(input, Language.R);
+
+        Assert.True(result.Success, $"Format failed: {result.Output}");
+        Assert.Contains("function(a, b)", result.Output);
+        Assert.Contains("return(a + b)", result.Output);
+    }
+
+    [Fact]
+    public async Task R_FormatsVector()
+    {
+        var input = "v<-c(1,2,3,4,5)";
+        var result = await _formatterService.FormatAsync(input, Language.R);
+
+        Assert.True(result.Success, $"Format failed: {result.Output}");
+        Assert.Contains("v <- c(", result.Output);
+    }
+
+    // ========== Delphi/Pascal (pasfmt) ==========
+
+    [Fact]
+    public async Task Delphi_FormatsProcedure()
+    {
+        var input = "procedure Test;begin WriteLn('Hello');end;";
+        var result = await _formatterService.FormatAsync(input, Language.Delphi);
+
+        Assert.True(result.Success, $"Format failed: {result.Output}");
+        Assert.Contains("procedure Test;", result.Output);
+        Assert.Contains("begin", result.Output);
+        Assert.Contains("end;", result.Output);
+    }
+
+    [Fact]
+    public async Task Delphi_FormatsFunction()
+    {
+        var input = "function Add(a,b:Integer):Integer;begin Result:=a+b;end;";
+        var result = await _formatterService.FormatAsync(input, Language.Delphi);
+
+        Assert.True(result.Success, $"Format failed: {result.Output}");
+        Assert.Contains("function Add", result.Output);
+        Assert.Contains("Result :=", result.Output);
+    }
+
+    // ========== C# (CSharpier) ==========
+
+    [Fact]
+    public async Task CSharp_FormatsClass()
+    {
+        var input = "public class Test{public void Method(){Console.WriteLine(\"Hello\");}}";
+        var result = await _formatterService.FormatAsync(input, Language.CSharpFormatted);
+
+        Assert.True(result.Success, $"Format failed: {result.Output}");
+        Assert.Contains("public class Test", result.Output);
+        Assert.Contains("public void Method()", result.Output);
+    }
+
+    [Fact]
+    public async Task CSharp_FormatsProperty()
+    {
+        var input = "public class Test{public string Name{get;set;}}";
+        var result = await _formatterService.FormatAsync(input, Language.CSharpFormatted);
+
+        Assert.True(result.Success, $"Format failed: {result.Output}");
+        Assert.Contains("public string Name", result.Output);
+        Assert.Contains("get;", result.Output);
+        Assert.Contains("set;", result.Output);
+    }
+
+    [Fact]
+    public async Task CSharp_FormatsLinq()
+    {
+        var input = "var result=items.Where(x=>x>0).Select(x=>x*2).ToList();";
+        var result = await _formatterService.FormatAsync(input, Language.CSharpFormatted);
+
+        Assert.True(result.Success, $"Format failed: {result.Output}");
+        Assert.Contains("var result =", result.Output);
+        Assert.Contains("Where(x => x > 0)", result.Output);
+    }
+
+    // ========== Assembly (asmfmt) ==========
+
+    [Fact]
+    public async Task Assembly_FormatsGoAssembly()
+    {
+        var input = "TEXT ·Add(SB),$0-24\nMOVQ a+0(FP),AX\nMOVQ b+8(FP),BX\nADDQ AX,BX\nRET";
+        var result = await _formatterService.FormatAsync(input, Language.Assembly);
+
+        Assert.True(result.Success, $"Format failed: {result.Output}");
+        Assert.Contains("TEXT", result.Output);
+        Assert.Contains("MOVQ", result.Output);
+        Assert.Contains("RET", result.Output);
+    }
+
+    // ========== Objective-C (uncrustify) ==========
+
+    [Fact]
+    public async Task ObjectiveC_FormatsInterface()
+    {
+        var input = "@interface Person:NSObject @property NSString*name;@end";
+        var result = await _formatterService.FormatAsync(input, Language.ObjectiveC);
+
+        Assert.True(result.Success, $"Format failed: {result.Output}");
+        Assert.Contains("@interface Person", result.Output);
+        Assert.Contains("@property", result.Output);
+        Assert.Contains("@end", result.Output);
+    }
+
+    [Fact]
+    public async Task ObjectiveC_FormatsMethod()
+    {
+        var input = "@implementation Test -(void)hello{NSLog(@\"Hello\");}@end";
+        var result = await _formatterService.FormatAsync(input, Language.ObjectiveC);
+
+        Assert.True(result.Success, $"Format failed: {result.Output}");
+        Assert.Contains("@implementation Test", result.Output);
+        Assert.Contains("-(void)hello", result.Output);
+    }
+
+    // ========== Kotlin (ktlint) ==========
+
+    [Fact]
+    public async Task Kotlin_FormatsFunction()
+    {
+        var input = "fun main(){println(\"Hello\")}";
+        var result = await _formatterService.FormatAsync(input, Language.Kotlin);
+
+        Assert.True(result.Success, $"Format failed: {result.Output}");
+        Assert.Contains("fun main()", result.Output);
+        Assert.Contains("println(", result.Output);
+    }
+
+    [Fact]
+    public async Task Kotlin_FormatsClass()
+    {
+        var input = "class Person(val name:String,val age:Int){fun greet()=println(\"Hello $name\")}";
+        var result = await _formatterService.FormatAsync(input, Language.Kotlin);
+
+        Assert.True(result.Success, $"Format failed: {result.Output}");
+        Assert.Contains("class Person", result.Output);
+        Assert.Contains("val name: String", result.Output);
+    }
+
+    [Fact]
+    public async Task Kotlin_FormatsLambda()
+    {
+        var input = "val sum={a:Int,b:Int->a+b}";
+        var result = await _formatterService.FormatAsync(input, Language.Kotlin);
+
+        Assert.True(result.Success, $"Format failed: {result.Output}");
+        Assert.Contains("val sum =", result.Output);
+        Assert.Contains("a: Int", result.Output);
+    }
+
+    // ========== Haskell (Ormolu) ==========
+
+    [Fact]
+    public async Task Haskell_FormatsFunction()
+    {
+        var input = "main=putStrLn \"Hello\"";
+        var result = await _formatterService.FormatAsync(input, Language.Haskell);
+
+        Assert.True(result.Success, $"Format failed: {result.Output}");
+        Assert.Contains("main = putStrLn", result.Output);
+    }
+
+    [Fact]
+    public async Task Haskell_FormatsTypeSignature()
+    {
+        var input = "add::Int->Int->Int\nadd a b=a+b";
+        var result = await _formatterService.FormatAsync(input, Language.Haskell);
+
+        Assert.True(result.Success, $"Format failed: {result.Output}");
+        Assert.Contains("add :: Int -> Int -> Int", result.Output);
+        Assert.Contains("add a b = a + b", result.Output);
+    }
+
+    [Fact]
+    public async Task Haskell_FormatsList()
+    {
+        var input = "nums=[1,2,3,4,5]";
+        var result = await _formatterService.FormatAsync(input, Language.Haskell);
+
+        Assert.True(result.Success, $"Format failed: {result.Output}");
+        Assert.Contains("nums = [1, 2, 3, 4, 5]", result.Output);
+    }
+
+    // ========== Perl (perltidy) ==========
+
+    [Fact]
+    public async Task Perl_FormatsSubroutine()
+    {
+        var input = "sub hello{my $name=shift;print \"Hello $name\\n\";}";
+        var result = await _formatterService.FormatAsync(input, Language.Perl);
+
+        Assert.True(result.Success, $"Format failed: {result.Output}");
+        Assert.Contains("sub hello", result.Output);
+        Assert.Contains("my $name", result.Output);
+    }
+
+    [Fact]
+    public async Task Perl_FormatsHashAccess()
+    {
+        var input = "my %hash=(a=>1,b=>2);print $hash{a};";
+        var result = await _formatterService.FormatAsync(input, Language.Perl);
+
+        Assert.True(result.Success, $"Format failed: {result.Output}");
+        Assert.Contains("my %hash", result.Output);
+        Assert.Contains("$hash{a}", result.Output);
+    }
+
+    [Fact]
+    public async Task Perl_FormatsRegex()
+    {
+        var input = "if($str=~/pattern/){print \"match\";}";
+        var result = await _formatterService.FormatAsync(input, Language.Perl);
+
+        Assert.True(result.Success, $"Format failed: {result.Output}");
+        Assert.Contains("if (", result.Output);
+        Assert.Contains("=~", result.Output);
+    }
+
+    // ========== PHP (PHP-CS-Fixer) ==========
+
+    [Fact]
+    public async Task Php_FormatsClass()
+    {
+        var input = "<?php class Test{public function hello(){echo \"Hello\";}}";
+        var result = await _formatterService.FormatAsync(input, Language.Php);
+
+        Assert.True(result.Success, $"Format failed: {result.Output}");
+        Assert.Contains("class Test", result.Output);
+        Assert.Contains("public function hello()", result.Output);
+    }
+
+    [Fact]
+    public async Task Php_FormatsArray()
+    {
+        var input = "<?php $arr=array(\"a\"=>1,\"b\"=>2);";
+        var result = await _formatterService.FormatAsync(input, Language.Php);
+
+        Assert.True(result.Success, $"Format failed: {result.Output}");
+        Assert.Contains("$arr =", result.Output);
+    }
+
+    [Fact]
+    public async Task Php_FormatsNamespace()
+    {
+        var input = "<?php namespace App\\Controllers;class HomeController{}";
+        var result = await _formatterService.FormatAsync(input, Language.Php);
+
+        Assert.True(result.Success, $"Format failed: {result.Output}");
+        Assert.Contains("namespace App\\Controllers;", result.Output);
+        Assert.Contains("class HomeController", result.Output);
+    }
+
+    // ========== MATLAB (MISS_HIT) ==========
+
+    [Fact]
+    public async Task Matlab_FormatsFunction()
+    {
+        var input = "function result=add(a,b)\nresult=a+b;\nend";
+        var result = await _formatterService.FormatAsync(input, Language.Matlab);
+
+        Assert.True(result.Success, $"Format failed: {result.Output}");
+        Assert.Contains("function result", result.Output);
+        Assert.Contains("result =", result.Output);
+    }
+
+    [Fact]
+    public async Task Matlab_FormatsForLoop()
+    {
+        var input = "for i=1:10\ndisp(i);\nend";
+        var result = await _formatterService.FormatAsync(input, Language.Matlab);
+
+        Assert.True(result.Success, $"Format failed: {result.Output}");
+        Assert.Contains("for i", result.Output);
+        Assert.Contains("disp(i)", result.Output);
+        Assert.Contains("end", result.Output);
+    }
+
+    [Fact]
+    public async Task Matlab_FormatsMatrix()
+    {
+        var input = "A=[1 2 3;4 5 6;7 8 9];";
+        var result = await _formatterService.FormatAsync(input, Language.Matlab);
+
+        Assert.True(result.Success, $"Format failed: {result.Output}");
+        Assert.Contains("A =", result.Output);
+    }
+
+    // ========== Ruby (rufo) ==========
+
+    [Fact]
+    public async Task Ruby_FormatsMethod()
+    {
+        var input = "def hello;puts 'Hello';end";
+        var result = await _formatterService.FormatAsync(input, Language.Ruby);
+
+        Assert.True(result.Success, $"Format failed: {result.Output}");
+        Assert.Contains("def hello", result.Output);
+        Assert.Contains("puts", result.Output);
+        Assert.Contains("end", result.Output);
+    }
+
+    [Fact]
+    public async Task Ruby_FormatsClass()
+    {
+        var input = "class Person;attr_accessor :name;def initialize(name);@name=name;end;end";
+        var result = await _formatterService.FormatAsync(input, Language.Ruby);
+
+        Assert.True(result.Success, $"Format failed: {result.Output}");
+        Assert.Contains("class Person", result.Output);
+        Assert.Contains("attr_accessor", result.Output);
+        Assert.Contains("def initialize", result.Output);
+    }
+
+    [Fact]
+    public async Task Ruby_FormatsBlock()
+    {
+        var input = "[1,2,3].each{|x|puts x}";
+        var result = await _formatterService.FormatAsync(input, Language.Ruby);
+
+        Assert.True(result.Success, $"Format failed: {result.Output}");
+        Assert.Contains("[1, 2, 3]", result.Output);
+        Assert.Contains(".each", result.Output);
+    }
+
+    [Fact]
+    public async Task Ruby_FormatsHash()
+    {
+        var input = "h={a:1,b:2,c:3}";
+        var result = await _formatterService.FormatAsync(input, Language.Ruby);
+
+        Assert.True(result.Success, $"Format failed: {result.Output}");
+        Assert.Contains("h =", result.Output);
+        Assert.Contains("a:", result.Output);
+    }
 }
