@@ -323,14 +323,11 @@ public class ConfigManager
             // Dockerfile - dprint dockerfile plugin
             ["dockerfile"] = new() { Command = "dprint", Args = ["fmt", "--stdin", "Dockerfile", "--plugins", DprintPluginDockerfile] },
 
-            // Java/SQL - Node.js required
-            // Java requires: npm install -g prettier prettier-plugin-java
-            // SQL requires: npm install -g sql-formatter
-            // On Windows, use powershell to properly handle stdin piping to .cmd files
-            // Working directory is set to npm global root by FormatterService
-            // Java - google-java-format (native binary, no JVM required)
+            // Java - google-java-format (native GraalVM binary)
             ["java"] = new() { Command = "google-java-format", Args = ["-"] },
-            ["sql"] = new() { Command = "powershell", Args = ["-NoProfile", "-NonInteractive", "-Command", "& sql-formatter --language postgresql"], RequiresNode = true },
+
+            // SQL - sqruff (native Rust binary)
+            ["sql"] = new() { Command = "sqruff", Args = ["fix", "-"] },
 
             // Standalone formatters (bundled binaries)
             // C/C++ - clang-format (LLVM)

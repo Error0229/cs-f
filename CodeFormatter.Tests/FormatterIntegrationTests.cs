@@ -304,18 +304,39 @@ public class FormatterIntegrationTests
         Assert.Contains("import java.util.Map;", result.Output);
     }
 
-    // ========== SQL (npx sql-formatter) ==========
-    // Requires Node.js with sql-formatter installed globally
+    // ========== SQL (sqruff - native Rust binary) ==========
 
-    [Fact(Skip = "Requires Node.js with sql-formatter installed globally")]
+    [Fact]
     public async Task Sql_FormatsSelect()
     {
         var input = "select id,name from users where active=true";
         var result = await _formatterService.FormatAsync(input, Language.Sql);
 
         Assert.True(result.Success, $"Format failed: {result.Output}");
-        Assert.Contains("SELECT", result.Output.ToUpperInvariant());
-        Assert.Contains("FROM", result.Output.ToUpperInvariant());
+        Assert.Contains("select", result.Output.ToLowerInvariant());
+        Assert.Contains("from", result.Output.ToLowerInvariant());
+    }
+
+    [Fact]
+    public async Task Sql_FormatsJoin()
+    {
+        var input = "SELECT u.id,o.total FROM users u JOIN orders o ON u.id=o.user_id";
+        var result = await _formatterService.FormatAsync(input, Language.Sql);
+
+        Assert.True(result.Success, $"Format failed: {result.Output}");
+        Assert.Contains("JOIN", result.Output);
+        Assert.Contains("ON", result.Output);
+    }
+
+    [Fact]
+    public async Task Sql_FormatsGroupBy()
+    {
+        var input = "SELECT category,COUNT(*) FROM products GROUP BY category HAVING COUNT(*)>5";
+        var result = await _formatterService.FormatAsync(input, Language.Sql);
+
+        Assert.True(result.Success, $"Format failed: {result.Output}");
+        Assert.Contains("GROUP BY", result.Output);
+        Assert.Contains("HAVING", result.Output);
     }
 
     // ========== C (clang-format) ==========

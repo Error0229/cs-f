@@ -64,6 +64,7 @@
     <None Include="Binaries\dprint.exe" Pack="true" PackagePath="runtimes/win-x64/native/" />
     <None Include="Binaries\clang-format.exe" Pack="true" PackagePath="runtimes/win-x64/native/" />
     <None Include="Binaries\google-java-format.exe" Pack="true" PackagePath="runtimes/win-x64/native/" />
+    <None Include="Binaries\sqruff.exe" Pack="true" PackagePath="runtimes/win-x64/native/" />
     <None Include="Binaries\gofumpt.exe" Pack="true" PackagePath="runtimes/win-x64/native/" />
     <None Include="Binaries\shfmt.exe" Pack="true" PackagePath="runtimes/win-x64/native/" />
     <None Include="Binaries\stylua.exe" Pack="true" PackagePath="runtimes/win-x64/native/" />
