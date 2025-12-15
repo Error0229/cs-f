@@ -76,6 +76,7 @@
     <None Include="Binaries\perltidy.exe" Pack="true" PackagePath="runtimes/win-x64/native/" />
     <None Include="Binaries\php-cs-fixer.exe" Pack="true" PackagePath="runtimes/win-x64/native/" />
     <None Include="Binaries\mh_style.exe" Pack="true" PackagePath="runtimes/win-x64/native/" />
+    <None Include="Binaries\rufo.exe" Pack="true" PackagePath="runtimes/win-x64/native/" />
   </ItemGroup>
 
   <!-- Include README and icon in package -->

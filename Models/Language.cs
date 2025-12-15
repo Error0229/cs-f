@@ -59,7 +59,8 @@ public enum Language
     Haskell,
     Perl,
     Php,
-    Matlab
+    Matlab,
+    Ruby
 }
 
 public static class LanguageExtensions
@@ -99,6 +100,7 @@ public static class LanguageExtensions
         Language.Perl => "Perl",
         Language.Php => "PHP",
         Language.Matlab => "MATLAB",
+        Language.Ruby => "Ruby",
         _ => language.ToString()
     };
 
@@ -137,6 +139,7 @@ public static class LanguageExtensions
         Language.Perl => "perl",
         Language.Php => "php",
         Language.Matlab => "matlab",
+        Language.Ruby => "ruby",
         _ => language.ToString().ToLowerInvariant()
     };
 
@@ -175,6 +178,7 @@ public static class LanguageExtensions
         Language.Perl => "pl",
         Language.Php => "php",
         Language.Matlab => "m",
+        Language.Ruby => "rb",
         _ => "txt"
     };
 }

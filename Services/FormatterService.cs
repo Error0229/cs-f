@@ -219,6 +219,7 @@ public class FormatterService
             Language.Perl => baseArgs,
             Language.Php => baseArgs,
             Language.Matlab => baseArgs,
+            Language.Ruby => baseArgs,
             _ => baseArgs
         };
     }

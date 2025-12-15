@@ -98,6 +98,7 @@ public class ConfigManager
             "perl" => Language.Perl,
             "php" => Language.Php,
             "matlab" => Language.Matlab,
+            "ruby" => Language.Ruby,
             _ => Language.Python
         };
     }
@@ -373,7 +374,10 @@ public class ConfigManager
             ["php"] = new() { Command = "php-cs-fixer", Args = ["fix", "--using-cache=no", "-"] },
 
             // MATLAB - mh_style (--single for single file, - for stdin)
-            ["matlab"] = new() { Command = "mh_style", Args = ["--single", "-"] }
+            ["matlab"] = new() { Command = "mh_style", Args = ["--single", "-"] },
+
+            // Ruby - rufo (reads from stdin by default)
+            ["ruby"] = new() { Command = "rufo", Args = [] }
         }
     };
 
