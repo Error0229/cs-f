@@ -296,7 +296,8 @@ public class FormatterIntegrationTests
     [Fact]
     public async Task Java_FormatsImports()
     {
-        var input = "import java.util.List;import java.util.Map;public class Foo{}";
+        // Note: google-java-format removes unused imports, so we need to use them
+        var input = "import java.util.List;import java.util.Map;public class Foo{List<String> items;Map<String,String> data;}";
         var result = await _formatterService.FormatAsync(input, Language.Java);
 
         Assert.True(result.Success, $"Format failed: {result.Output}");
