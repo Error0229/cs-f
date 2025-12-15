@@ -29,29 +29,12 @@ jobs:
           echo "VERSION=$version" >> $env:GITHUB_OUTPUT
         shell: pwsh
 
-      - name: Download formatter binaries
+      - name: Download formatter binaries from release
         run: |
-          mkdir -p Binaries
-
-          # Download ruff
-          curl -L -o ruff.zip "https://github.com/astral-sh/ruff/releases/download/0.8.4/ruff-x86_64-pc-windows-msvc.zip"
-          unzip ruff.zip -d Binaries
-          rm -f ruff.zip
-
-          # Download dprint
-          curl -L -o dprint.zip "https://github.com/dprint/dprint/releases/download/0.48.0/dprint-x86_64-pc-windows-msvc.zip"
-          unzip dprint.zip -d Binaries
-          rm -f dprint.zip
-
-          # Copy clang-format from LLVM installation
-          cp "/c/Program Files/LLVM/bin/clang-format.exe" Binaries/clang-format.exe
-
-          # Download gofumpt
-          curl -L -o Binaries/gofumpt.exe "https://github.com/mvdan/gofumpt/releases/download/v0.7.0/gofumpt_v0.7.0_windows_amd64.exe"
-
-          # Download shfmt
-          curl -L -o Binaries/shfmt.exe "https://github.com/mvdan/sh/releases/download/v3.10.0/shfmt_v3.10.0_windows_amd64.exe"
-
+          # Download all formatter binaries from GitHub Release
+          curl -L -o formatter-binaries.zip "https://github.com/Error0229/cs-f/releases/download/binaries-v1/formatter-binaries.zip"
+          unzip formatter-binaries.zip -d Binaries
+          rm -f formatter-binaries.zip
           ls -la Binaries/
         shell: bash
 
