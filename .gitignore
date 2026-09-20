@@ -8,3 +8,5 @@ Binaries/*.exe
 node_modules/
 nupkg/
 package-lock.json
+
+TestResults/

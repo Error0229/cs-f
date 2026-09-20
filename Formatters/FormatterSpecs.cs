@@ -1,0 +1,145 @@
+using CodeFormatter.Models;
+
+namespace CodeFormatter.Formatters;
+
+/// <summary>
+/// Which formatter runs for which language.
+/// Add a language here and in LanguageRegistry; nothing else switches on Language.
+/// </summary>
+public static class FormatterSpecs
+{
+    private static readonly Dictionary<Language, FormatterSpec> _specs = new()
+    {
+        [Language.Python] = Ruff.Spec(),
+
+        [Language.JavaScript] = Dprint.Spec("file.js", "typescript", [], Dprint.TypeScript),
+        [Language.TypeScript] = Dprint.Spec("file.ts", "typescript", [], Dprint.TypeScript),
+        [Language.Json] = Dprint.Spec("file.json", "json", [], Dprint.Json),
+        [Language.Markdown] = Dprint.Spec("file.md", "markdown", [], Dprint.Markdown),
+        [Language.Toml] = Dprint.Spec("file.toml", "toml", [], Dprint.Toml),
+        [Language.Css] = Dprint.Spec("file.css", "malva", [], Dprint.Malva),
+        [Language.Scss] = Dprint.Spec("file.scss", "malva", [], Dprint.Malva),
+        [Language.Less] = Dprint.Spec("file.less", "malva", [], Dprint.Malva),
+        [Language.Html] = Markup("file.html"),
+        [Language.Vue] = Markup("file.vue"),
+        [Language.Svelte] = Markup("file.svelte"),
+        [Language.Astro] = Markup("file.astro"),
+        [Language.Yaml] = Dprint.Spec("file.yaml", "yaml", [], Dprint.Yaml),
+        [Language.GraphQL] = Dprint.Spec("file.graphql", "graphql", [], Dprint.GraphQL),
+        [Language.Dockerfile] = Dprint.Spec("Dockerfile", "dockerfile", [], Dprint.Dockerfile),
+
+        [Language.Java] = GoogleJavaFormat.Spec(),
+        [Language.Sql] = Sqruff.Spec(),
+        [Language.C] = ClangFormat.Spec("file.c"),
+        [Language.Cpp] = ClangFormat.Spec("file.cpp"),
+        [Language.CSharpFormatted] = Csharpier.Spec(),
+        [Language.Go] = Gofumpt.Spec(),
+        [Language.Assembly] = new FormatterSpec { Command = "asmfmt" }, // no options, reads no config
+        [Language.Shell] = Shfmt.Spec(),
+        [Language.Lua] = Stylua.Spec(),
+        [Language.R] = Air.Spec(),
+        [Language.Delphi] = Pasfmt.Spec(),
+        [Language.ObjectiveC] = Uncrustify.Spec("OC"),
+        [Language.Kotlin] = Ktlint.Spec(),
+        [Language.Haskell] = Ormolu.Spec(),
+        [Language.Perl] = Perltidy.Spec(),
+        [Language.Php] = PhpCsFixer.Spec(),
+        [Language.Matlab] = MhStyle.Spec(),
+        [Language.Ruby] = Rufo.Spec(),
+    };
+
+    // markup_fmt hands <script>, <style> and JSON blocks to whichever loaded plugin claims them.
+    // With only markup_fmt loaded, embedded code comes back untouched and nothing says so.
+    private static FormatterSpec Markup(string stdinName) =>
+        Dprint.Spec(stdinName, "markup", [], Dprint.MarkupFmt, Dprint.TypeScript, Dprint.Malva, Dprint.Json);
+
+    public static FormatterSpec? For(Language language) => _specs.GetValueOrDefault(language);
+
+    public static SettingDefinition[] SettingsFor(Language language) => For(language)?.Settings ?? [];
+
+    /// <summary>
+    /// A formatter entry the user wrote by hand in config.toml: run exactly what it says.
+    /// We know nothing about the tool's options or exit codes, so no settings and the old success rule.
+    /// </summary>
+    public static FormatterSpec FromUserEntry(FormatterEntry entry) => new()
+    {
+        Command = entry.Command,
+        Args = entry.Args,
+        InputFileName = entry.UsesTempFile ? $"input.{entry.TempFileExtension}" : null,
+        Success = SuccessRule.Lenient
+    };
+
+    /// <summary>
+    /// Up to 1.2.0 the defaults were written into config.toml on first run, so every existing
+    /// install has them saved. Such an entry is not a user's choice and must not pin them to an
+    /// old invocation forever. These are all the defaults that ever shipped.
+    /// </summary>
+    public static bool IsShippedDefault(FormatterEntry entry)
+    {
+        if (entry.RequiresNode)
+            return true; // Prettier / sql-formatter era; those formatters are gone
+
+        var args = entry.Args
+            .Where(a => a != "--plugins" && a != "--config-discovery=false" && !a.StartsWith("https://plugins.dprint.dev/"))
+            .ToArray();
+
+        if (entry.Command == "dprint")
+            return args.Length == 3 && args[0] == "fmt" && args[1] == "--stdin";
+
+        return ShippedDefaults.Contains($"{entry.Command} {string.Join(' ', args)}".TrimEnd());
+    }
+
+    private static readonly HashSet<string> ShippedDefaults =
+    [
+        "ruff format -",
+        "google-java-format -",
+        "sqruff fix -",
+        "clang-format --assume-filename=file.c",
+        "clang-format --assume-filename=file.cpp",
+        "gofumpt",
+        "shfmt --filename script.sh",
+        "stylua -",
+        "air format --stdin",
+        "air format {file}",
+        "pasfmt",
+        "csharpier --write-stdout",
+        "csharpier format {file}",
+        "asmfmt",
+        "uncrustify -l OC -q",
+        "uncrustify -l OC -c - -q",
+        "ktlint --stdin --format",
+        "ormolu --stdin-input-file stdin.hs",
+        "perltidy -st -se",
+        "php-cs-fixer fix --using-cache=no -",
+        "php-cs-fixer fix {file} --rules=@PSR12 --using-cache=no --quiet",
+        "mh_style --single -",
+        "mh_style --single --fix {file}",
+        "rufo",
+    ];
+
+    /// <summary>
+    /// Setting keys saved by versions up to 1.2.0, mapped to the tool's own key.
+    /// Old keys without an entry here never reached their formatter and are dropped.
+    /// </summary>
+    public static string MigrateSettingKey(Language language, string key) => language switch
+    {
+        Language.Python => key switch
+        {
+            "indent-style" or "quote-style" or "line-ending" => $"format.{key}",
+            _ => key
+        },
+        Language.C or Language.Cpp => key == "style" ? "BasedOnStyle" : key,
+        Language.Go => key == "extra" ? "-extra" : key,
+        Language.Shell => key switch
+        {
+            "indent" => "-i",
+            "binaryNextLine" => "-bn",
+            "caseIndent" => "-ci",
+            "spaceRedirects" => "-sr",
+            "keepPadding" => "-kp",
+            "funcNextLine" => "-fn",
+            _ => key
+        },
+        _ => key
+    };
+}

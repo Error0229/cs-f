@@ -14,9 +14,7 @@ public class FormatterIntegrationTests
 
     public FormatterIntegrationTests()
     {
-        var configManager = new ConfigManager();
-        var processRunner = new ProcessRunner();
-        _formatterService = new FormatterService(configManager, processRunner);
+        _formatterService = TestFormatter.Create();
     }
 
     // ========== Python (Ruff) ==========

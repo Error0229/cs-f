@@ -1,0 +1,86 @@
+using System.Text.RegularExpressions;
+
+namespace CodeFormatter.Models;
+
+/// <summary>
+/// Everything needed to run one formatter for one language: how to invoke it in isolation,
+/// how its settings reach it, and how to tell whether it worked.
+///
+/// Settings travel one of two ways, and a tool may use both:
+///   - SettingArgs:  changed settings become command-line arguments
+///   - ConfigText:   changed settings are rendered into ConfigFileName inside the private directory
+///
+/// Every run gets a fresh private working directory. Placeholders in Args/TrailingArgs:
+///   {dir}     the private directory
+///   {config}  full path of the generated config file
+///   {file}    full path of the source file (only when InputFileName is set)
+/// </summary>
+public sealed record FormatterSpec
+{
+    public required string Command { get; init; }
+
+    /// <summary>Fixed arguments, including whatever switches off the tool's config discovery.</summary>
+    public string[] Args { get; init; } = [];
+
+    /// <summary>Arguments that must come after the setting arguments (e.g. "-" for stdin).</summary>
+    public string[] TrailingArgs { get; init; } = [];
+
+    public Func<IReadOnlyList<SettingValue>, IEnumerable<string>>? SettingArgs { get; init; }
+
+    /// <summary>
+    /// When set, the file is always written, even with no changed settings: for most tools the
+    /// presence of our own config file is what stops them from picking up somebody else's.
+    /// </summary>
+    public string? ConfigFileName { get; init; }
+    public Func<IReadOnlyList<SettingValue>, string>? ConfigText { get; init; }
+
+    /// <summary>
+    /// Null: source goes to stdin and the result is read from stdout.
+    /// Otherwise: source is written to this file in the private directory, the tool rewrites it in place.
+    /// </summary>
+    public string? InputFileName { get; init; }
+
+    public SuccessRule Success { get; init; } = SuccessRule.ExitZero;
+
+    /// <summary>Extra environment variables for the process.</summary>
+    public IReadOnlyDictionary<string, string> Environment { get; init; } = new Dictionary<string, string>();
+
+    /// <summary>The tool launches a JVM from PATH and needs Java 11 or newer.</summary>
+    public bool NeedsJava { get; init; }
+
+    /// <summary>Fix-up for tools whose output is reliably off (e.g. one newline too many).</summary>
+    public Func<string, string>? PostProcess { get; init; }
+
+    public SettingDefinition[] Settings { get; init; } = [];
+}
+
+/// <summary>
+/// How to tell a successful run from a failed one. Exit codes alone are not enough: several tools
+/// exit non-zero after formatting correctly, and several exit zero after failing.
+/// An empty result is always a failure.
+/// </summary>
+public sealed record SuccessRule(int[] OkExitCodes, Regex? FailurePattern = null)
+{
+    public static readonly SuccessRule ExitZero = new([0]);
+
+    /// <summary>
+    /// What the extension did before specs existed. Kept only for formatter entries the user
+    /// wrote by hand in config.toml, whose contract we cannot know.
+    /// </summary>
+    public static readonly SuccessRule Lenient = new([]);
+
+    public static SuccessRule Codes(params int[] codes) => new(codes);
+
+    public SuccessRule FailsOn(string pattern) =>
+        this with { FailurePattern = new Regex(pattern, RegexOptions.Compiled | RegexOptions.CultureInvariant) };
+
+    /// <param name="diagnostics">Text the tool printed that is not the formatted result.</param>
+    public bool IsSuccess(int exitCode, string result, string diagnostics)
+    {
+        if (string.IsNullOrWhiteSpace(result))
+            return false;
+        if (FailurePattern is not null && FailurePattern.IsMatch(diagnostics))
+            return false;
+        return OkExitCodes.Length == 0 || OkExitCodes.Contains(exitCode);
+    }
+}

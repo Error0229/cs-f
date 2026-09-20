@@ -1,3 +1,4 @@
+using CodeFormatter.Formatters;
 using CodeFormatter.Models;
 using CodeFormatter.Resources;
 using CodeFormatter.Services;
@@ -167,7 +168,9 @@ internal sealed class CodeFormatterTool : IGuiTool
                 return;
             }
 
-            var result = await _formatterService.FormatAsync(input, _selectedLanguage);
+            // The token also stops the formatter process: the slow ones take seconds to start,
+            // and would otherwise pile up behind every pause in typing
+            var result = await _formatterService.FormatAsync(input, _selectedLanguage, token);
 
             // Check if cancelled before updating UI
             if (!token.IsCancellationRequested)
@@ -226,7 +229,7 @@ internal sealed class CodeFormatterTool : IGuiTool
 
     private async Task OpenConfigDialogAsync()
     {
-        var definitions = FormatterSettingsDefinitions.GetSettings(_selectedLanguage);
+        var definitions = FormatterSpecs.SettingsFor(_selectedLanguage);
         var settingsControls = BuildSettingsControls(definitions);
 
         await _view.OpenDialogAsync(
@@ -278,6 +281,7 @@ internal sealed class CodeFormatterTool : IGuiTool
                 SettingType.Boolean => BuildBooleanSetting(def, currentValue),
                 SettingType.Integer => BuildIntegerSetting(def, currentValue),
                 SettingType.Choice => BuildChoiceSetting(def, currentValue),
+                SettingType.Text => BuildTextSetting(def, currentValue),
                 _ => Label().Text($"Unknown setting type: {def.Key}")
             };
 
@@ -355,6 +359,18 @@ internal sealed class CodeFormatterTool : IGuiTool
                         if (item?.Value is string s)
                             _pendingSettings[def.Key] = s;
                     }));
+    }
+
+    private IUIElement BuildTextSetting(SettingDefinition def, object currentValue)
+    {
+        return Stack()
+            .Vertical()
+            .SmallSpacing()
+            .WithChildren(
+                Label().Text(def.DisplayName + (def.Description != null ? $" ({def.Description})" : "")),
+                SingleLineTextInput($"setting-{def.Key}")
+                    .Text(currentValue as string ?? "")
+                    .OnTextChanged(value => _pendingSettings[def.Key] = value));
     }
 
     private void OnConfigSaveClick()
