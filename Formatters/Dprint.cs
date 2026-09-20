@@ -47,7 +47,8 @@ internal static class Dprint
         foreach (var v in values.Modelled())
         {
             var target = GlobalKeys.Contains(v.Key) ? root : plugin;
-            target[v.Key] = Emit.Json(v);
+            // Options that are "true, false, or leave alone" are choices in the UI
+            target[v.Key] = v.Value is "true" or "false" ? JsonValue.Create(v.Value is "true") : Emit.Json(v);
         }
 
         // Free text: the inside of the plugin's JSON object, e.g.  "arrowFunction.useParentheses": "force"

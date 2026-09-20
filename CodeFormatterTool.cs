@@ -1,4 +1,4 @@
-using CodeFormatter.Formatters;
+﻿using CodeFormatter.Formatters;
 using CodeFormatter.Models;
 using CodeFormatter.Resources;
 using CodeFormatter.Services;
@@ -270,107 +270,86 @@ internal sealed class CodeFormatterTool : IGuiTool
     {
         var controls = new List<IUIElement>();
 
-        foreach (var def in definitions)
+        // One collapsible group per SettingDefinition.Group, in the order the groups first appear
+        foreach (var group in definitions.GroupBy(def => def.Group))
         {
-            var currentValue = _pendingSettings.TryGetValue(def.Key, out var val)
-                ? val
-                : def.DefaultValue;
+            var settings = group.Select(BuildSetting).ToArray();
 
-            IUIElement control = def.Type switch
-            {
-                SettingType.Boolean => BuildBooleanSetting(def, currentValue),
-                SettingType.Integer => BuildIntegerSetting(def, currentValue),
-                SettingType.Choice => BuildChoiceSetting(def, currentValue),
-                SettingType.Text => BuildTextSetting(def, currentValue),
-                _ => Label().Text($"Unknown setting type: {def.Key}")
-            };
-
-            controls.Add(control);
+            if (group.Key is null)
+                controls.AddRange(settings);
+            else
+                controls.Add(SettingGroup($"setting-group-{ToId(group.Key)}").Title(group.Key).WithSettings(settings));
         }
 
         return controls.ToArray();
     }
 
+    private IUISetting BuildSetting(SettingDefinition def)
+    {
+        var currentValue = _pendingSettings.TryGetValue(def.Key, out var val)
+            ? val
+            : def.DefaultValue;
+
+        var setting = Setting($"setting-row-{ToId(def.Key)}").Title(def.DisplayName);
+        if (def.Description != null)
+            setting.Description(def.Description);
+
+        return setting.InteractiveElement(def.Type switch
+        {
+            SettingType.Boolean => BuildBooleanSetting(def, currentValue),
+            SettingType.Integer => BuildIntegerSetting(def, currentValue),
+            SettingType.Choice => BuildChoiceSetting(def, currentValue),
+            SettingType.Text => BuildTextSetting(def, currentValue),
+            _ => Label().Text($"Unknown setting type: {def.Key}")
+        });
+    }
+
+    // Setting keys are the formatters' own ("format.quote-style", "-i"); element ids are plainer
+    private static string ToId(string key) =>
+        new(key.Select(c => char.IsLetterOrDigit(c) ? c : '-').ToArray());
+
     private IUIElement BuildBooleanSetting(SettingDefinition def, object currentValue)
     {
-        var isOn = currentValue is bool b && b;
-        var sw = Switch($"setting-{def.Key}")
+        var sw = Switch($"setting-{ToId(def.Key)}")
             .OnText("Yes")
             .OffText("No")
             .OnToggle(value => _pendingSettings[def.Key] = value);
 
-        if (isOn)
-            sw.On();
-        else
-            sw.Off();
-
-        return Stack()
-            .Horizontal()
-            .SmallSpacing()
-            .AlignVertically(UIVerticalAlignment.Center)
-            .WithChildren(
-                Label().Text(def.DisplayName),
-                sw,
-                def.Description != null
-                    ? Label().Style(UILabelStyle.Caption).Text($"({def.Description})")
-                    : Label().Text(""));
+        return currentValue is true ? sw.On() : sw.Off();
     }
 
     private IUIElement BuildIntegerSetting(SettingDefinition def, object currentValue)
     {
-        var intValue = currentValue switch
-        {
-            int i => i,
-            long l => (int)l,
-            double d => (int)d,
-            _ => (int)def.DefaultValue
-        };
-
-        return Stack()
-            .Vertical()
-            .SmallSpacing()
-            .WithChildren(
-                Label().Text(def.DisplayName + (def.Description != null ? $" ({def.Description})" : "")),
-                NumberInput($"setting-{def.Key}")
-                    .Minimum(def.Min ?? 1)
-                    .Maximum(def.Max ?? 1000)
-                    .Value(intValue)
-                    .OnValueChanged(value => _pendingSettings[def.Key] = (int)value));
+        return NumberInput($"setting-{ToId(def.Key)}")
+            .HideCommandBar()
+            .Minimum(def.Min ?? 1)
+            .Maximum(def.Max ?? 1000)
+            .Value(currentValue as int? ?? (int)def.DefaultValue)
+            .OnValueChanged(value => _pendingSettings[def.Key] = (int)value);
     }
 
     private IUIElement BuildChoiceSetting(SettingDefinition def, object currentValue)
     {
         var choices = def.Choices ?? [];
         var items = choices.Select(c => Item(c, c)).ToArray();
-        var currentStr = currentValue?.ToString() ?? def.DefaultValue.ToString();
-        var selectedIndex = Array.IndexOf(choices, currentStr);
-        if (selectedIndex < 0) selectedIndex = 0;
+        var selectedIndex = Math.Max(0, Array.IndexOf(choices, currentValue as string));
 
-        return Stack()
-            .Vertical()
-            .SmallSpacing()
-            .WithChildren(
-                Label().Text(def.DisplayName + (def.Description != null ? $" ({def.Description})" : "")),
-                SelectDropDownList($"setting-{def.Key}")
-                    .WithItems(items)
-                    .Select(selectedIndex)
-                    .OnItemSelected(item =>
-                    {
-                        if (item?.Value is string s)
-                            _pendingSettings[def.Key] = s;
-                    }));
+        return SelectDropDownList($"setting-{ToId(def.Key)}")
+            .WithItems(items)
+            .Select(selectedIndex)
+            .OnItemSelected(item =>
+            {
+                if (item?.Value is string s)
+                    _pendingSettings[def.Key] = s;
+            });
     }
 
     private IUIElement BuildTextSetting(SettingDefinition def, object currentValue)
     {
-        return Stack()
-            .Vertical()
-            .SmallSpacing()
-            .WithChildren(
-                Label().Text(def.DisplayName + (def.Description != null ? $" ({def.Description})" : "")),
-                SingleLineTextInput($"setting-{def.Key}")
-                    .Text(currentValue as string ?? "")
-                    .OnTextChanged(value => _pendingSettings[def.Key] = value));
+        return SingleLineTextInput($"setting-{ToId(def.Key)}")
+            .HideCommandBar()
+            .Text(currentValue as string ?? "")
+            .OnTextChanged(value => _pendingSettings[def.Key] = value);
     }
 
     private void OnConfigSaveClick()

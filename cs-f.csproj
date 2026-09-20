@@ -25,6 +25,10 @@
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
   </PropertyGroup>
 
+  <ItemGroup>
+    <InternalsVisibleTo Include="CodeFormatter.Tests" />
+  </ItemGroup>
+
   <!-- Exclude test project files -->
   <ItemGroup>
     <Compile Remove="CodeFormatter.Tests\**" />

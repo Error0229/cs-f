@@ -12,21 +12,21 @@ public static class FormatterSpecs
     {
         [Language.Python] = Ruff.Spec(),
 
-        [Language.JavaScript] = Dprint.Spec("file.js", "typescript", [], Dprint.TypeScript),
-        [Language.TypeScript] = Dprint.Spec("file.ts", "typescript", [], Dprint.TypeScript),
-        [Language.Json] = Dprint.Spec("file.json", "json", [], Dprint.Json),
-        [Language.Markdown] = Dprint.Spec("file.md", "markdown", [], Dprint.Markdown),
-        [Language.Toml] = Dprint.Spec("file.toml", "toml", [], Dprint.Toml),
-        [Language.Css] = Dprint.Spec("file.css", "malva", [], Dprint.Malva),
-        [Language.Scss] = Dprint.Spec("file.scss", "malva", [], Dprint.Malva),
-        [Language.Less] = Dprint.Spec("file.less", "malva", [], Dprint.Malva),
-        [Language.Html] = Markup("file.html"),
-        [Language.Vue] = Markup("file.vue"),
-        [Language.Svelte] = Markup("file.svelte"),
-        [Language.Astro] = Markup("file.astro"),
-        [Language.Yaml] = Dprint.Spec("file.yaml", "yaml", [], Dprint.Yaml),
-        [Language.GraphQL] = Dprint.Spec("file.graphql", "graphql", [], Dprint.GraphQL),
-        [Language.Dockerfile] = Dprint.Spec("Dockerfile", "dockerfile", [], Dprint.Dockerfile),
+        [Language.JavaScript] = Dprint.Spec("file.js", "typescript", DprintSettings.TypeScript, Dprint.TypeScript),
+        [Language.TypeScript] = Dprint.Spec("file.ts", "typescript", DprintSettings.TypeScript, Dprint.TypeScript),
+        [Language.Json] = Dprint.Spec("file.json", "json", DprintSettings.Json, Dprint.Json),
+        [Language.Markdown] = Dprint.Spec("file.md", "markdown", DprintSettings.Markdown, Dprint.Markdown),
+        [Language.Toml] = Dprint.Spec("file.toml", "toml", DprintSettings.Toml, Dprint.Toml),
+        [Language.Css] = Dprint.Spec("file.css", "malva", DprintSettings.Css, Dprint.Malva),
+        [Language.Scss] = Dprint.Spec("file.scss", "malva", DprintSettings.Css, Dprint.Malva),
+        [Language.Less] = Dprint.Spec("file.less", "malva", DprintSettings.Css, Dprint.Malva),
+        [Language.Html] = Markup("file.html", DprintSettings.Html),
+        [Language.Vue] = Markup("file.vue", DprintSettings.Vue),
+        [Language.Svelte] = Markup("file.svelte", DprintSettings.Svelte),
+        [Language.Astro] = Markup("file.astro", DprintSettings.Astro),
+        [Language.Yaml] = Dprint.Spec("file.yaml", "yaml", DprintSettings.Yaml, Dprint.Yaml),
+        [Language.GraphQL] = Dprint.Spec("file.graphql", "graphql", DprintSettings.GraphQL, Dprint.GraphQL),
+        [Language.Dockerfile] = Dprint.Spec("Dockerfile", "dockerfile", DprintSettings.Dockerfile, Dprint.Dockerfile),
 
         [Language.Java] = GoogleJavaFormat.Spec(),
         [Language.Sql] = Sqruff.Spec(),
@@ -50,8 +50,8 @@ public static class FormatterSpecs
 
     // markup_fmt hands <script>, <style> and JSON blocks to whichever loaded plugin claims them.
     // With only markup_fmt loaded, embedded code comes back untouched and nothing says so.
-    private static FormatterSpec Markup(string stdinName) =>
-        Dprint.Spec(stdinName, "markup", [], Dprint.MarkupFmt, Dprint.TypeScript, Dprint.Malva, Dprint.Json);
+    private static FormatterSpec Markup(string stdinName, SettingDefinition[] settings) =>
+        Dprint.Spec(stdinName, "markup", settings, Dprint.MarkupFmt, Dprint.TypeScript, Dprint.Malva, Dprint.Json);
 
     public static FormatterSpec? For(Language language) => _specs.GetValueOrDefault(language);
 
@@ -126,6 +126,14 @@ public static class FormatterSpecs
         Language.Python => key switch
         {
             "indent-style" or "quote-style" or "line-ending" => $"format.{key}",
+            _ => key
+        },
+        // The CSS and HTML definitions used Prettier's names, which the dprint plugins reject
+        Language.Css or Language.Scss or Language.Less or
+        Language.Html or Language.Vue or Language.Svelte or Language.Astro => key switch
+        {
+            "printWidth" => "lineWidth",
+            "tabWidth" => "indentWidth",
             _ => key
         },
         Language.C or Language.Cpp => key == "style" ? "BasedOnStyle" : key,
