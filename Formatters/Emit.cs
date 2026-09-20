@@ -81,6 +81,12 @@ internal static class Emit
         if (started) yield return current.ToString();
     }
 
+    /// <summary>
+    /// A list typed into a text field: names separated by commas, semicolons or spaces.
+    /// </summary>
+    public static string[] Names(string? text) =>
+        (text ?? "").Split(new[] { ',', ';', ' ' }, StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+
     public static IEnumerable<string> Lines(string? text) =>
         (text ?? "").Split('\n').Select(l => l.Trim()).Where(l => l.Length > 0);
 

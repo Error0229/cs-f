@@ -85,6 +85,52 @@ public class SettingsTests
     [InlineData(Language.Yaml, "bracketSpacing", true, "a: [1, 2]", "[ 1, 2 ]")]
     [InlineData(Language.GraphQL, "indentWidth", 4, "query {\n  a\n}", "\n    a")]
     [InlineData(Language.GraphQL, "braceSpacing", false, "query { a(x: {y: 1}) }", "{y: 1}")]
+    // C# (csharpier)
+    [InlineData(Language.CSharpFormatted, "indentSize", 2, "class A{void M(){}}", "\n  void M")]
+    [InlineData(Language.CSharpFormatted, "useTabs", true, "class A{void M(){}}", "\n\tvoid M")]
+    [InlineData(Language.CSharpFormatted, "printWidth", 20, "class A{void M(){Foo(1111111,2222222,3333333);}}", "Foo(\n")]
+    [InlineData(Language.CSharpFormatted, "endOfLine", "crlf", "class A{}\n", "\r\n")]
+    // Lua (stylua)
+    [InlineData(Language.Lua, "indent_type", "Spaces", "if x then\nreturn 1\nend", "\n    return")]
+    [InlineData(Language.Lua, "quote_style", "ForceSingle", "print(\"a\")", "'a'")]
+    [InlineData(Language.Lua, "call_parentheses", "None", "print(\"a\")", "print \"a\"")]
+    [InlineData(Language.Lua, "collapse_simple_statement", "Always", "if x then\nreturn\nend", "if x then return end")]
+    [InlineData(Language.Lua, "block_newline_gaps", "Preserve", "if x then\n\nf()\n\nend", "then\n\n")]
+    [InlineData(Language.Lua, "sort_requires.enabled", true, "local b = require(\"b\")\nlocal a = require(\"a\")", "local a = require(\"a\")\nlocal b")]
+    [InlineData(Language.Lua, "line_endings", "Windows", "local a = 1\nlocal b = 2\n", "\r\n")]
+    // R (air)
+    [InlineData(Language.R, "indent-width", 4, "f <- function(a) {\nx\n}", "\n    x")]
+    [InlineData(Language.R, "indent-style", "tab", "f <- function(a) {\nx\n}", "\n\tx")]
+    [InlineData(Language.R, "line-width", 20, "x <- c(1111111, 2222222, 3333333)", "c(\n")]
+    [InlineData(Language.R, "skip", "c, list", "x <- c(1,2)", "c(1,2)")]
+    // Ruby (rufo)
+    [InlineData(Language.Ruby, "quote_style", "single", "x = \"a\"", "'a'")]
+    [InlineData(Language.Ruby, "trailing_commas", false, "x = [\n1,\n2,\n]", "2\r\n]")]
+    // SQL (sqruff)
+    [InlineData(Language.Sql, "sqruff:rules:capitalisation.keywords/capitalisation_policy", "upper", "select a from b", "SELECT a FROM b")]
+    [InlineData(Language.Sql, "sqruff:rules:capitalisation.identifiers/extended_capitalisation_policy", "upper", "select a from Foo", "FOO")]
+    [InlineData(Language.Sql, "sqruff:indentation/tab_space_size", 2, "select aaaaaaaaaaaaaaaaaaaaaaaaaaaaaa, bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb, cccccccccccccccccccccccccccccc from t", "\n  aaaa")]
+    [InlineData(Language.Sql, "sqruff:layout:type:comma/line_position", "leading", "select aaaaaaaaaaaaaaaaaaaaaaaaaaaaaa, bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb, cccccccccccccccccccccccccccccc from t", ", bbbb")]
+    [InlineData(Language.Sql, "sqruff/max_line_length", 200, "select aaaaaaaaaaaaaaaaaaaaaaaaaaaaaa, bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb, cccccccccccccccccccccccccccccc from t", "cccc from t")]
+    [InlineData(Language.Sql, "_extra", "[sqruff:rules:capitalisation.keywords]; capitalisation_policy = upper", "select a from b", "SELECT a FROM b")]
+    // Kotlin (ktlint)
+    [InlineData(Language.Kotlin, "indent_size", 2, "fun main() {\nprintln(1)\n}", "\n  println")]
+    [InlineData(Language.Kotlin, "ktlint_function_signature_rule_force_multiline_when_parameter_count_greater_or_equal_than", "unset", "fun foo(a: Int, b: String): String = a.toString()", "foo(a: Int, b: String)")]
+    [InlineData(Language.Kotlin, "_extra", "indent_size = 8", "fun main() {\nprintln(1)\n}", "\n        println")]
+    // MATLAB (mh_style)
+    [InlineData(Language.Matlab, "tab_width", 2, "function r=f(a)\nif a>1\nr=1;\nend\nend", "\n    r = 1;")]
+    [InlineData(Language.Matlab, "newline_style", "lf", "function r=f(a)\nr=1;\nend", "r = 1;\n")]
+    [InlineData(Language.Matlab, "suppress_rule", "operator_whitespace", "function r=f(a,b)\nr = a+b;\nend", "a+b")]
+    // PHP (php-cs-fixer)
+    [InlineData(Language.Php, "_indent", "2 spaces", "<?php\nclass X{function m(){return 1;}}", "\n    return 1;")]
+    [InlineData(Language.Php, "_lineEnding", "crlf", "<?php\n$a = 1;\n$b = 2;\n", "\r\n")]
+    [InlineData(Language.Php, "array_syntax", "long", "<?php\n$x = [1, 2];", "array(1, 2)")]
+    [InlineData(Language.Php, "concat_space", "one", "<?php\n$a = $b.$c;", "$b . $c")]
+    [InlineData(Language.Php, "single_quote", "on", "<?php\n$a = \"x\";", "'x'")]
+    [InlineData(Language.Php, "yoda_style", "yoda", "<?php\nif ($a === null) {\n}", "null === $a")]
+    [InlineData(Language.Php, "declare_strict_types", "on", "<?php\n$a = 1;", "declare(strict_types=1);")]
+    [InlineData(Language.Php, "_ruleset", "@Symfony", "<?php\n$a = $b.$c;\nreturn $a;", "$b.$c;\n\nreturn")]
+    [InlineData(Language.Php, "_extra", "\"array_syntax\": {\"syntax\": \"long\"}", "<?php\n$x = [1, 2];", "array(1, 2)")]
     // Java (google-java-format)
     [InlineData(Language.Java, "--aosp", true, "class A{void m(){int x=1;}}", "\n    void m()")]
     [InlineData(Language.Java, "--skip-removing-unused-imports", true, "import java.util.List;\nclass A{}", "import java.util.List;")]

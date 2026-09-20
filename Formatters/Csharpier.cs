@@ -22,6 +22,21 @@ internal static class Csharpier
             foreach (var v in values)
                 root[v.Key] = Emit.Json(v);
             return root.ToJsonString(new JsonSerializerOptions { WriteIndented = true });
-        }
+        },
+        Settings = Settings
     };
+
+    // CSharpier is opinionated: these four are all there is for C#
+    private static readonly SettingDefinition[] Settings =
+    [
+        new("printWidth", "Print Width", SettingType.Integer, 100, Min: 20, Max: 1000,
+            Description: "Line width the printer tries to stay under"),
+        new("indentSize", "Indent Size", SettingType.Integer, 4, Min: 1, Max: 16,
+            Description: "Spaces per indent level"),
+        new("useTabs", "Use Tabs", SettingType.Boolean, false,
+            Description: "Indent with tabs instead of spaces"),
+        new("endOfLine", "Line Ending", SettingType.Choice, "auto",
+            Choices: ["auto", "lf", "crlf"],
+            Description: "auto keeps the line endings of the input")
+    ];
 }
