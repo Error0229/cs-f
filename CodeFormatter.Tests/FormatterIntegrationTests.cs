@@ -680,7 +680,7 @@ public class FormatterIntegrationTests
 
         Assert.True(result.Success, $"Format failed: {result.Output}");
         Assert.Contains("@implementation Test", result.Output);
-        Assert.Contains("-(void)hello", result.Output);
+        Assert.Contains("- (void)hello {", result.Output);
     }
 
     // ========== Kotlin (ktlint) ==========

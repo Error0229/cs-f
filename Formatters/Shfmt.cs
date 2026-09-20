@@ -36,6 +36,14 @@ internal static class Shfmt
         new("-kp", "Keep Padding", SettingType.Boolean, false,
             Description: "Keep column alignment padding"),
         new("-fn", "Function Next Line", SettingType.Boolean, false,
-            Description: "Place function opening brace on next line")
+            Description: "Place function opening brace on next line"),
+        // No zsh at 3.12
+        new("-ln", "Shell Dialect", SettingType.Choice, "auto",
+            Choices: ["auto", "bash", "posix", "mksh", "bats"],
+            Description: "auto goes by the shebang, else bash"),
+        new("-s", "Simplify", SettingType.Boolean, false,
+            Description: "Simplify the code, e.g. drop needless quotes inside [[ ]]. Changes tokens, not just layout"),
+        new("-mn", "Minify", SettingType.Boolean, false,
+            Description: "Make the script as small as possible; drops comments")
     ];
 }

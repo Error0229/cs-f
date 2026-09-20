@@ -85,7 +85,36 @@ public class SettingsTests
     [InlineData(Language.Yaml, "bracketSpacing", true, "a: [1, 2]", "[ 1, 2 ]")]
     [InlineData(Language.GraphQL, "indentWidth", 4, "query {\n  a\n}", "\n    a")]
     [InlineData(Language.GraphQL, "braceSpacing", false, "query { a(x: {y: 1}) }", "{y: 1}")]
+    // Java (google-java-format)
+    [InlineData(Language.Java, "--aosp", true, "class A{void m(){int x=1;}}", "\n    void m()")]
+    [InlineData(Language.Java, "--skip-removing-unused-imports", true, "import java.util.List;\nclass A{}", "import java.util.List;")]
+    // Delphi (pasfmt)
+    [InlineData(Language.Delphi, "tab_width", 4, "program P;\nbegin\nWriteLn('a');\nend.", "\n    WriteLn")]
+    [InlineData(Language.Delphi, "use_tabs", true, "program P;\nbegin\nWriteLn('a');\nend.", "\n\tWriteLn")]
+    [InlineData(Language.Delphi, "line_ending", "lf", "program P;\nbegin\nWriteLn('a');\nend.", ";\nbegin")]
+    [InlineData(Language.Delphi, "begin_style", "always_wrap", "program P;\nvar x: Integer;\nbegin\nif x > 1 then begin\nWriteLn('a');\nend;\nend.", "then\r\n  begin")]
+    // Perl (perltidy)
+    [InlineData(Language.Perl, "indent-columns", 2, "sub f {\nmy $a = 1;\n}", "\n  my $a")]
+    [InlineData(Language.Perl, "cuddled-else", true, "if ($a) {\nf();\n}\nelse {\ng();\n}", "} else {")]
+    [InlineData(Language.Perl, "opening-brace-on-new-line", true, "if ($a) {\nf();\n}", "if ($a)\n{")]
+    [InlineData(Language.Perl, "paren-tightness", 2, "f( $a, $b );", "f($a")]
+    [InlineData(Language.Perl, "preset", "gnu", "if ($a) {\nf();\n}", "if ($a)\n")]
+    [InlineData(Language.Perl, "output-line-ending", "win", "my $a = 1;\nmy $b = 2;\n", "\r\n")]
+    [InlineData(Language.Perl, "_extra", "-i=1 -nsfs", "for(my $i=0;$i<3;$i++){\nf();\n}", "\n f();")]
+    // Objective-C (uncrustify)
+    [InlineData(Language.ObjectiveC, "_braces", "Allman", "void f(){if(a){b();}}", "if (a)\n")]
+    [InlineData(Language.ObjectiveC, "indent_columns", 2, "void f(){if(a){b();}}", "\n  if (a)")]
+    [InlineData(Language.ObjectiveC, "indent_with_tabs", 2, "void f(){if(a){b();}}", "\n\tif (a)")]
+    [InlineData(Language.ObjectiveC, "sp_arith", "remove", "void f(){x=a + b;}", "a+b")]
+    [InlineData(Language.ObjectiveC, "sp_before_ptr_star", "remove", "void f(){NSString *s;}", "NSString*")]
+    [InlineData(Language.ObjectiveC, "mod_full_brace_if", "add", "void f(){if(a)b();}", "if (a) {")]
+    [InlineData(Language.ObjectiveC, "_extra", "sp_inside_fparen=force", "void f(){g(a);}", "g( a )")]
+    // Shell dialect and simplify
+    [InlineData(Language.Shell, "-s", true, "[[ \"$a\" == b ]]", "[[ $a == b ]]")]
     // Python (ruff)
+    [InlineData(Language.Python, "indent-width", 2, "if x:\n    y = 1", "\n  y = 1")]
+    [InlineData(Language.Python, "format.skip-magic-trailing-comma", true, "x = [1, 2,]", "x = [1, 2]")]
+    [InlineData(Language.Python, "format.docstring-code-format", true, "def f():\n    \"\"\"\n    >>> x=1\n    \"\"\"", ">>> x = 1")]
     [InlineData(Language.Python, "line-length", 20, "x = [1111111, 2222222, 3333333]", "[\n")]
     [InlineData(Language.Python, "format.quote-style", "single", "x = \"a\"", "x = 'a'")]
     [InlineData(Language.Python, "format.indent-style", "tab", "if x:\n    y = 1", "\ty = 1")]
@@ -145,6 +174,48 @@ public class SettingsTests
 
         Assert.False(result.Success);
         Assert.Contains(expected, result.Output);
+    }
+
+    [Fact]
+    public async Task ObjectiveC_DefaultsActuallyFormat()
+    {
+        // Uncrustify's built-in defaults only re-indent; the base profile is what formats
+        var input = "@implementation A\n-(void)m:(int)x{if(x>1){NSLog(@\"%d\",x);}else{x=x+1;}}\n@end\n";
+        var result = await TestFormatter.Create().FormatAsync(input, Language.ObjectiveC);
+
+        Assert.True(result.Success, $"Format failed: {result.Output}");
+        Assert.Equal(
+            "@implementation A\n" +
+            "- (void)m:(int)x {\n" +
+            "    if (x > 1) {\n" +
+            "        NSLog(@\"%d\", x);\n" +
+            "    } else {\n" +
+            "        x = x + 1;\n" +
+            "    }\n" +
+            "}\n" +
+            "@end\n",
+            result.Output.ReplaceLineEndings("\n"));
+    }
+
+    [Theory]
+    [InlineData("Arrows", "{-# LANGUAGE NoImplicitPrelude #-}\nmodule M where\nf = proc x -> do\n  returnA -< x\n")]
+    [InlineData("-XArrows, MagicHash", "module M where\nf = proc x -> do\n  returnA -< x\n")]
+    public async Task Haskell_ExtensionsLetOrmoluParse(string extensions, string input)
+    {
+        var without = await TestFormatter.Create().FormatAsync(input, Language.Haskell);
+        var with = await TestFormatter.With(Language.Haskell, ("ghc-opt", extensions)).FormatAsync(input, Language.Haskell);
+
+        Assert.False(without.Success, "proc notation should not parse without Arrows");
+        Assert.True(with.Success, $"Format failed: {with.Output}");
+    }
+
+    [Fact]
+    public async Task Perl_PreservesNonLatinText()
+    {
+        var result = await TestFormatter.Create().FormatAsync("my $s='فارسی 中文 日本語';", Language.Perl);
+
+        Assert.True(result.Success, $"Format failed: {result.Output}");
+        Assert.Contains("'فارسی 中文 日本語'", result.Output);
     }
 
     [Theory]
