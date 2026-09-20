@@ -200,6 +200,27 @@ public class FormatterIntegrationTests
         Assert.Contains("<span>", result.Output);
     }
 
+    [Fact]
+    public async Task Html_PreservesNonLatinText()
+    {
+        // https://github.com/Error0229/cs-f/issues/1
+        var input = "<div class=\"row\"><div class=\"col\"><p class=\"mb-2 text-center\">متن فارسی (Persian Text)</p></div></div>";
+        var result = await _formatterService.FormatAsync(input, Language.Html);
+
+        Assert.True(result.Success, $"Format failed: {result.Output}");
+        Assert.Contains("متن فارسی (Persian Text)", result.Output);
+    }
+
+    [Fact]
+    public async Task Python_PreservesNonLatinText()
+    {
+        var input = "s='فارسی 中文 日本語 émoji 🎉'";
+        var result = await _formatterService.FormatAsync(input, Language.Python);
+
+        Assert.True(result.Success, $"Format failed: {result.Output}");
+        Assert.Equal("s = \"فارسی 中文 日本語 émoji 🎉\"\n", result.Output);
+    }
+
     // ========== YAML (dprint pretty_yaml plugin) ==========
 
     [Fact]

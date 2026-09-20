@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using System.Text;
 
 namespace CodeFormatter.Services;
 
@@ -6,6 +7,10 @@ public record ProcessResult(bool Success, string Output, string Error);
 
 public class ProcessRunner
 {
+    // Formatters speak UTF-8. The default is the system code page, which mangles non-Latin text.
+    // No BOM: a preamble on stdin would be fed to the formatter as source text.
+    private static readonly Encoding Utf8NoBom = new UTF8Encoding(encoderShouldEmitUTF8Identifier: false);
+
     private readonly TimeSpan _timeout = TimeSpan.FromSeconds(30); // Increased for large files
     private string? _npmGlobalRoot;
 
@@ -18,6 +23,9 @@ public class ProcessRunner
             RedirectStandardInput = true,
             RedirectStandardOutput = true,
             RedirectStandardError = true,
+            StandardInputEncoding = Utf8NoBom,
+            StandardOutputEncoding = Utf8NoBom,
+            StandardErrorEncoding = Utf8NoBom,
             UseShellExecute = false,
             CreateNoWindow = true
         };
@@ -88,6 +96,8 @@ public class ProcessRunner
                 FileName = command,
                 RedirectStandardOutput = true,
                 RedirectStandardError = true,
+                StandardOutputEncoding = Utf8NoBom,
+                StandardErrorEncoding = Utf8NoBom,
                 UseShellExecute = false,
                 CreateNoWindow = true
             };
