@@ -1,4 +1,4 @@
-using CodeFormatter.Formatters;
+﻿using CodeFormatter.Formatters;
 using CodeFormatter.Models;
 using CodeFormatter.Resources;
 using CodeFormatter.Services;
@@ -73,7 +73,8 @@ internal sealed class CodeFormatterTool : IGuiTool
                                         Label().Text("Language"),
                                         SelectDropDownList("language-selector")
                                             .WithItems(GetLanguageItems())
-                                            .Select((int)_selectedLanguage)
+                                            // The list follows the registry's order, not the enum's
+                                            .Select(Math.Max(0, LanguageRegistry.All.ToList().FindIndex(info => info.Language == _selectedLanguage)))
                                             .OnItemSelected(OnLanguageSelectedAsync),
                                         Button("swap-btn")
                                             .Text(CodeFormatterStrings.SwapButton)
@@ -214,12 +215,12 @@ internal sealed class CodeFormatterTool : IGuiTool
         _inputEditor.Text(content);
     }
 
-    private string[] GetFileExtensions() =>
+    private static string[] GetFileExtensions() =>
     [
-        "py", "js", "ts", "tsx", "jsx", "json", "md", "toml",
-        "css", "scss", "less", "html", "vue", "svelte", "astro",
-        "yaml", "yml", "graphql", "gql", "java", "sql",
-        "txt", "xml", "config"
+        .. LanguageRegistry.All
+            .Select(info => info.FileExtension.Split('.')[^1].ToLowerInvariant())
+            .Where(extension => extension != "dockerfile"),
+        "tsx", "jsx", "yml", "gql", "h", "hpp", "cc", "kts", "sty", "cls", "txt"
     ];
 
     #region Config Dialog

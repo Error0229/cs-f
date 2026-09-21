@@ -20,8 +20,8 @@ public class FormatterContractTests
         Assert.True(result.Success, $"Format failed: {result.Output}");
     }
 
-    // Formatters that reject nothing (asmfmt, pasfmt, uncrustify, clang-format, the CSS/HTML/Markdown
-    // plugins) are absent on purpose.
+    // Formatters that reject nothing (asmfmt, pasfmt, uncrustify, clang-format, and the CSS, HTML,
+    // Markdown, LaTeX, BibTeX and Julia plugins) are absent on purpose.
     [Theory]
     [InlineData(Language.Python, "def (:")]
     [InlineData(Language.JavaScript, "const = ;")]
@@ -43,6 +43,8 @@ public class FormatterContractTests
     [InlineData(Language.Php, "<?php function {")]
     [InlineData(Language.Matlab, "function = (")]
     [InlineData(Language.Ruby, "def (")]
+    [InlineData(Language.Typst, "#let f(")]
+    [InlineData(Language.CMake, "set(Y 1")]
     public async Task BrokenInput_IsReportedAsFailure(Language language, string input)
     {
         var result = await TestFormatter.Create().FormatAsync(input, language);

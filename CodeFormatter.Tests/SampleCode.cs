@@ -44,6 +44,18 @@ internal static class SampleCode
         [Language.Perl] = "use strict;\nsub f { my ($a,$b)=@_; if($a>1){print \"a\";}else{print 'b';} for(my $i=0;$i<3;$i++){print $i;} my %h=(a=>1,b=>2); return $a+$b; }\n",
         [Language.Php] = "<?php\nnamespace N;\nuse B\\C;\nuse A\\B;\nclass X{public function m($a,$b){$x=array(1,2,3);if($a==1){return \"s\".$b;}else{return (int)$a+1;}}}\n",
         [Language.Matlab] = "function r=f(a,b)\nx=[1,2,3];\nif a>1\nr=a+b;\nelse\nr=x(1);\nend\nend\n",
+        [Language.Jinja] = "<ul>\n{% for i in items %}\n<li   class=\"a\" id=\'b\'>{{ i.name }}</li>\n{% endfor %}\n</ul>\n<script>const x=1</script>\n<style>a{color:red}</style>\n",
+        [Language.Twig] = "<ul>\n{% for i in items %}\n<li   class=\"a\" id=\'b\'>{{ i.name }}</li>\n{% endfor %}\n</ul>\n<script>const x=1</script>\n<style>a{color:red}</style>\n",
+        [Language.Nunjucks] = "<ul>\n{% for i in items %}\n<li   class=\"a\" id=\'b\'>{{ i.name }}</li>\n{% endfor %}\n</ul>\n<script>const x=1</script>\n<style>a{color:red}</style>\n",
+        [Language.Vento] = "<ul>\n{{ for i of items }}\n<li   class=\"a\" id='b'>{{ i.name }}</li>\n{{ /for }}\n</ul>\n<script>const x=1</script>\n",
+        [Language.Handlebars] = "<ul>\n{{#items}}\n<li   class=\"a\" id=\'b\'>{{name}}</li>\n{{/items}}\n</ul>\n<script>const x=1</script>\n<style>a{color:red}</style>\n",
+        [Language.Mustache] = "<ul>\n{{#items}}\n<li   class=\"a\" id=\'b\'>{{name}}</li>\n{{/items}}\n</ul>\n<script>const x=1</script>\n<style>a{color:red}</style>\n",
+        [Language.Angular] = "<div   *ngIf=\"x\" class=\"a\" id='b'>\n@if (a) {\n<p>{{y}}</p>\n} @else {\n<br>\n}\n</div>\n",
+        [Language.Latex] = "\\documentclass{article}\n\\begin{document}\nSome text that goes on for a while. Another sentence follows here, so wrapping has work to do.\n\\begin{itemize}\n\\item first item\nwith a continuation\n\\end{itemize}\n\\[ a = b + c \\]\n\\end{document}\n",
+        [Language.Bibtex] = "@ARTICLE{key1,\n  Title = \"A Title\",\n  author={Smith, J.},\n  YEAR = {2020},\n  month = \"January\",\n  journal = {{Journal}},\n}\n% a comment\n@book{abook, title={B}, year=1999}\n",
+        [Language.Typst] = "#import \"a.typ\": c, b\n= Title\nSome   text that goes on. Another sentence.\n\n\n\n#let f(x)=x+1\n#f(  1 )\n",
+        [Language.Julia] = "function f(x,y)\nif x>1\nreturn x+y\nend\n[1,2,3]\nend\n",
+        [Language.CMake] = "cmake_minimum_required(VERSION 3.10)\nPROJECT(demo)\nadd_executable(app   main.c util.c other.c)\nif(X)\ntarget_link_libraries(app public m)\nendif()\n\n\n\n",
         [Language.Ruby] = "def f a, b\n  x = [1,\n   2]\n  h = {:a=>1, 'b'=>\"c\"}\n  case a\n  when 1 then 2\n  when 10 then 20\n  end\n  foo.bar\n     .baz\nend\n",
     };
 }

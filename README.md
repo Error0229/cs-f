@@ -1,13 +1,13 @@
 # Code Formatter for DevToys
 
-A code formatting extension for [DevToys 2.0](https://devtoys.app/) that supports 34 programming languages with automatic live formatting.
+A code formatting extension for [DevToys 2.0](https://devtoys.app/) that supports 46 languages with automatic live formatting.
 
 ## Features
 
 - **Live Auto-Format**: Code is automatically formatted as you type (500ms debounce)
-- **34 Languages**: Python, JavaScript, TypeScript, JSON, Markdown, TOML, CSS, SCSS, Less, HTML, Vue, Svelte, Astro, YAML, GraphQL, Dockerfile, Java, SQL, C, C++, C#, Go, Go Assembly, Shell/Bash, Lua, R, Delphi/Pascal, Kotlin, Perl, PHP, MATLAB, Ruby, Objective-C, Haskell
-- **No External Dependencies**: All formatters are bundled as native binaries
-- **Real Formatter Options**: Each language exposes the options of its formatter, 450 in all, plus a free-text field for the rest
+- **46 Languages**: Python, JavaScript, TypeScript, JSON, Markdown, TOML, CSS, SCSS, Less, HTML, Vue, Svelte, Astro, Angular templates, Jinja, Twig, Nunjucks, Vento, Handlebars, Mustache, YAML, GraphQL, Dockerfile, Java, SQL, C, C++, C#, Go, Go Assembly, Shell/Bash, Lua, R, Delphi/Pascal, Kotlin, Perl, PHP, MATLAB, Ruby, Objective-C, Haskell, Julia, CMake, LaTeX, BibTeX, Typst
+- **No External Dependencies, No Network**: All formatters are bundled, as native binaries or as dprint plugins that ship with the extension
+- **Real Formatter Options**: Each language exposes the options of its formatter, 571 in all, plus a free-text field for the rest
 - **Swap & Clear**: Quickly swap input/output or clear both editors
 - **File Loading**: Load code directly from files
 
@@ -28,6 +28,7 @@ A code formatting extension for [DevToys 2.0](https://devtoys.app/) that support
 | Vue | [dprint](https://dprint.dev/) | Bundled binary |
 | Svelte | [dprint](https://dprint.dev/) | Bundled binary |
 | Astro | [dprint](https://dprint.dev/) | Bundled binary |
+| Angular templates, Jinja, Twig, Nunjucks, Vento, Handlebars, Mustache | [dprint](https://dprint.dev/) + [markup_fmt](https://github.com/g-plane/markup_fmt) | Same plugin as HTML |
 | YAML | [dprint](https://dprint.dev/) | Bundled binary |
 | GraphQL | [dprint](https://dprint.dev/) | Bundled binary |
 | Dockerfile | [dprint](https://dprint.dev/) | Bundled binary |
@@ -44,11 +45,16 @@ A code formatting extension for [DevToys 2.0](https://devtoys.app/) that support
 | Delphi/Pascal | [pasfmt](https://github.com/AntumDeluge/pasfmt) | Bundled binary |
 | Kotlin | [ktlint](https://github.com/pinterest/ktlint) | Bundled binary |
 | Perl | [Perl::Tidy](https://github.com/perltidy/perltidy) | Bundled binary |
-| PHP | [PHP-CS-Fixer](https://github.com/PHP-CS-Fixer/PHP-CS-Fixer) | Bundled binary |
+| PHP | [dprint](https://dprint.dev/) + [Mago](https://github.com/carthage-software/mago) | Bundled plugin |
 | MATLAB | [MH Style](https://github.com/florianschanda/miss_hit) | Bundled binary |
 | Ruby | [Rufo](https://github.com/ruby-formatter/rufo) | Bundled binary |
 | Objective-C | [Uncrustify](https://github.com/uncrustify/uncrustify) | Bundled binary |
 | Haskell | [Ormolu](https://github.com/tweag/ormolu) | Bundled binary |
+| Julia | [dprint](https://dprint.dev/) + [fatou](https://github.com/jolars/fatou) | Bundled plugin |
+| CMake | [dprint](https://dprint.dev/) + [cmakefmt](https://github.com/sargunv/dprint-cmakefmt) | Bundled plugin |
+| LaTeX | [dprint](https://dprint.dev/) + [badness](https://github.com/jolars/badness) | Bundled plugin |
+| BibTeX | [dprint](https://dprint.dev/) + [bibtex-tidy](https://github.com/apcamargo/dprint-plugin-bibtex-tidy) | Bundled plugin |
+| Typst | [dprint](https://dprint.dev/) + [typstyle](https://github.com/apcamargo/dprint-plugin-typstyle) | Bundled plugin |
 
 ## Requirements
 
@@ -103,6 +109,7 @@ spread over tabs, a handful per tab.
 | CSS, SCSS, Less | dprint malva | 12 | JSON properties |
 | HTML | dprint markup_fmt | 12 | JSON properties |
 | Vue / Svelte / Astro | dprint markup_fmt | 18 / 16 / 14 | JSON properties |
+| Angular, Jinja, Twig, Nunjucks, Vento, Handlebars, Mustache | dprint markup_fmt | 12, as HTML | JSON properties |
 | YAML | dprint pretty_yaml | 9 | JSON properties |
 | GraphQL | dprint pretty_graphql | 10 | JSON properties |
 | C, C++ | clang-format | 36 | `Key: Value, ...` as in `.clang-format` |
@@ -117,14 +124,19 @@ spread over tabs, a handful per tab.
 | R | air | 9 | |
 | Delphi/Pascal | pasfmt | 7 (all it has) | |
 | Perl | perltidy | 31 + the `pbp` / `gnu` presets | command-line flags |
-| PHP | PHP-CS-Fixer | rule set, indent, line ending, 22 rules | rules as JSON properties |
+| PHP | dprint mago | 30 | JSON properties |
 | MATLAB | MISS_HIT | 7 | |
 | Ruby | Rufo | 5 (all it has) | |
 | Haskell | Ormolu | language extensions, operator fixities | |
 | Go Assembly | asmfmt | none: it has no options | |
+| Julia | dprint fatou | 3 (all it has) | |
+| CMake | dprint cmakefmt | 15 | JSON properties |
+| LaTeX | dprint badness | 6 | JSON properties |
+| BibTeX | dprint bibtex-tidy | 21 | JSON properties |
+| Typst | dprint typstyle | 7 (all it has) | |
 
 **Extra options.** The formatters with hundreds of options (the TypeScript plugin has 186,
-perltidy 390, uncrustify 857, PHP-CS-Fixer 294 rules) get controls for the ones people actually
+perltidy 390, uncrustify 857, Mago 98) get controls for the ones people actually
 change, plus a text field that takes anything else in the tool's own syntax. For example, for
 TypeScript:
 
@@ -135,8 +147,8 @@ TypeScript:
 If the tool rejects what you typed, its error message is shown in the output panel.
 
 **Presets.** Where a tool has base styles (clang-format `BasedOnStyle`, ktlint code style,
-PHP-CS-Fixer rule sets, perltidy `-pbp`/`-gnu`), the defaults of the other options depend on the
-style. Those options show `style` (or `rule set`) until you set them.
+perltidy `-pbp`/`-gnu`), the defaults of the other options depend on the
+style. Those options show `style` until you set them.
 
 **Isolation.** Every format runs in a private temporary directory, and each tool is told to
 ignore configuration files around it. A `.clang-format`, `.editorconfig`, `dprint.json`,
@@ -235,9 +247,10 @@ cs-f/
 │   └── ProcessRunner.cs      # External process execution
 ├── Resources/
 │   └── CodeFormatterStrings.resx  # Localized strings
-├── Binaries/                 # Bundled formatter executables (19 binaries)
+├── Binaries/                 # Bundled formatter executables (18) and dprint plugins
 │   ├── ruff.exe              # Python
-│   ├── dprint.exe            # JS/TS/JSON/Markdown/TOML/CSS/HTML/Vue/Svelte/Astro/YAML/GraphQL/Dockerfile
+│   ├── dprint.exe            # 29 languages, through the plugins below
+│   ├── plugins/*.wasm        # dprint plugins, used from disk: no download, no network
 │   ├── clang-format.exe      # C/C++
 │   ├── gofumpt.exe           # Go
 │   ├── shfmt.exe             # Shell/Bash
@@ -249,7 +262,6 @@ cs-f/
 │   ├── pasfmt.exe            # Delphi/Pascal
 │   ├── ktlint.exe            # Kotlin
 │   ├── perltidy.exe          # Perl
-│   ├── php-cs-fixer.exe      # PHP
 │   ├── mh_style.exe          # MATLAB
 │   ├── rufo.exe              # Ruby
 │   ├── asmfmt.exe            # Go Assembly

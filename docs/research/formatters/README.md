@@ -13,6 +13,20 @@ What changed since the research was done, so the per-tool files are read correct
 - ktlint and php-cs-fixer are started through their launcher once; after that the payload the
   launcher left in `%TEMP%` is kept under `%LOCALAPPDATA%\CodeFormatter\cache` and run directly
   (ktlint 3.9 s -> about 1.2 s with a JVM class-data-sharing archive, php-cs-fixer 3.4 s -> 1.3 s).
+- dprint plugins are bundled as `.wasm` files and used from disk, so no language needs the network.
+  They were upgraded (typescript 0.96.1, json 0.24.0, markdown 0.24.0, toml 0.8.0, dockerfile 0.6.0,
+  malva 0.16.0, markup_fmt 0.27.3, pretty_yaml 0.6.0); `dprint.md` and `dprint-gplane-plugins.md`
+  describe the older pins, and the every-value test is what vouches for the current ones.
+- PHP moved from php-cs-fixer to the dprint plugin Mago 0.28.0 (0.35 s per format instead of 1.1 s,
+  17 MB launcher gone). `php-cs-fixer.md` is history. Mago is a different formatter: its own 98
+  options, no PSR-12 / Symfony rule sets, single quotes by default.
+- Twelve languages were added through dprint: Angular templates, Jinja, Twig, Nunjucks, Vento,
+  Handlebars and Mustache (markup_fmt, which already shipped), and LaTeX (badness 1.0.0), BibTeX
+  (bibtex-tidy 0.2.1), Typst (typstyle 0.1.1), Julia (fatou 0.7.2) and CMake (cmakefmt 0.1.0).
+  Considered and left out: XML/SVG through lax-markup 0.3.2, which returned messy XML unchanged;
+  the process plugins (prettier, roslyn, exec, swift), which download native executables at run
+  time; and the wasm builds of ruff, gofumpt and clang-format, which would only trade verified
+  options for 45 MB.
 - Found while implementing: sqruff 0.29.3 panics in rule LT06 on any function call under the
   `redshift` dialect (the rule is excluded for that dialect); uncrustify's `cmt_width` tops out at
   256; MISS_HIT's `tab_width` must be at least 2; StyLua's config file spells `LuaJIT` where its

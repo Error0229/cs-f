@@ -24,6 +24,13 @@ public static class FormatterSpecs
         [Language.Vue] = Markup("file.vue", DprintSettings.Vue),
         [Language.Svelte] = Markup("file.svelte", DprintSettings.Svelte),
         [Language.Astro] = Markup("file.astro", DprintSettings.Astro),
+        [Language.Angular] = Markup("file.component.html", DprintSettings.Html),
+        [Language.Jinja] = Markup("file.jinja", DprintSettings.Html),
+        [Language.Twig] = Markup("file.twig", DprintSettings.Html),
+        [Language.Nunjucks] = Markup("file.njk", DprintSettings.Html),
+        [Language.Vento] = Markup("file.vto", DprintSettings.Html),
+        [Language.Handlebars] = Markup("file.hbs", DprintSettings.Html),
+        [Language.Mustache] = Markup("file.mustache", DprintSettings.Html),
         [Language.Yaml] = Dprint.Spec("file.yaml", "yaml", DprintSettings.Yaml, Dprint.Yaml),
         [Language.GraphQL] = Dprint.Spec("file.graphql", "graphql", DprintSettings.GraphQL, Dprint.GraphQL),
         [Language.Dockerfile] = Dprint.Spec("Dockerfile", "dockerfile", DprintSettings.Dockerfile, Dprint.Dockerfile),
@@ -48,9 +55,15 @@ public static class FormatterSpecs
         [Language.Kotlin] = Ktlint.Spec(),
         [Language.Haskell] = Ormolu.Spec(),
         [Language.Perl] = Perltidy.Spec(),
-        [Language.Php] = PhpCsFixer.Spec(),
+        [Language.Php] = Dprint.Spec("file.php", "mago", DprintMoreSettings.Php, Dprint.Mago),
         [Language.Matlab] = MhStyle.Spec(),
         [Language.Ruby] = Rufo.Spec(),
+
+        [Language.Julia] = Dprint.Spec("file.jl", "fatou", DprintMoreSettings.Julia, Dprint.Fatou),
+        [Language.CMake] = Dprint.Spec("CMakeLists.txt", "cmakefmt", DprintMoreSettings.CMake, Dprint.CMakeFmt),
+        [Language.Latex] = Dprint.Spec("file.tex", "badness", DprintMoreSettings.Latex, Dprint.Badness),
+        [Language.Bibtex] = Dprint.Spec("file.bib", "bibtex-tidy", DprintMoreSettings.Bibtex, Dprint.BibtexTidy),
+        [Language.Typst] = Dprint.Spec("file.typ", "typstyle", DprintMoreSettings.Typst, Dprint.Typstyle),
     };
 
     // markup_fmt hands <script>, <style> and JSON blocks to whichever loaded plugin claims them.

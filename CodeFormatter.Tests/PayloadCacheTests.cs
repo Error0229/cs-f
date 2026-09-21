@@ -150,24 +150,4 @@ public class PayloadCacheTests : IDisposable
         Assert.True(healed.Success, $"Format failed: {healed.Output}");
         Assert.Equal(expected, healed.Output.ReplaceLineEndings("\n"));
     }
-
-    [Fact]
-    public async Task Php_FormatsTheSameDirectlyAsThroughTheLauncher()
-    {
-        var cache = new PayloadCache(CacheRoot);
-        var service = new FormatterService(new ConfigManager(TestFormatter.NewConfigPath()), new ProcessRunner(), cache);
-        const string input = "<?php\nclass X{function m($a){if($a==1){return array(1,2);}}}";
-
-        var throughLauncher = await service.FormatAsync(input, Language.Php);
-        var direct = await service.FormatAsync(input, Language.Php);
-
-        Assert.True(throughLauncher.Success, $"Format failed: {throughLauncher.Output}");
-        Assert.NotEmpty(Directory.GetFiles(CacheRoot, "php.exe", SearchOption.AllDirectories));
-        Assert.True(direct.Success, $"Format failed: {direct.Output}");
-        Assert.Equal(throughLauncher.Output, direct.Output);
-
-        // A syntax error is still reported when PHP is run directly
-        var failed = await service.FormatAsync("<?php function {", Language.Php);
-        Assert.False(failed.Success);
-    }
 }

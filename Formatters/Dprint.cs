@@ -24,6 +24,12 @@ internal static class Dprint
     public const string Yaml = "https://plugins.dprint.dev/g-plane/pretty_yaml-v0.6.0.wasm";
     public const string GraphQL = "https://plugins.dprint.dev/g-plane/pretty_graphql-v0.2.3.wasm";
     public const string Dockerfile = "https://plugins.dprint.dev/dockerfile-0.6.0.wasm";
+    public const string Mago = "https://plugins.dprint.dev/mago-0.28.0.wasm";
+    public const string Badness = "https://plugins.dprint.dev/jolars/badness-v1.0.0.wasm";
+    public const string BibtexTidy = "https://plugins.dprint.dev/apcamargo/bibtex-tidy-0.2.1.wasm";
+    public const string Typstyle = "https://plugins.dprint.dev/apcamargo/typstyle-0.1.1.wasm";
+    public const string Fatou = "https://plugins.dprint.dev/jolars/fatou-v0.7.2.wasm";
+    public const string CMakeFmt = "https://plugins.dprint.dev/sargunv/dprint-cmakefmt-0.1.0.wasm";
 
     // Configuration reference of each plugin, by config section
     private static readonly Dictionary<string, string> Docs = new()
@@ -37,6 +43,12 @@ internal static class Dprint
         ["markup"] = "https://markup-fmt.netlify.app/config/",
         ["yaml"] = "https://pretty-yaml.netlify.app/config/",
         ["graphql"] = "https://pretty-graphql.netlify.app/config/",
+        ["mago"] = "https://dprint.dev/plugins/mago/config/",
+        ["badness"] = "https://github.com/jolars/badness",
+        ["bibtex-tidy"] = "https://github.com/apcamargo/dprint-plugin-bibtex-tidy",
+        ["typstyle"] = "https://github.com/apcamargo/dprint-plugin-typstyle",
+        ["fatou"] = "https://github.com/jolars/fatou",
+        ["cmakefmt"] = "https://github.com/sargunv/dprint-cmakefmt",
     };
 
     // Keys dprint hands to every loaded plugin. Written at the top level so that code embedded

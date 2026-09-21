@@ -60,7 +60,23 @@ public enum Language
     Perl,
     Php,
     Matlab,
-    Ruby
+    Ruby,
+
+    // Template languages: the dprint markup_fmt plugin, as for HTML
+    Jinja,
+    Twig,
+    Nunjucks,
+    Vento,
+    Handlebars,
+    Mustache,
+    Angular,
+
+    // More dprint plugins
+    Latex,
+    Bibtex,
+    Typst,
+    Julia,
+    CMake
 }
 
 public static class LanguageExtensions
