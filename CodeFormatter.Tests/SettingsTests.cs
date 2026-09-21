@@ -165,7 +165,21 @@ public class SettingsTests
     [InlineData(Language.Python, "format.quote-style", "single", "x = \"a\"", "x = 'a'")]
     [InlineData(Language.Python, "format.indent-style", "tab", "if x:\n    y = 1", "\ty = 1")]
     [InlineData(Language.Python, "format.line-ending", "cr-lf", "x = 1\n", "x = 1\r\n")]
-    // C / C++ (clang-format)
+    // Lua version, R assignment (need stylua 2.5 / air 0.11)
+    [InlineData(Language.R, "assignment-style", "preserve", "x = c(1,2)", "x = c(1, 2)")]
+    // C / C++ (clang-format 23)
+    [InlineData(Language.C, "IndentWidth", 8, "int main(){int x=1;return x;}", "\n        int x")]
+    [InlineData(Language.C, "BreakBeforeBraces", "Allman", "int main(){int x=1;return x;}", "main()\n{")]
+    [InlineData(Language.C, "ColumnLimit", 20, "int f(int aaaaaaa, int bbbbbbb, int ccccccc);", ",\n")]
+    [InlineData(Language.C, "SpaceBeforeParens", "Never", "int main(){if(x){return 1;}}", "if(x)")]
+    [InlineData(Language.C, "InsertBraces", "true", "int main(){if(x)return 1;return 0;}", "if (x) {")]
+    [InlineData(Language.C, "AlignConsecutiveAssignments", "Consecutive", "int main(){int a=1;int bbbb=2;}", "int a    = 1;")]
+    [InlineData(Language.C, "_extra", "IndentWidth: 6, SpacesInParens: Custom, SpacesInParensOptions: {InConditionalStatements: true}", "int main(){if(x){return 1;}}", "\n      if ( x )")]
+    [InlineData(Language.Cpp, "PointerAlignment", "Left", "void f(){int *p;}", "int* p")]
+    [InlineData(Language.Cpp, "QualifierAlignment", "Right", "void f(){const int x=1;}", "int const x")]
+    [InlineData(Language.Cpp, "NamespaceIndentation", "All", "namespace n{int x;}", "\n  int x;")]
+    [InlineData(Language.Cpp, "SortIncludes", "Never", "#include <b>\n#include <a>\n", "<b>\n#include <a>")]
+    [InlineData(Language.Cpp, "AllowShortFunctionsOnASingleLine", "None", "int f(){return 1;}", "{\n  return 1;")]
     [InlineData(Language.C, "BasedOnStyle", "WebKit", "int main(){int x=1;return x;}", "\n{\n    int x = 1;")]
     [InlineData(Language.Cpp, "BasedOnStyle", "GNU", "int main(){return 0;}", "main ()")]
     // Go (gofumpt)
@@ -253,6 +267,29 @@ public class SettingsTests
 
         Assert.False(without.Success, "proc notation should not parse without Arrows");
         Assert.True(with.Success, $"Format failed: {with.Output}");
+    }
+
+    [Fact]
+    public async Task Lua_ParsesEveryDialect()
+    {
+        // The stylua build bundled up to 1.2.0 only knew Lua 5.1
+        var input = "local x <const> = 5 // 2\ngoto done\n::done::\n";
+        var result = await TestFormatter.Create().FormatAsync(input, Language.Lua);
+
+        Assert.True(result.Success, $"Format failed: {result.Output}");
+        Assert.Contains("local x <const> = 5 // 2", result.Output);
+    }
+
+    [Fact]
+    public async Task Lua_VersionDecidesAmbiguousSyntax()
+    {
+        // In Luau "//" starts nothing special either, but "continue" and type annotations only parse there
+        var input = "local function f(x: number): number\n\treturn x\nend\n";
+        var lua51 = await TestFormatter.With(Language.Lua, ("syntax", "Lua51")).FormatAsync(input, Language.Lua);
+        var luau = await TestFormatter.With(Language.Lua, ("syntax", "Luau")).FormatAsync(input, Language.Lua);
+
+        Assert.False(lua51.Success);
+        Assert.True(luau.Success, $"Format failed: {luau.Output}");
     }
 
     [Fact]

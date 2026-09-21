@@ -1,7 +1,22 @@
 # Formatter options research
 
 **Date**: 2026-09-19
-**Status**: Research complete, design proposed, nothing implemented
+**Status**: Implemented (2026-09-20). The design below is what `Formatters/` and `Models/FormatterSpec.cs` now do.
+
+What changed since the research was done, so the per-tool files are read correctly:
+
+- Three binaries were replaced (release `binaries-v2`): clang-format 23.1.1 from the official LLVM
+  archive (183 keys; `clang-format.md` describes the old 12.0.0 snapshot, its mechanism section
+  still holds), StyLua 2.5.2 official build (all Lua dialects; `--syntax` is meaningful now),
+  air 0.11.0 (stdin mode through `--stdin-file-path`, new `assignment-style` key, whose default
+  `arrow` rewrites `x = 1` as `x <- 1`).
+- ktlint and php-cs-fixer are started through their launcher once; after that the payload the
+  launcher left in `%TEMP%` is kept under `%LOCALAPPDATA%\CodeFormatter\cache` and run directly
+  (ktlint 3.9 s -> about 1.2 s with a JVM class-data-sharing archive, php-cs-fixer 3.4 s -> 1.3 s).
+- Found while implementing: sqruff 0.29.3 panics in rule LT06 on any function call under the
+  `redshift` dialect (the rule is excluded for that dialect); uncrustify's `cmt_width` tops out at
+  256; MISS_HIT's `tab_width` must be at least 2; StyLua's config file spells `LuaJIT` where its
+  `--help` says `LuaJit`.
 
 How each bundled formatter actually takes configuration, verified by running the
 exes in `Binaries/` (release `binaries-v1`). One file per tool in this directory;

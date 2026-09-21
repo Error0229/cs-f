@@ -3,17 +3,17 @@ using CodeFormatter.Models;
 namespace CodeFormatter.Formatters;
 
 /// <summary>
-/// Air (R). 0.8.0 has no stdin mode and no config flag: it formats a file in place and looks for
-/// air.toml from that file's directory upwards. Our own air.toml beside the file ends the search.
-/// See docs/research/formatters/air.md.
+/// Air (R). Has no config flag: it looks for air.toml from the directory of --stdin-file-path
+/// upwards. The path need not exist; pointing it into our private directory, next to our own
+/// air.toml, is what ends the search before it reaches anybody else's.
+/// See docs/research/formatters/air.md (written for 0.8, which had no stdin mode yet).
 /// </summary>
 internal static class Air
 {
     public static FormatterSpec Spec() => new()
     {
         Command = "air",
-        Args = ["format", "--no-color", "{file}"],
-        InputFileName = "input.R",
+        Args = ["format", "--no-color", "--stdin-file-path", @"{dir}\input.R"],
         ConfigFileName = "air.toml",
         ConfigText = values => "[format]\n" + string.Concat(values.Select(v => $"{v.Key} = {Toml(v)}\n")),
         Settings = Settings
@@ -35,6 +35,9 @@ internal static class Air
         new("line-ending", "Line Ending", SettingType.Choice, "auto",
             Choices: ["auto", "lf", "crlf", "native"],
             Description: "auto keeps the line endings of the input"),
+        new("assignment-style", "Assignment Style", SettingType.Choice, "arrow",
+            Choices: ["arrow", "equal", "preserve"],
+            Description: "arrow rewrites x = 1 as x <- 1; preserve leaves assignments as written"),
         new("persistent-line-breaks", "Persistent Line Breaks", SettingType.Boolean, true,
             Description: "A line break you put after ( keeps the call expanded; off collapses whatever fits"),
         new("default-table", "Table Formatting", SettingType.Boolean, true,

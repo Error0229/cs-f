@@ -7,7 +7,7 @@ A code formatting extension for [DevToys 2.0](https://devtoys.app/) that support
 - **Live Auto-Format**: Code is automatically formatted as you type (500ms debounce)
 - **34 Languages**: Python, JavaScript, TypeScript, JSON, Markdown, TOML, CSS, SCSS, Less, HTML, Vue, Svelte, Astro, YAML, GraphQL, Dockerfile, Java, SQL, C, C++, C#, Go, Go Assembly, Shell/Bash, Lua, R, Delphi/Pascal, Kotlin, Perl, PHP, MATLAB, Ruby, Objective-C, Haskell
 - **No External Dependencies**: All formatters are bundled as native binaries
-- **Per-Language Settings**: Configure formatting options for each language
+- **Real Formatter Options**: Each language exposes the options of its formatter, 450 in all, plus a free-text field for the rest
 - **Swap & Clear**: Quickly swap input/output or clear both editors
 - **File Loading**: Load code directly from files
 
@@ -54,6 +54,7 @@ A code formatting extension for [DevToys 2.0](https://devtoys.app/) that support
 
 - [DevToys 2.0](https://devtoys.app/) (Preview or later)
 - Windows x64 (all formatters are bundled as native binaries)
+- Kotlin only: Java 11 or newer (ktlint runs on the JVM). It is found through `JAVA_HOME`, `PATH` or the usual install folders
 
 ## Installation
 
@@ -86,45 +87,92 @@ A code formatting extension for [DevToys 2.0](https://devtoys.app/) that support
 
 ## Configuration
 
-Click the gear icon to open settings for any language. Available options vary by formatter:
+Click the gear icon to open the settings of the selected language. The options are the
+formatter's own: each one is passed to the tool under the tool's own name, and an option left
+on its default is not passed at all, so the tool's defaults are what you get. Options are
+grouped, and the groups collapse.
 
-### Python (Ruff)
-- Line Length (40-400)
-- Indent Style (space/tab)
-- Quote Style (double/single/preserve)
-- Line Ending (auto/lf/cr-lf/native)
+| Language | Formatter | Options | Extra options field |
+|----------|-----------|---------|---------------------|
+| Python | ruff | 10 (everything `ruff format` has) | |
+| JavaScript, TypeScript | dprint typescript | 19 | JSON properties |
+| JSON | dprint json | 7 | JSON properties |
+| Markdown | dprint markdown | 6 | JSON properties |
+| TOML | dprint toml | 5 | JSON properties |
+| Dockerfile | dprint dockerfile | 2 | |
+| CSS, SCSS, Less | dprint malva | 12 | JSON properties |
+| HTML | dprint markup_fmt | 12 | JSON properties |
+| Vue / Svelte / Astro | dprint markup_fmt | 18 / 16 / 14 | JSON properties |
+| YAML | dprint pretty_yaml | 9 | JSON properties |
+| GraphQL | dprint pretty_graphql | 10 | JSON properties |
+| C, C++ | clang-format | 36 | `Key: Value, ...` as in `.clang-format` |
+| Objective-C | uncrustify | 29 | `name=value ...` |
+| Java | google-java-format | 6 (all it has) | |
+| Kotlin | ktlint | 11 | `.editorconfig` properties |
+| C# | CSharpier | 4 (all it has) | |
+| SQL | sqruff | 16 | lines of a `.sqruff` file |
+| Go | gofumpt | 2 | |
+| Shell/Bash | shfmt | 9 (all it has) | |
+| Lua | StyLua | 11 (all it has) | |
+| R | air | 9 | |
+| Delphi/Pascal | pasfmt | 7 (all it has) | |
+| Perl | perltidy | 31 + the `pbp` / `gnu` presets | command-line flags |
+| PHP | PHP-CS-Fixer | rule set, indent, line ending, 22 rules | rules as JSON properties |
+| MATLAB | MISS_HIT | 7 | |
+| Ruby | Rufo | 5 (all it has) | |
+| Haskell | Ormolu | language extensions, operator fixities | |
+| Go Assembly | asmfmt | none: it has no options | |
 
-### JavaScript/TypeScript (dprint)
-- Line Width
-- Indent Width
-- Use Tabs
-- Semicolons
-- Quote Style
+**Extra options.** The formatters with hundreds of options (the TypeScript plugin has 186,
+perltidy 390, uncrustify 857, PHP-CS-Fixer 294 rules) get controls for the ones people actually
+change, plus a text field that takes anything else in the tool's own syntax. For example, for
+TypeScript:
 
-### JSON (dprint)
-- Line Width
-- Indent Width
-- Use Tabs
-- Trailing Commas
+```
+"binaryExpression.spaceSurroundingBitwiseAndArithmeticOperator": false, "enumDeclaration.memberSpacing": "blankLine"
+```
 
-### SQL (sqruff)
-- Uses ANSI SQL standard formatting
+If the tool rejects what you typed, its error message is shown in the output panel.
 
-### C/C++ (clang-format)
-- Style (LLVM, Google, Chromium, Mozilla, WebKit, Microsoft, GNU)
+**Presets.** Where a tool has base styles (clang-format `BasedOnStyle`, ktlint code style,
+PHP-CS-Fixer rule sets, perltidy `-pbp`/`-gnu`), the defaults of the other options depend on the
+style. Those options show `style` (or `rule set`) until you set them.
 
-### Go (gofumpt)
-- Extra Rules (stricter formatting)
+**Isolation.** Every format runs in a private temporary directory, and each tool is told to
+ignore configuration files around it. A `.clang-format`, `.editorconfig`, `dprint.json`,
+`pyproject.toml` and the like on your machine never change the result; only the settings here do.
 
-### Shell/Bash (shfmt)
-- Indent Width (0 for tabs)
-- Binary Next Line
-- Case Indent
-- Space Redirects
-- Keep Padding
-- Function Next Line
+**Embedded code.** `<script>` and `<style>` blocks in HTML, Vue, Svelte and Astro are formatted
+too, and follow the page's line width, indent and line ending.
 
-Settings are saved to `~/.config/code-formatter/config.toml` (or equivalent on your OS).
+### config.toml
+
+Settings are saved to `%APPDATA%\DevToys\CodeFormatter\config.toml`. Only what differs from the
+default is written:
+
+```toml
+[defaults]
+lastLanguage = "python"
+
+[formatters.python.settings]
+"line-length" = 100
+"format.quote-style" = "single"
+```
+
+To run a formatter your own way, give the language a command. It then runs exactly as written,
+and the settings dialog no longer applies to it:
+
+```toml
+[formatters.python]
+command = "black"
+args = ["-q", "-"]
+```
+
+Code goes to stdin and is read back from stdout. For a tool that only works on files, add
+`usesTempFile = true` and `tempFileExtension = "py"`, and put `{file}` in `args`.
+
+How each bundled formatter takes its configuration, with every option it has, is written up in
+[docs/research/formatters](docs/research/formatters/README.md).
 
 ## Building from Source
 
@@ -140,7 +188,7 @@ git clone https://github.com/Error0229/cs-f.git
 cd cs-f
 
 # Download formatter binaries (from GitHub Release)
-curl -L -o formatter-binaries.zip "https://github.com/Error0229/cs-f/releases/download/binaries-v1/formatter-binaries.zip"
+curl -L -o formatter-binaries.zip "https://github.com/Error0229/cs-f/releases/download/binaries-v2/formatter-binaries.zip"
 unzip formatter-binaries.zip -d Binaries
 
 # Build
@@ -173,11 +221,17 @@ cs-f/
 ├── CodeFormatterTool.cs      # Main UI and tool implementation
 ├── Models/
 │   ├── Language.cs           # Language enum and extensions
-│   ├── FormatterConfig.cs    # Configuration model
-│   └── FormatterSettings.cs  # Per-language setting definitions
+│   ├── FormatterConfig.cs    # config.toml model
+│   ├── FormatterSpec.cs      # How one formatter is run, configured and judged
+│   └── SettingDefinition.cs  # One option of a formatter
+├── Formatters/
+│   ├── FormatterSpecs.cs     # Language -> formatter spec
+│   ├── Dprint.cs, Ruff.cs, ClangFormat.cs, ...   # One spec per tool, with its options
+│   └── Emit.cs               # Shared ways of spelling options
 ├── Services/
-│   ├── FormatterService.cs   # Formatting orchestration
+│   ├── FormatterService.cs   # Runs a spec: private directory, config file, arguments, result
 │   ├── ConfigManager.cs      # TOML config read/write
+│   ├── JavaLocator.cs        # Finds Java 11+ for ktlint
 │   └── ProcessRunner.cs      # External process execution
 ├── Resources/
 │   └── CodeFormatterStrings.resx  # Localized strings

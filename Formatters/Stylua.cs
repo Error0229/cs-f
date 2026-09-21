@@ -46,6 +46,9 @@ internal static class Stylua
             Choices: ["Never", "Preserve"],
             Description: "Preserve keeps blank lines at the start and end of a block", Group: "Style"),
         new("sort_requires.enabled", "Sort Requires", SettingType.Boolean, false,
-            Description: "Sort blocks of local x = require(...) lines", Group: "Style")
+            Description: "Sort blocks of local x = require(...) lines", Group: "Style"),
+        new("syntax", "Lua Version", SettingType.Choice, "All",
+            Choices: ["All", "Lua51", "Lua52", "Lua53", "Lua54", "LuaJIT", "Luau", "CfxLua"],
+            Description: "All accepts every dialect; name one where they disagree, e.g. a // comment in Luau is floor division elsewhere", Group: "Advanced")
     ];
 }
