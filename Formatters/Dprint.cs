@@ -12,16 +12,18 @@ namespace CodeFormatter.Formatters;
 /// </summary>
 internal static class Dprint
 {
-    // Plugin URLs (update versions as needed; option keys are checked against these versions)
-    public const string TypeScript = "https://plugins.dprint.dev/typescript-0.95.13.wasm";
-    public const string Json = "https://plugins.dprint.dev/json-0.21.0.wasm";
-    public const string Markdown = "https://plugins.dprint.dev/markdown-0.20.0.wasm";
-    public const string Toml = "https://plugins.dprint.dev/toml-0.7.0.wasm";
-    public const string Malva = "https://plugins.dprint.dev/g-plane/malva-v0.15.1.wasm";
-    public const string MarkupFmt = "https://plugins.dprint.dev/g-plane/markup_fmt-v0.25.1.wasm";
-    public const string Yaml = "https://plugins.dprint.dev/g-plane/pretty_yaml-v0.5.1.wasm";
+    // Plugins, pinned. The .wasm files are bundled next to dprint.exe in a "plugins" folder and
+    // used from there; the URL is where each came from, and the fallback when the file is missing.
+    // Option keys and values are checked against exactly these versions by the tests.
+    public const string TypeScript = "https://plugins.dprint.dev/typescript-0.96.1.wasm";
+    public const string Json = "https://plugins.dprint.dev/json-0.24.0.wasm";
+    public const string Markdown = "https://plugins.dprint.dev/markdown-0.24.0.wasm";
+    public const string Toml = "https://plugins.dprint.dev/toml-0.8.0.wasm";
+    public const string Malva = "https://plugins.dprint.dev/g-plane/malva-v0.16.0.wasm";
+    public const string MarkupFmt = "https://plugins.dprint.dev/g-plane/markup_fmt-v0.27.3.wasm";
+    public const string Yaml = "https://plugins.dprint.dev/g-plane/pretty_yaml-v0.6.0.wasm";
     public const string GraphQL = "https://plugins.dprint.dev/g-plane/pretty_graphql-v0.2.3.wasm";
-    public const string Dockerfile = "https://plugins.dprint.dev/dockerfile-0.3.3.wasm";
+    public const string Dockerfile = "https://plugins.dprint.dev/dockerfile-0.6.0.wasm";
 
     // Configuration reference of each plugin, by config section
     private static readonly Dictionary<string, string> Docs = new()

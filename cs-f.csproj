@@ -83,6 +83,8 @@
     <None Include="Binaries\php-cs-fixer.exe" Pack="true" PackagePath="runtimes/win-x64/native/" />
     <None Include="Binaries\mh_style.exe" Pack="true" PackagePath="runtimes/win-x64/native/" />
     <None Include="Binaries\rufo.exe" Pack="true" PackagePath="runtimes/win-x64/native/" />
+    <!-- dprint plugins: used from disk, so formatting needs no network -->
+    <None Include="Binaries\plugins\*.wasm" Pack="true" PackagePath="runtimes/win-x64/native/plugins/" />
   </ItemGroup>
 
   <!-- Include README and icon in package -->

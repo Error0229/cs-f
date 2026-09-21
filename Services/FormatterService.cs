@@ -95,7 +95,7 @@ public class FormatterService
                 : spec.Payload!.Direct(payloadDir, javaBin);
 
             var result = await _processRunner.RunAsync(
-                run, [.. firstArgs, .. args],
+                run, [.. firstArgs, .. args.Select(ResolvePlugin)],
                 spec.InputFileName is null ? code : null,
                 dir, environment, cancellationToken);
 
@@ -150,6 +150,24 @@ public class FormatterService
             .Select(a => a.Replace("{dir}", dir).Replace("{config}", configPath).Replace("{file}", filePath))
             .ToArray();
     }
+
+    /// <summary>
+    /// A dprint plugin is named by the URL it was published at. The ones we use are bundled, so
+    /// formatting needs no network: the URL becomes the path of our copy. Without a copy the URL
+    /// stays, and dprint downloads the plugin on first use as it always did.
+    /// </summary>
+    private string ResolvePlugin(string arg)
+    {
+        if (!arg.StartsWith(DprintPluginHost, StringComparison.Ordinal) || !arg.EndsWith(".wasm", StringComparison.Ordinal))
+            return arg;
+
+        var fileName = arg[(arg.LastIndexOf('/') + 1)..];
+        return _binarySearchPaths
+            .Select(path => Path.Combine(path, "plugins", fileName))
+            .FirstOrDefault(File.Exists) ?? arg;
+    }
+
+    private const string DprintPluginHost = "https://plugins.dprint.dev/";
 
     private FormatResult Failure(string diagnostics)
     {

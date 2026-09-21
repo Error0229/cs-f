@@ -103,6 +103,34 @@ public class FormatterContractTests
         Assert.Contains("color: red;", result.Output);
     }
 
+    [Theory]
+    [InlineData(Language.Json, "{\"a\":1}")]
+    [InlineData(Language.Html, "<div><p>x</p></div><script>const x=1</script><style>a{color:red}</style>")]
+    public async Task Dprint_NeedsNoNetwork(Language language, string input)
+    {
+        // A plugin cache with nothing in it, and a proxy nobody listens on: only the bundled
+        // .wasm files can make this work. Before they were bundled, first use meant a download.
+        var cache = Path.Combine(Path.GetTempPath(), "CodeFormatter.Tests", Guid.NewGuid().ToString("N"));
+        var saved = new[] { "DPRINT_CACHE_DIR", "HTTPS_PROXY", "HTTP_PROXY" }
+            .ToDictionary(name => name, Environment.GetEnvironmentVariable);
+        try
+        {
+            Environment.SetEnvironmentVariable("DPRINT_CACHE_DIR", cache);
+            Environment.SetEnvironmentVariable("HTTPS_PROXY", "http://127.0.0.1:9");
+            Environment.SetEnvironmentVariable("HTTP_PROXY", "http://127.0.0.1:9");
+
+            var result = await TestFormatter.Create().FormatAsync(input, language);
+
+            Assert.True(result.Success, $"Format failed: {result.Output}");
+        }
+        finally
+        {
+            foreach (var (name, value) in saved)
+                Environment.SetEnvironmentVariable(name, value);
+            try { Directory.Delete(cache, recursive: true); } catch { /* Nothing to clean */ }
+        }
+    }
+
     [Fact]
     public async Task CSharp_FormatsThroughStdin()
     {
