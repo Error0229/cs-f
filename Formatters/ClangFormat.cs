@@ -21,6 +21,8 @@ internal static class ClangFormat
         Command = "clang-format",
         Args = [$"--assume-filename={assumeFilename}"],
         SettingArgs = values => [StyleArgument(values)],
+        DocsUrl = "https://clang.llvm.org/docs/ClangFormatStyleOptions.html",
+        Note = "clang-format has about 180 options. Any of them can go in Extra options.",
         Settings = Settings
     };
 

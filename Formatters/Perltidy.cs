@@ -21,6 +21,8 @@ internal static class Perltidy
         Args = ["-npro", "-st", "-se", "-enc=utf8"],
         SlowToStart = true, // a packed Perl runtime: two seconds before it reads a line
         SettingArgs = Flags,
+        DocsUrl = "https://perltidy.github.io/perltidy/perltidy.html",
+        Note = "perltidy has about 390 flags. Any of them can go in Extra options.",
         Settings = Settings
     };
 

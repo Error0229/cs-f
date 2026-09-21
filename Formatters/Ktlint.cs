@@ -47,6 +47,8 @@ internal static class Ktlint
                 "-jar", Path.Combine(dir, "ktlint.jar")
             ]
         )),
+        DocsUrl = "https://ktlint.github.io/ktlint/latest/rules/configuration-ktlint/",
+        Note = "ktlint is configured through .editorconfig properties. More of them can go in Extra options.",
         Settings = Settings
     };
 

@@ -38,6 +38,8 @@ internal static class PhpCsFixer
         Payload = new LauncherPayload("php-cs-fixer-launcher",
             ["php.exe", "php8.dll", "libcrypto-3-x64.dll", "libssl-3-x64.dll", "php-cs-fixer.phar"],
             (dir, _) => (Path.Combine(dir, "php.exe"), [Path.Combine(dir, "php-cs-fixer.phar")])),
+        DocsUrl = "https://cs.symfony.com/doc/rules/index.html",
+        Note = "PHP CS Fixer has about 290 rules. Any of them can go in Extra options.",
         Settings = Settings
     };
 

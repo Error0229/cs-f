@@ -17,6 +17,8 @@ internal static class Pasfmt
         ConfigFileName = "pasfmt.toml",
         ConfigText = _ => "",
         SettingArgs = values => Emit.Pairs("-C", values),
+        DocsUrl = "https://github.com/integrated-application-development/pasfmt#configuration",
+        Note = "These are all the options pasfmt has.",
         Settings = Settings
     };
 

@@ -29,6 +29,8 @@ internal static class Sqruff
         Success = SuccessRule.Codes(0, 1).FailsOn(@"\|\s*\?{4}\s*\|"),
         // sqruff prints one newline too many
         PostProcess = sql => sql.EndsWith("\n\n") ? sql[..^1] : sql,
+        DocsUrl = "https://github.com/quarylabs/sqruff/blob/main/docs/reference/sample-configurations.md",
+        Note = "sqruff reads a .sqruff file with about 115 keys. More of its lines can go in Extra options.",
         Settings = Settings
     };
 

@@ -20,6 +20,8 @@ internal static class Shfmt
             Indent, values.Find(Indent) ?? "0",
             .. Emit.Flags(values.Where(v => v.Key != Indent))
         ],
+        DocsUrl = "https://github.com/mvdan/sh/blob/master/cmd/shfmt/shfmt.1.scd",
+        Note = "These are all the formatting options shfmt has.",
         Settings = Settings
     };
 

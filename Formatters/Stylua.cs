@@ -16,6 +16,8 @@ internal static class Stylua
         ConfigFileName = "stylua.toml",
         // "sort_requires.enabled" is a TOML dotted key, which is the [sort_requires] table
         ConfigText = values => string.Concat(values.Select(v => $"{v.Key} = {Emit.TomlValue(v)}\n")),
+        DocsUrl = "https://github.com/JohnnyMorganz/StyLua#options",
+        Note = "These are all the options StyLua has.",
         Settings = Settings
     };
 

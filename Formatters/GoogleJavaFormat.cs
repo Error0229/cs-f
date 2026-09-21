@@ -13,6 +13,8 @@ internal static class GoogleJavaFormat
         Command = "google-java-format",
         SettingArgs = values => Emit.Flags(values),
         TrailingArgs = ["-"],
+        DocsUrl = "https://github.com/google/google-java-format#readme",
+        Note = "google-java-format is not configurable, by design: line width, indent and braces are fixed.",
         Settings = Settings
     };
 

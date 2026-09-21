@@ -23,6 +23,8 @@ internal static class Csharpier
                 root[v.Key] = Emit.Json(v);
             return root.ToJsonString(new JsonSerializerOptions { WriteIndented = true });
         },
+        DocsUrl = "https://csharpier.com/docs/Configuration",
+        Note = "CSharpier is opinionated: these are all the options it has.",
         Settings = Settings
     };
 

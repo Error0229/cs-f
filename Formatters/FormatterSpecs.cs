@@ -34,7 +34,12 @@ public static class FormatterSpecs
         [Language.Cpp] = ClangFormat.Spec("file.cpp"),
         [Language.CSharpFormatted] = Csharpier.Spec(),
         [Language.Go] = Gofumpt.Spec(),
-        [Language.Assembly] = new FormatterSpec { Command = "asmfmt" }, // no options, reads no config
+        [Language.Assembly] = new FormatterSpec
+        {
+            Command = "asmfmt", // reads no config
+            DocsUrl = "https://github.com/klauspost/asmfmt#readme",
+            Note = "asmfmt has no options at all."
+        },
         [Language.Shell] = Shfmt.Spec(),
         [Language.Lua] = Stylua.Spec(),
         [Language.R] = Air.Spec(),

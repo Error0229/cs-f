@@ -16,6 +16,7 @@ internal static class Air
         Args = ["format", "--no-color", "--stdin-file-path", @"{dir}\input.R"],
         ConfigFileName = "air.toml",
         ConfigText = values => "[format]\n" + string.Concat(values.Select(v => $"{v.Key} = {Toml(v)}\n")),
+        DocsUrl = "https://posit-dev.github.io/air/configuration.html",
         Settings = Settings
     };
 

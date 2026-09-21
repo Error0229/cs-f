@@ -19,6 +19,8 @@ internal static class Rufo
         // One "name value" per line; enum values are Ruby symbols. A bad value is only a warning
         // and rufo carries on with its default, so nothing here may be free text.
         ConfigText = values => string.Concat(values.Select(v => $"{v.Key} {(v.Value is string ? ":" : "")}{v.Text}\n")),
+        DocsUrl = "https://github.com/ruby-formatter/rufo/blob/master/docs/settings.md",
+        Note = "These are all the options Rufo has. Indent and line width are fixed.",
         Settings = Settings
     };
 

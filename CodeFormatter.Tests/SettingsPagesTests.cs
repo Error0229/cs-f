@@ -54,12 +54,44 @@ public class SettingsPagesTests
         Assert.Equal(2, pages[1].Rows);
     }
 
+    [Fact]
+    public void Docs_GoOnTheAdvancedTab_AndTakeARowOfIt()
+    {
+        var advanced = Enumerable.Range(0, 5).Select(i => Bool($"s{i}", SettingsPages.AdvancedTitle));
+        var pages = SettingsPages.Build([Bool("a", "Layout"), .. advanced], hasDocs: true);
+
+        // Five settings and the documentation line do not fit on one page
+        Assert.Equal(["Layout", "Advanced", "Advanced 2"], pages.Select(p => p.Title));
+        Assert.True(pages[1].ShowsDocs);
+        Assert.Equal(SettingsPages.MaxRows, pages[1].Rows);
+    }
+
+    [Fact]
+    public void Docs_GetATabOfTheirOwn_WhenThereIsNoAdvancedTab()
+    {
+        var pages = SettingsPages.Build([Bool("a")], hasDocs: true);
+
+        Assert.Equal([SettingsPages.DefaultTitle, SettingsPages.AboutTitle], pages.Select(p => p.Title));
+        Assert.Empty(pages[1].Settings);
+        Assert.True(pages[1].ShowsDocs);
+    }
+
     [Theory]
     [MemberData(nameof(AllLanguages))]
     public void EveryLanguage_FitsTheDialog(Language language)
     {
-        var settings = FormatterSpecs.SettingsFor(language);
-        var pages = SettingsPages.Build(settings);
+        var spec = FormatterSpecs.For(language)!;
+        var settings = spec.Settings;
+        var pages = SettingsPages.Build(settings, hasDocs: true);
+
+        // Every formatter says where its options are documented, on the Advanced tab if it has one
+        Assert.True(Uri.TryCreate(spec.DocsUrl, UriKind.Absolute, out var docs) && docs.Scheme == "https",
+            $"{language} has no documentation link");
+        Assert.Single(pages, p => p.ShowsDocs);
+        Assert.Equal(
+            settings.Any(s => s.Group == SettingsPages.AdvancedTitle) ? SettingsPages.AdvancedTitle : SettingsPages.AboutTitle,
+            pages.Single(p => p.ShowsDocs).Title);
+        Assert.True((spec.Note?.Length ?? 0) <= 100, "The note is one line");
 
         Assert.All(pages, p => Assert.True(p.Rows <= SettingsPages.MaxRows, $"Tab '{p.Title}' has {p.Rows} rows"));
 

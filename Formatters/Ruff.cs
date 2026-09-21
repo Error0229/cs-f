@@ -15,6 +15,8 @@ internal static class Ruff
         Args = ["format", "--isolated", "--stdin-filename", "snippet.py"],
         SettingArgs = values => values.SelectMany(v => new[] { "--config", $"{v.Key}={Emit.TomlValue(v)}" }),
         TrailingArgs = ["-"],
+        DocsUrl = "https://docs.astral.sh/ruff/settings/#format",
+        Note = "These are all the options ruff format has: it is Black-compatible and deliberately small.",
         Settings = Settings
     };
 

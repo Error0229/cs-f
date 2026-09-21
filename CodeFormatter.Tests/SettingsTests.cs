@@ -185,6 +185,7 @@ public class SettingsTests
     // Go (gofumpt)
     [InlineData(Language.Go, "-extra", true, "package main\n\nfunc f(a int, b int) {}\n", "a, b int")]
     [InlineData(Language.Go, "-lang", "go1", "package main\n\nconst x = 0777\n", "0777")]
+    [InlineData(Language.Go, "-modpath", "myapp", "package main\n\nimport (\n\t\"fmt\"\n\t\"myapp/x\"\n\t\"os\"\n)\n", "\"os\"\n\n\t\"myapp/x\"")]
     // Shell (shfmt)
     [InlineData(Language.Shell, "-i", 4, "if true; then\necho hi\nfi", "\n    echo hi")]
     [InlineData(Language.Shell, "-ci", true, "case $x in\na) echo a ;;\nesac", "\n\ta)")]

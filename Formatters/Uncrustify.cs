@@ -27,6 +27,8 @@ internal static class Uncrustify
         Command = "uncrustify",
         Args = ["-l", language, "-c", "-", "-q"],
         SettingArgs = Pairs,
+        DocsUrl = "https://github.com/uncrustify/uncrustify/blob/master/documentation/htdocs/default.cfg",
+        Note = "uncrustify has about 850 options. Any of them can go in Extra options.",
         Settings = Settings
     };
 

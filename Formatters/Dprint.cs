@@ -23,6 +23,20 @@ internal static class Dprint
     public const string GraphQL = "https://plugins.dprint.dev/g-plane/pretty_graphql-v0.2.3.wasm";
     public const string Dockerfile = "https://plugins.dprint.dev/dockerfile-0.3.3.wasm";
 
+    // Configuration reference of each plugin, by config section
+    private static readonly Dictionary<string, string> Docs = new()
+    {
+        ["typescript"] = "https://dprint.dev/plugins/typescript/config/",
+        ["json"] = "https://dprint.dev/plugins/json/config/",
+        ["markdown"] = "https://dprint.dev/plugins/markdown/config/",
+        ["toml"] = "https://dprint.dev/plugins/toml/config/",
+        ["dockerfile"] = "https://dprint.dev/plugins/dockerfile/config/",
+        ["malva"] = "https://malva.netlify.app/config/",
+        ["markup"] = "https://markup-fmt.netlify.app/config/",
+        ["yaml"] = "https://pretty-yaml.netlify.app/config/",
+        ["graphql"] = "https://pretty-graphql.netlify.app/config/",
+    };
+
     // Keys dprint hands to every loaded plugin. Written at the top level so that code embedded
     // in HTML/Vue/Svelte/Astro is indented the same way as the markup around it.
     private static readonly string[] GlobalKeys = ["lineWidth", "indentWidth", "useTabs", "newLineKind"];
@@ -32,6 +46,10 @@ internal static class Dprint
     /// <param name="plugins">First the language's own plugin, then any needed for embedded code.</param>
     public static FormatterSpec Spec(string stdinName, string section, SettingDefinition[] settings, params string[] plugins) => new()
     {
+        DocsUrl = Docs[section],
+        Note = settings.Any(s => s.Key == Emit.ExtraKey)
+            ? "Every option of the plugin is on its documentation page. Any of them can go in Extra options."
+            : null,
         Command = "dprint",
         Args = ["fmt", "--stdin", stdinName, "--config", "{config}", "--plugins", .. plugins],
         ConfigFileName = "dprint.json",

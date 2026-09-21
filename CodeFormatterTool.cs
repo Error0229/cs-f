@@ -1,4 +1,4 @@
-﻿using CodeFormatter.Formatters;
+using CodeFormatter.Formatters;
 using CodeFormatter.Models;
 using CodeFormatter.Resources;
 using CodeFormatter.Services;
@@ -233,18 +233,28 @@ internal sealed class CodeFormatterTool : IGuiTool
     // A DevToys dialog sizes itself to its content and does not scroll, so its content is given
     // a fixed size: it must not change shape while open, and must fit the window.
     private const int DialogWidth = 640;
+    // A row is a card: its content, the card's own padding, and the gap to the next row
+    private const int SettingContentHeight = 44;
     private const int SettingRowHeight = 76;
 
     private enum DialogRow { Title, Tabs, Page }
     private enum DialogColumn { Main }
 
+    private enum SettingRow { Only }
+    private enum SettingColumn { Text, Control }
+
     private async Task OpenConfigDialogAsync()
     {
-        var pages = SettingsPages.Build(FormatterSpecs.SettingsFor(_selectedLanguage));
+        var spec = FormatterSpecs.For(_selectedLanguage);
+        var pages = SettingsPages.Build(spec?.Settings ?? [], hasDocs: spec?.DocsUrl is not null || spec?.Note is not null);
 
         // Every page is built once; choosing a tab shows one of them and hides the rest
         var pageViews = pages
-            .Select(page => Stack().Vertical().SmallSpacing().WithChildren(page.Settings.Select(BuildSetting).ToArray()))
+            .Select(page => Stack().Vertical().SmallSpacing().WithChildren(
+            [
+                .. page.Settings.Select(BuildSetting),
+                .. page.ShowsDocs ? new[] { BuildDocs(spec!) } : []
+            ]))
             .ToArray();
         var tabs = new IUIButton[pages.Count];
 
@@ -322,29 +332,72 @@ internal sealed class CodeFormatterTool : IGuiTool
             ? val
             : def.DefaultValue;
 
+        var text = Stack()
+            .Vertical()
+            .NoSpacing()
+            .AlignVertically(UIVerticalAlignment.Center)
+            .WithChildren(
+                Label().Text(def.DisplayName),
+                Label().Style(UILabelStyle.Caption).Text(def.Description ?? ""));
+
         // Free text needs the full width: title and description, then the input on its own line
         if (def.Type == SettingType.Text)
-        {
-            return Stack()
-                .Vertical()
-                .SmallSpacing()
-                .WithChildren(
-                    Label().Text(def.DisplayName),
-                    Label().Style(UILabelStyle.Caption).Text(def.Description ?? ""),
-                    BuildTextSetting(def, currentValue));
-        }
+            return Card(Stack().Vertical().SmallSpacing().WithChildren(text, BuildTextSetting(def, currentValue)));
 
-        var setting = Setting($"setting-row-{ToId(def.Key)}").Title(def.DisplayName);
-        if (def.Description != null)
-            setting.Description(def.Description);
-
-        return setting.InteractiveElement(def.Type switch
+        var control = def.Type switch
         {
             SettingType.Boolean => BuildBooleanSetting(def, currentValue),
             SettingType.Integer => BuildIntegerSetting(def, currentValue),
             SettingType.Choice => BuildChoiceSetting(def, currentValue),
             _ => Label().Text($"Unknown setting type: {def.Key}")
-        });
+        };
+
+        // Not DevToys' own Setting element: that keeps a column free for an icon we do not have.
+        // The row height is fixed so that a page is as tall as was planned for it.
+        return Card(
+            Grid()
+                .Rows((SettingRow.Only, new UIGridLength(SettingContentHeight, UIGridUnitType.Pixel)))
+                .Columns(
+                    (SettingColumn.Text, new UIGridLength(1, UIGridUnitType.Fraction)),
+                    (SettingColumn.Control, UIGridLength.Auto))
+                .Cells(
+                    Cell(SettingRow.Only, SettingColumn.Text, text),
+                    Cell(SettingRow.Only, SettingColumn.Control,
+                        control.AlignVertically(UIVerticalAlignment.Center).AlignHorizontally(UIHorizontalAlignment.Right))));
+    }
+
+    /// <summary>
+    /// What there is to say about the formatter's options as a whole, and where they are documented.
+    /// </summary>
+    private static IUIElement BuildDocs(FormatterSpec spec)
+    {
+        var children = new List<IUIElement>();
+
+        if (spec.Note is not null)
+            children.Add(Label().Style(UILabelStyle.Caption).Text(spec.Note));
+
+        if (spec.DocsUrl is { } url)
+        {
+            children.Add(
+                Button("settings-docs-link")
+                    .HyperlinkAppearance()
+                    .Text($"{spec.Command} options on {new Uri(url).Host}")
+                    .OnClick(() => OpenInBrowser(url)));
+        }
+
+        return Stack().Vertical().SmallSpacing().WithChildren(children.ToArray());
+    }
+
+    private static void OpenInBrowser(string url)
+    {
+        try
+        {
+            System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo(url) { UseShellExecute = true });
+        }
+        catch
+        {
+            // No browser to hand it to; the address is on the button
+        }
     }
 
     // Setting keys are the formatters' own ("format.quote-style", "-i"); element ids are plainer

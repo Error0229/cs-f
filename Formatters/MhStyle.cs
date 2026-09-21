@@ -32,6 +32,7 @@ internal static class MhStyle
         // Exit 1 also means "formatted, but style messages that cannot be auto-fixed remain".
         // Real failures are reported as errors on stdout.
         Success = SuccessRule.Codes(0, 1).FailsOn(@": error:|lex error:"),
+        DocsUrl = "https://florianschanda.github.io/miss_hit/style_checker.html",
         Settings = Settings
     };
 

@@ -23,6 +23,8 @@ internal static class Ormolu
             .. Split(values.Find(Fixities), ';')
                 .SelectMany(f => new[] { "-f", f })
         ],
+        DocsUrl = "https://github.com/tweag/ormolu#readme",
+        Note = "Ormolu has no style options, by design. These only help it parse your code.",
         Settings =
         [
             new(Extensions, "Language Extensions", SettingType.Text, "",

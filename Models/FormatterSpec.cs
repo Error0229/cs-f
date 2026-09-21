@@ -61,6 +61,15 @@ public sealed record FormatterSpec
     public Func<string, string>? PostProcess { get; init; }
 
     public SettingDefinition[] Settings { get; init; } = [];
+
+    /// <summary>Where the tool documents the options behind these settings.</summary>
+    public string? DocsUrl { get; init; }
+
+    /// <summary>
+    /// One line for the settings dialog about the tool's options as a whole: that there are
+    /// deliberately few, what the extra-options field reaches, and the like.
+    /// </summary>
+    public string? Note { get; init; }
 }
 
 /// <summary>
