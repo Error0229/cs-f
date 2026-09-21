@@ -29,6 +29,24 @@ internal static class Ktlint
         ConfigFileName = ".editorconfig",
         ConfigText = Config,
         NeedsJava = true,
+        SlowToStart = true,
+        // ktlint.exe unpacks a 71 MB jar on every start and then runs "java -jar" on it
+        Payload = new LauncherPayload("ktlint-launcher", ["ktlint.jar"], (dir, javaBin) =>
+        (
+            Path.Combine(javaBin!, "java.exe"),
+            [
+                // Flags newer than the JVM at hand are skipped instead of stopping it
+                "-XX:+IgnoreUnrecognizedVMOptions",
+                // JVM log lines go to stdout, which is where the formatted code goes
+                "-Xlog:disable",
+                "-XX:TieredStopAtLevel=1", "-XX:+UseSerialGC",
+                // Class data sharing (JDK 19+): the JVM keeps an archive of the loaded classes and
+                // rebuilds it by itself when it no longer matches. Cuts start-up by more than half.
+                "-XX:+AutoCreateSharedArchive", $"-XX:SharedArchiveFile={Path.Combine(dir, "ktlint.jsa")}",
+                "--add-opens=java.base/java.lang=ALL-UNNAMED",
+                "-jar", Path.Combine(dir, "ktlint.jar")
+            ]
+        )),
         Settings = Settings
     };
 

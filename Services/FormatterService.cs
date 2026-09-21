@@ -10,10 +10,17 @@ public class FormatterService
     private readonly ConfigManager _configManager;
     private readonly ProcessRunner _processRunner;
     private readonly JavaLocator _javaLocator;
+    private readonly PayloadCache _payloadCache;
     private readonly string[] _binarySearchPaths;
 
     public FormatterService(ConfigManager configManager, ProcessRunner processRunner)
+        : this(configManager, processRunner, new PayloadCache())
     {
+    }
+
+    public FormatterService(ConfigManager configManager, ProcessRunner processRunner, PayloadCache payloadCache)
+    {
+        _payloadCache = payloadCache;
         _configManager = configManager;
         _processRunner = processRunner;
         _javaLocator = new JavaLocator(processRunner);
@@ -47,9 +54,10 @@ public class FormatterService
             return new FormatResult(false, $"No formatter configured for {language.ToDisplayName()}.");
 
         var environment = new Dictionary<string, string>(spec.Environment);
+        string? javaBin = null;
         if (spec.NeedsJava)
         {
-            var javaBin = await _javaLocator.FindJava11BinAsync(cancellationToken);
+            javaBin = await _javaLocator.FindJava11BinAsync(cancellationToken);
             if (javaBin is null)
             {
                 return new FormatResult(false,
@@ -79,10 +87,24 @@ public class FormatterService
                 return new FormatResult(false, $"Formatting Error\n\nInvalid extra options: {ex.Message}");
             }
 
+            // A launcher that has run before left its payload behind: start that directly
+            var command = ResolveCommand(spec.Command);
+            var payloadDir = spec.Payload is null ? null : _payloadCache.Find(command, spec.Payload);
+            var (run, firstArgs) = payloadDir is null
+                ? (command, Array.Empty<string>())
+                : spec.Payload!.Direct(payloadDir, javaBin);
+
             var result = await _processRunner.RunAsync(
-                ResolveCommand(spec.Command), args,
+                run, [.. firstArgs, .. args],
                 spec.InputFileName is null ? code : null,
                 dir, environment, cancellationToken);
+
+            if (spec.Payload is not null && payloadDir is null && result.ExitCode is not null)
+                _payloadCache.Capture(command, spec.Payload);
+
+            // A copy that does not even start is thrown away; the next run goes through the launcher again
+            if (payloadDir is not null && (result.ExitCode is null || PayloadCache.LooksBroken(result.Error)))
+                _payloadCache.Discard(payloadDir);
 
             string formatted, diagnostics;
             if (spec.InputFileName is null)

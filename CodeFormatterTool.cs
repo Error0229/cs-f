@@ -35,6 +35,8 @@ internal sealed class CodeFormatterTool : IGuiTool
     // Auto-format debounce
     private CancellationTokenSource? _formatCts;
     private const int DebounceDelayMs = 500;
+    // For formatters that need seconds to start: do not launch one at every pause in typing
+    private const int SlowFormatterDebounceDelayMs = 1200;
 
     [Import]
     private IFileStorage _fileStorage = null!;
@@ -159,7 +161,8 @@ internal sealed class CodeFormatterTool : IGuiTool
         try
         {
             // Wait for debounce delay
-            await Task.Delay(DebounceDelayMs, token);
+            var slow = FormatterSpecs.For(_selectedLanguage)?.SlowToStart == true;
+            await Task.Delay(slow ? SlowFormatterDebounceDelayMs : DebounceDelayMs, token);
 
             var input = _inputEditor.Text;
             if (string.IsNullOrWhiteSpace(input))
@@ -356,6 +359,9 @@ internal sealed class CodeFormatterTool : IGuiTool
     {
         _configManager.SaveAllSettings(_selectedLanguage, _pendingSettings);
         _view.CurrentOpenedDialog?.Close();
+
+        // Show what the new settings do
+        _ = FormatWithDebounceAsync();
     }
 
     private async void OnConfigResetClickAsync()

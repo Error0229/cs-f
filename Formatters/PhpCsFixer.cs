@@ -33,6 +33,11 @@ internal static class PhpCsFixer
         ConfigText = Config,
         // A PHP syntax error still exits 0 and leaves the file alone; only the report says so
         Success = SuccessRule.ExitZero.FailsOn("not fixed due to errors"),
+        SlowToStart = true,
+        // php-cs-fixer.exe rewrites a 20 MB PHP runtime and the phar on every start
+        Payload = new LauncherPayload("php-cs-fixer-launcher",
+            ["php.exe", "php8.dll", "libcrypto-3-x64.dll", "libssl-3-x64.dll", "php-cs-fixer.phar"],
+            (dir, _) => (Path.Combine(dir, "php.exe"), [Path.Combine(dir, "php-cs-fixer.phar")])),
         Settings = Settings
     };
 

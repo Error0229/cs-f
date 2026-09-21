@@ -48,11 +48,36 @@ public sealed record FormatterSpec
     /// <summary>The tool launches a JVM from PATH and needs Java 11 or newer.</summary>
     public bool NeedsJava { get; init; }
 
+    /// <summary>The executable is a self-extracting launcher whose payload can be run directly.</summary>
+    public LauncherPayload? Payload { get; init; }
+
+    /// <summary>
+    /// Takes well over a second just to start. The UI waits longer after a keystroke before
+    /// formatting with such a tool.
+    /// </summary>
+    public bool SlowToStart { get; init; }
+
     /// <summary>Fix-up for tools whose output is reliably off (e.g. one newline too many).</summary>
     public Func<string, string>? PostProcess { get; init; }
 
     public SettingDefinition[] Settings { get; init; } = [];
 }
+
+/// <summary>
+/// Some bundled tools are launchers: on every start they unpack a runtime and the real program
+/// into a fixed folder under %TEMP%, then run it. That unpacking is most of their start-up time.
+/// Once a launcher has run, its payload can be kept and started directly.
+/// </summary>
+/// <param name="TempFolder">Folder under %TEMP% the launcher unpacks into.</param>
+/// <param name="Files">The files of the payload, all directly in that folder.</param>
+/// <param name="Direct">
+/// Given the folder holding a copy of the payload, and the Java bin directory when the spec
+/// needs Java: the command to run instead of the launcher, and the arguments that go first.
+/// </param>
+public sealed record LauncherPayload(
+    string TempFolder,
+    string[] Files,
+    Func<string, string?, (string Command, string[] FirstArgs)> Direct);
 
 /// <summary>
 /// How to tell a successful run from a failed one. Exit codes alone are not enough: several tools

@@ -14,6 +14,7 @@ internal static class Rufo
         Command = "rufo",
         // -x: exit 0 when the code was changed, instead of 3
         Args = [@"--filename={dir}\stdin.rb", "-x"],
+        SlowToStart = true, // a packed runtime that unpacks itself on every start
         ConfigFileName = ".rufo",
         // One "name value" per line; enum values are Ruby symbols. A bad value is only a warning
         // and rufo carries on with its default, so nothing here may be free text.

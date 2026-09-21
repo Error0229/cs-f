@@ -19,6 +19,7 @@ internal static class Perltidy
         Command = "perltidy",
         // -st: result to stdout, -se: errors to stderr instead of a perltidy.ERR file
         Args = ["-npro", "-st", "-se", "-enc=utf8"],
+        SlowToStart = true, // a packed Perl runtime: two seconds before it reads a line
         SettingArgs = Flags,
         Settings = Settings
     };

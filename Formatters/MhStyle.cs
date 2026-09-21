@@ -24,6 +24,7 @@ internal static class MhStyle
     {
         Command = "mh_style",
         Args = ["--single", "--fix", "--brief", "--input-encoding", "utf-8", "{file}"],
+        SlowToStart = true, // a packed runtime that unpacks itself on every start
         InputFileName = "input.m",
         ConfigFileName = "miss_hit.cfg",
         ConfigText = Config,
