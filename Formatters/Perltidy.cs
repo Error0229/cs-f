@@ -49,7 +49,7 @@ internal static class Perltidy
     [
         new(Preset, "Style Preset", SettingType.Choice, None,
             Choices: [None, "pbp", "gnu"],
-            Description: "pbp: Perl Best Practices. gnu: GNU coding standards. The options below override it"),
+            Description: "pbp: Perl Best Practices. gnu: GNU coding standards. The options below override it", Group: "Layout"),
 
         new("indent-columns", "Indent Columns", SettingType.Integer, 4, Min: 0, Max: 16,
             Description: "Spaces per indent level", Group: "Layout"),
@@ -59,9 +59,6 @@ internal static class Perltidy
             Description: "0 = unlimited", Group: "Layout"),
         new("entab-leading-whitespace", "Tabs For Leading Spaces", SettingType.Integer, 0, Min: 0, Max: 16,
             Description: "Turn every N leading spaces into a tab; 0 = spaces only", Group: "Layout"),
-        new(LineEnding, "Line Ending", SettingType.Choice, None,
-            Choices: [None, "unix", "win", "mac"],
-            Description: "none leaves it to perltidy: LF", Group: "Layout"),
 
         new("opening-brace-on-new-line", "Opening Brace On New Line", SettingType.Boolean, false,
             Description: "Put the { of a block on its own line", Group: "Braces"),
@@ -73,13 +70,13 @@ internal static class Perltidy
             Description: "} else { on one line", Group: "Braces"),
 
         new("paren-tightness", "Parenthesis Tightness", SettingType.Integer, 1, Min: 0, Max: 2,
-            Description: "0: always a space inside ( ), 2: never", Group: "Spacing"),
+            Description: "0: always a space inside ( ), 2: never", Group: "Tightness"),
         new("square-bracket-tightness", "Square Bracket Tightness", SettingType.Integer, 1, Min: 0, Max: 2,
-            Description: "The same for [ ]", Group: "Spacing"),
+            Description: "The same for [ ]", Group: "Tightness"),
         new("brace-tightness", "Brace Tightness", SettingType.Integer, 1, Min: 0, Max: 2,
-            Description: "The same for the { } of hashes", Group: "Spacing"),
+            Description: "The same for the { } of hashes", Group: "Tightness"),
         new("block-brace-tightness", "Block Brace Tightness", SettingType.Integer, 0, Min: 0, Max: 2,
-            Description: "The same for the { } of code blocks", Group: "Spacing"),
+            Description: "The same for the { } of code blocks", Group: "Tightness"),
         new("space-for-semicolon", "Space For Semicolon", SettingType.Boolean, true,
             Description: "Space before the semicolons of for ( ; ; )", Group: "Spacing"),
         new("space-function-paren", "Space Before Function Parenthesis", SettingType.Boolean, false,
@@ -94,9 +91,9 @@ internal static class Perltidy
         new("vertical-tightness-closing", "Vertical Tightness Closing", SettingType.Integer, 0, Min: 0, Max: 3,
             Description: "Keep a closing token together with the line before it", Group: "Wrapping"),
         new("break-before-all-operators", "Break Before All Operators", SettingType.Boolean, false,
-            Description: "A split line starts with the operator", Group: "Wrapping"),
+            Description: "A split line starts with the operator", Group: "Operators"),
         new("break-after-all-operators", "Break After All Operators", SettingType.Boolean, false,
-            Description: "A split line ends with the operator", Group: "Wrapping"),
+            Description: "A split line ends with the operator", Group: "Operators"),
         new("weld-nested-containers", "Weld Nested Containers", SettingType.Boolean, false,
             Description: "Keep ({ and }) together", Group: "Wrapping"),
         new("outdent-long-quotes", "Outdent Long Quotes", SettingType.Boolean, true,
@@ -113,11 +110,13 @@ internal static class Perltidy
         new("keep-old-blank-lines", "Keep Old Blank Lines", SettingType.Integer, 1, Min: 0, Max: 2,
             Description: "0: drop them, 1: keep up to the maximum, 2: keep all", Group: "Blank Lines"),
 
-        new("delete-semicolons", "Delete Extra Semicolons", SettingType.Boolean, true,
-            Group: "Semicolons"),
+        new("delete-semicolons", "Delete Extra Semicolons", SettingType.Boolean, true, Group: "Other"),
         new("add-semicolons", "Add Missing Semicolons", SettingType.Boolean, true,
-            Description: "Before the } that closes a multi-line block", Group: "Semicolons"),
+            Description: "Before the } that closes a multi-line block", Group: "Other"),
 
+        new(LineEnding, "Line Ending", SettingType.Choice, None,
+            Choices: [None, "unix", "win", "mac"],
+            Description: "none leaves it to perltidy: LF", Group: "Other"),
         Emit.Extra("Any other perltidy flags, as on its command line: -csc -wbb=\"+ - / *\"")
     ];
 }

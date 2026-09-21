@@ -144,10 +144,10 @@ internal static class PhpCsFixer
         Toggle("trailing_comma_in_multiline", "Trailing Comma In Multiline Arrays", "", "Syntax"),
 
         Option("braces_position", "Class And Function Braces", ["same_line", "next_line_unless_newline_at_signature_end"],
-            "Where the { of a class or function goes", "Braces"),
+            "Where the { of a class or function goes", "Structure"),
         Option("control_structure_continuation_position", "else, catch, finally", ["same_line", "next_line"],
-            "} else { or else on its own line", "Braces"),
-        Toggle("single_line_empty_body", "Empty Body On One Line", "function f() {}", "Braces"),
+            "} else { or else on its own line", "Structure"),
+        Toggle("single_line_empty_body", "Empty Body On One Line", "function f() {}", "Structure"),
 
         Option("concat_space", "Around Concatenation", ["none", "one"], "$a.$b or $a . $b", "Spacing"),
         Option("cast_spaces", "After Cast", ["single", "none"], "(int) $a or (int)$a", "Spacing"),
@@ -156,7 +156,7 @@ internal static class PhpCsFixer
             "align lines up = and => over consecutive lines", "Spacing"),
         Option("return_type_declaration", "Before Return Type Colon", ["none", "one"], "): int or ) : int", "Spacing"),
         Toggle("not_operator_with_successor_space", "After Not Operator", "! $a rather than !$a", "Spacing"),
-        Option("operator_linebreak", "Operator Of A Wrapped Line", ["beginning", "end"], "", "Spacing"),
+        Option("operator_linebreak", "Operator Of A Wrapped Line", ["beginning", "end"], "", "Structure"),
 
         Option("ordered_imports", "Sort Imports", ["alpha", "length"], "Order of use statements", "Imports"),
         Toggle("no_unused_imports", "Remove Unused Imports", "", "Imports"),

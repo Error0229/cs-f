@@ -63,12 +63,12 @@ internal static class MhStyle
             Choices: ["native", "lf", "crlf"],
             Description: "native is CRLF on Windows"),
         new("indent_function_file_body", "Indent Function File Body", SettingType.Boolean, true,
-            Description: "Indent the body of a file that holds only functions"),
+            Description: "Indent the body of a file that holds only functions", Group: "Style"),
         new("align_round_brackets", "Align Under Round Brackets", SettingType.Boolean, true,
-            Description: "Align continuation lines under the opening ("),
+            Description: "Align continuation lines under the opening (", Group: "Style"),
         new("align_other_brackets", "Align Under Other Brackets", SettingType.Boolean, true,
-            Description: "The same for [ and {"),
+            Description: "The same for [ and {", Group: "Style"),
         new(SuppressRule, "Suppress Rules", SettingType.Text, "",
-            Description: "Style rules to switch off, separated by commas: operator_whitespace, redundant_brackets, end_of_statements")
+            Description: "Style rules to switch off, separated by commas: operator_whitespace, redundant_brackets, end_of_statements", Group: "Style")
     ];
 }

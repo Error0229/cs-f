@@ -24,20 +24,20 @@ internal static class Pasfmt
     private static readonly SettingDefinition[] Settings =
     [
         new("wrap_column", "Wrap Column", SettingType.Integer, 120, Min: 20, Max: 1000,
-            Description: "Target line length before wrapping"),
+            Description: "Target line length before wrapping", Group: "Layout"),
         new("use_tabs", "Use Tabs", SettingType.Boolean, false,
-            Description: "Indent with tabs instead of spaces"),
+            Description: "Indent with tabs instead of spaces", Group: "Layout"),
         new("tab_width", "Indent Width", SettingType.Integer, 2, Min: 1, Max: 16,
-            Description: "Spaces per indent level"),
+            Description: "Spaces per indent level", Group: "Layout"),
         new("continuation_indents", "Continuation Indents", SettingType.Integer, 2, Min: 0, Max: 8,
-            Description: "Indent of wrapped lines, in indent levels"),
+            Description: "Indent of wrapped lines, in indent levels", Group: "Layout"),
         new("begin_style", "Begin Style", SettingType.Choice, "auto",
             Choices: ["auto", "always_wrap"],
-            Description: "always_wrap puts begin on its own line after if, for, while"),
+            Description: "always_wrap puts begin on its own line after if, for, while", Group: "Style"),
         new("line_ending", "Line Ending", SettingType.Choice, "native",
             Choices: ["native", "lf", "crlf"],
-            Description: "native is CRLF on Windows"),
+            Description: "native is CRLF on Windows", Group: "Layout"),
         new("format_multiline_strings", "Format Multiline Strings", SettingType.Boolean, true,
-            Description: "Re-indent the inside of triple-quoted strings")
+            Description: "Re-indent the inside of triple-quoted strings", Group: "Style")
     ];
 }

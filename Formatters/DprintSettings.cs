@@ -63,12 +63,12 @@ internal static class DprintSettings
             Choices: ["never", "always", "onlyMultiLine"], Group: Style),
         new("arrowFunction.useParentheses", "Arrow Function Parentheses", SettingType.Choice, "maintain",
             Choices: ["force", "maintain", "preferNone"],
-            Description: "Parentheses around a single arrow function parameter", Group: Style),
+            Description: "Parentheses around a single arrow function parameter", Group: "Syntax"),
         new("spaceSurroundingProperties", "Space Surrounding Properties", SettingType.Boolean, true,
-            Description: "{ a: 1 } rather than {a: 1}", Group: Style),
+            Description: "{ a: 1 } rather than {a: 1}", Group: "Syntax"),
         new("module.sortImportDeclarations", "Sort Imports", SettingType.Choice, "caseInsensitive",
             Choices: ["maintain", "caseSensitive", "caseInsensitive"],
-            Description: "maintain leaves import order alone", Group: Style),
+            Description: "maintain leaves import order alone", Group: "Syntax"),
         new("useBraces", "Use Braces", SettingType.Choice, "whenNotSingleLine",
             Choices: ["maintain", "whenNotSingleLine", "always", "preferNone"],
             Description: "Braces around the body of if, for and while", Group: "Braces"),
@@ -125,7 +125,7 @@ internal static class DprintSettings
     [
         LineWidth(120), IndentWidth, UseTabs, NewLineKind,
         new("comment.forceLeadingSpace", "Space After Comment Hash", SettingType.Boolean, true,
-            Description: "# comment rather than #comment", Group: Style),
+            Description: "# comment rather than #comment", Group: "Layout"),
         Extra
     ];
 
@@ -187,7 +187,7 @@ internal static class DprintSettings
     private static readonly SettingDefinition ComponentSelfClosing =
         new("component.selfClosing", "Self-Close Components", SettingType.Choice, Keep,
             Choices: KeepOrBool,
-            Description: "<Foo /> or <Foo></Foo>", Group: "Components");
+            Description: "<Foo /> or <Foo></Foo>", Group: "Attributes");
 
     public static readonly SettingDefinition[] Html = [.. MarkupBase, Extra];
 
@@ -233,7 +233,7 @@ internal static class DprintSettings
         ComponentSelfClosing,
         new("astroAttrShorthand", "Attribute Shorthand", SettingType.Choice, Keep,
             Choices: KeepOrBool,
-            Description: "title={title} to {title}", Group: "Astro"),
+            Description: "title={title} to {title}", Group: "Attributes"),
         Extra
     ];
 
@@ -251,7 +251,7 @@ internal static class DprintSettings
         new("bracketSpacing", "Bracket Spacing", SettingType.Boolean, false,
             Description: "[ 1, 2 ] rather than [1, 2]", Group: Style),
         new("preferSingleLine", "Prefer Single Line", SettingType.Boolean, false,
-            Description: "Collapse flow collections onto one line when they fit", Group: Style),
+            Description: "Collapse flow collections onto one line when they fit", Group: Layout),
         Extra
     ];
 
@@ -263,7 +263,7 @@ internal static class DprintSettings
             Description: "Commas between list items", Group: Style),
         new("singleLine", "Single Line", SettingType.Choice, "smart",
             Choices: ["prefer", "smart", "never"],
-            Description: "Collapse lists onto one line, or never", Group: Style),
+            Description: "Collapse lists onto one line, or never", Group: "Layout"),
         new("parenSpacing", "Parenthesis Spacing", SettingType.Boolean, false,
             Description: "( a: 1 ) rather than (a: 1)", Group: Style),
         new("bracketSpacing", "Bracket Spacing", SettingType.Boolean, false,

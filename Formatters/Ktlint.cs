@@ -72,7 +72,7 @@ internal static class Ktlint
     [
         new("ktlint_code_style", "Code Style", SettingType.Choice, "ktlint_official",
             Choices: ["ktlint_official", "intellij_idea", "android_studio"],
-            Description: "Sets the defaults of the options below and which rules run"),
+            Description: "Sets the defaults of the options below and which rules run", Group: "Layout"),
 
         new("indent_style", "Indent Style", SettingType.Choice, "space",
             Choices: ["space", "tab"], Group: "Layout"),
@@ -103,7 +103,7 @@ internal static class Ktlint
             Description: "When the body of fun f() = ... moves to the next line", Group: "Wrapping"),
 
         new("ktlint_experimental", "Experimental Rules", SettingType.Choice, "disabled",
-            Choices: ["disabled", "enabled"], Group: "Rules"),
+            Choices: ["disabled", "enabled"], Group: "Advanced"),
 
         Emit.Extra("More .editorconfig properties, separated by semicolons: ktlint_standard_no-wildcard-imports = disabled; ij_kotlin_imports_layout = *")
     ];

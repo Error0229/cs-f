@@ -230,29 +230,76 @@ internal sealed class CodeFormatterTool : IGuiTool
         await OpenConfigDialogAsync();
     }
 
+    // A DevToys dialog sizes itself to its content and does not scroll, so its content is given
+    // a fixed size: it must not change shape while open, and must fit the window.
+    private const int DialogWidth = 640;
+    private const int SettingRowHeight = 76;
+
+    private enum DialogRow { Title, Tabs, Page }
+    private enum DialogColumn { Main }
+
     private async Task OpenConfigDialogAsync()
     {
-        var definitions = FormatterSpecs.SettingsFor(_selectedLanguage);
-        var settingsControls = BuildSettingsControls(definitions);
+        var pages = SettingsPages.Build(FormatterSpecs.SettingsFor(_selectedLanguage));
+
+        // Every page is built once; choosing a tab shows one of them and hides the rest
+        var pageViews = pages
+            .Select(page => Stack().Vertical().SmallSpacing().WithChildren(page.Settings.Select(BuildSetting).ToArray()))
+            .ToArray();
+        var tabs = new IUIButton[pages.Count];
+
+        void SelectPage(int selected)
+        {
+            for (var i = 0; i < pageViews.Length; i++)
+            {
+                if (i == selected)
+                {
+                    pageViews[i].Show();
+                    tabs[i].AccentAppearance();
+                }
+                else
+                {
+                    pageViews[i].Hide();
+                    tabs[i].NeutralAppearance();
+                }
+            }
+        }
+
+        for (var i = 0; i < tabs.Length; i++)
+        {
+            var index = i;
+            tabs[i] = Button($"settings-tab-{i}").Text(pages[i].Title).OnClick(() => SelectPage(index));
+        }
+        SelectPage(0);
+
+        // The tallest page decides the height, for all of them
+        var pageHeight = SettingRowHeight * Math.Max(1, pages.Select(p => p.Rows).DefaultIfEmpty(0).Max());
+
+        IUIElement body = pages.Count > 0
+            ? Stack().Vertical().WithChildren(pageViews)
+            : Label().Style(UILabelStyle.Body).Text("No configurable settings for this formatter.");
 
         await _view.OpenDialogAsync(
             dialogContent:
-                Stack()
-                    .Vertical()
-                    .LargeSpacing()
-                    .WithChildren(
-                        Label()
-                            .Style(UILabelStyle.Subtitle)
-                            .Text($"{_selectedLanguage.ToDisplayName()} Settings"),
-
-                        settingsControls.Length > 0
-                            ? Stack()
-                                .Vertical()
-                                .MediumSpacing()
-                                .WithChildren(settingsControls)
-                            : Label()
-                                .Style(UILabelStyle.Body)
-                                .Text("No configurable settings for this formatter.")),
+                Grid()
+                    .RowSmallSpacing()
+                    .Rows(
+                        (DialogRow.Title, UIGridLength.Auto),
+                        (DialogRow.Tabs, UIGridLength.Auto),
+                        (DialogRow.Page, new UIGridLength(pageHeight, UIGridUnitType.Pixel)))
+                    .Columns(
+                        (DialogColumn.Main, new UIGridLength(DialogWidth, UIGridUnitType.Pixel)))
+                    .Cells(
+                        Cell(DialogRow.Title, DialogColumn.Main,
+                            Label()
+                                .Style(UILabelStyle.Subtitle)
+                                .Text($"{_selectedLanguage.ToDisplayName()} Settings")),
+                        // A single page needs no tabs
+                        Cell(DialogRow.Tabs, DialogColumn.Main,
+                            pages.Count > 1
+                                ? Wrap().SmallSpacing().WithChildren(tabs)
+                                : Stack()),
+                        Cell(DialogRow.Page, DialogColumn.Main, body)),
             footerContent:
                 Stack()
                     .Horizontal()
@@ -269,29 +316,23 @@ internal sealed class CodeFormatterTool : IGuiTool
             isDismissible: true);
     }
 
-    private IUIElement[] BuildSettingsControls(SettingDefinition[] definitions)
-    {
-        var controls = new List<IUIElement>();
-
-        // One collapsible group per SettingDefinition.Group, in the order the groups first appear
-        foreach (var group in definitions.GroupBy(def => def.Group))
-        {
-            var settings = group.Select(BuildSetting).ToArray();
-
-            if (group.Key is null)
-                controls.AddRange(settings);
-            else
-                controls.Add(SettingGroup($"setting-group-{ToId(group.Key)}").Title(group.Key).WithSettings(settings));
-        }
-
-        return controls.ToArray();
-    }
-
-    private IUISetting BuildSetting(SettingDefinition def)
+    private IUIElement BuildSetting(SettingDefinition def)
     {
         var currentValue = _pendingSettings.TryGetValue(def.Key, out var val)
             ? val
             : def.DefaultValue;
+
+        // Free text needs the full width: title and description, then the input on its own line
+        if (def.Type == SettingType.Text)
+        {
+            return Stack()
+                .Vertical()
+                .SmallSpacing()
+                .WithChildren(
+                    Label().Text(def.DisplayName),
+                    Label().Style(UILabelStyle.Caption).Text(def.Description ?? ""),
+                    BuildTextSetting(def, currentValue));
+        }
 
         var setting = Setting($"setting-row-{ToId(def.Key)}").Title(def.DisplayName);
         if (def.Description != null)
@@ -302,7 +343,6 @@ internal sealed class CodeFormatterTool : IGuiTool
             SettingType.Boolean => BuildBooleanSetting(def, currentValue),
             SettingType.Integer => BuildIntegerSetting(def, currentValue),
             SettingType.Choice => BuildChoiceSetting(def, currentValue),
-            SettingType.Text => BuildTextSetting(def, currentValue),
             _ => Label().Text($"Unknown setting type: {def.Key}")
         });
     }

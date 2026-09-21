@@ -90,7 +90,7 @@ A code formatting extension for [DevToys 2.0](https://devtoys.app/) that support
 Click the gear icon to open the settings of the selected language. The options are the
 formatter's own: each one is passed to the tool under the tool's own name, and an option left
 on its default is not passed at all, so the tool's defaults are what you get. Options are
-grouped, and the groups collapse.
+spread over tabs, a handful per tab.
 
 | Language | Formatter | Options | Extra options field |
 |----------|-----------|---------|---------------------|

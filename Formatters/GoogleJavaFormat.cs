@@ -20,7 +20,7 @@ internal static class GoogleJavaFormat
     private static readonly SettingDefinition[] Settings =
     [
         new("--aosp", "AOSP Style", SettingType.Boolean, false,
-            Description: "Android style: 4-space indent instead of 2"),
+            Description: "Android style: 4-space indent instead of 2", Group: "Style"),
         new("--skip-sorting-imports", "Skip Sorting Imports", SettingType.Boolean, false,
             Description: "Leave the order of imports alone", Group: "Imports"),
         new("--skip-removing-unused-imports", "Keep Unused Imports", SettingType.Boolean, false,
@@ -28,8 +28,8 @@ internal static class GoogleJavaFormat
         new("--fix-imports-only", "Fix Imports Only", SettingType.Boolean, false,
             Description: "Sort and prune imports, format nothing else", Group: "Imports"),
         new("--skip-reflowing-long-strings", "Skip Reflowing Long Strings", SettingType.Boolean, false,
-            Description: "Do not split string literals that pass column 100", Group: "Skip"),
+            Description: "Do not split string literals that pass column 100", Group: "Style"),
         new("--skip-javadoc-formatting", "Skip Javadoc Formatting", SettingType.Boolean, false,
-            Description: "Leave Javadoc comments untouched", Group: "Skip")
+            Description: "Leave Javadoc comments untouched", Group: "Style")
     ];
 }
