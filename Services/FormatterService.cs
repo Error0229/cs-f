@@ -199,8 +199,10 @@ public class FormatterService
         foreach (var searchPath in _binarySearchPaths)
         {
             var bundledPath = Path.Combine(searchPath, $"{command}.exe");
+            // A tool may look at its own path once running (clang-format does), so it gets the
+            // path as its own process will see it, not the Store app's virtual one
             if (File.Exists(bundledPath))
-                return bundledPath;
+                return RealPath.Of(bundledPath);
         }
 
         // Fall back to PATH lookup
