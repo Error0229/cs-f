@@ -32,7 +32,8 @@ public class PayloadCache
     public string? Find(string launcherPath, LauncherPayload payload)
     {
         var dir = FolderFor(launcherPath);
-        return dir is not null && payload.Files.All(f => File.Exists(Path.Combine(dir, f))) ? dir : null;
+        // The program that runs from here is a separate process: give it the real location
+        return dir is not null && payload.Files.All(f => File.Exists(Path.Combine(dir, f))) ? RealPath.Of(dir) : null;
     }
 
     /// <summary>

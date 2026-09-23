@@ -75,6 +75,9 @@ public class FormatterService
         try
         {
             Directory.CreateDirectory(dir);
+            // The formatter reads our config file from here by itself; in the Store app the
+            // directory may be somewhere else than where we see it
+            dir = RealPath.Of(dir);
             var settings = _configManager.GetChangedSettings(language, spec);
 
             string[] args;
