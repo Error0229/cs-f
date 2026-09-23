@@ -162,9 +162,12 @@ public class FormatterService
             return arg;
 
         var fileName = arg[(arg.LastIndexOf('/') + 1)..];
-        return _binarySearchPaths
+        var local = _binarySearchPaths
             .Select(path => Path.Combine(path, "plugins", fileName))
-            .FirstOrDefault(File.Exists) ?? arg;
+            .FirstOrDefault(File.Exists);
+
+        // dprint opens the file itself, so it needs the path as the world sees it
+        return local is null ? arg : RealPath.Of(local);
     }
 
     private const string DprintPluginHost = "https://plugins.dprint.dev/";
