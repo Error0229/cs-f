@@ -21,12 +21,13 @@ internal static class Sqruff
     public static FormatterSpec Spec() => new()
     {
         Command = "sqruff",
-        Args = ["fix", "--config", "{config}", "-"],
+        // -f human: with GITHUB_ACTIONS set, sqruff would switch to annotation format by itself
+        Args = ["fix", "-f", "human", "--config", "{config}", "-"],
         ConfigFileName = "config.sqruff",
         ConfigText = Config,
         // Exit 1 is normal whenever a rule that cannot be auto-fixed fires; the SQL is still formatted.
         // On a parse error sqruff echoes the input back, which only stderr gives away.
-        Success = SuccessRule.Codes(0, 1).FailsOn(@"\|\s*\?{4}\s*\|"),
+        Success = SuccessRule.Codes(0, 1).FailsOn(@"\?{4}"),
         // sqruff prints one newline too many
         PostProcess = sql => sql.EndsWith("\n\n") ? sql[..^1] : sql,
         DocsUrl = "https://github.com/quarylabs/sqruff/blob/main/docs/reference/sample-configurations.md",
