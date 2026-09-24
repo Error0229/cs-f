@@ -14,9 +14,18 @@ public class DefaultsConfig
 
 public class FormatterEntry
 {
+    /// <summary>
+    /// Empty unless the user wrote their own formatter command in config.toml.
+    /// </summary>
     public string Command { get; set; } = string.Empty;
     public string[] Args { get; set; } = [];
+
+    /// <summary>
+    /// Only read, to recognise entries saved by the versions that formatted through Node.js.
+    /// </summary>
     public bool RequiresNode { get; set; } = false;
+
+    public bool IsUserDefined => !string.IsNullOrWhiteSpace(Command);
 
     /// <summary>
     /// If true, the formatter doesn't support stdin and requires a temp file.

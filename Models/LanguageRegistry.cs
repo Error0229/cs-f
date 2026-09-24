@@ -39,6 +39,15 @@ public static class LanguageRegistry
         new(Language.Svelte, "Svelte", "svelte", "svelte", "html"),
         new(Language.Astro, "Astro", "astro", "astro", "html"),
 
+        // Template languages, same plugin. Monaco knows Twig and Handlebars; the others borrow the closest.
+        new(Language.Angular, "Angular Template", "angular", "component.html", "html"),
+        new(Language.Jinja, "Jinja", "jinja", "jinja", "twig"),
+        new(Language.Twig, "Twig", "twig", "twig", "twig"),
+        new(Language.Nunjucks, "Nunjucks", "nunjucks", "njk", "twig"),
+        new(Language.Vento, "Vento", "vento", "vto", "html"),
+        new(Language.Handlebars, "Handlebars", "handlebars", "hbs", "handlebars"),
+        new(Language.Mustache, "Mustache", "mustache", "mustache", "handlebars"),
+
         // dprint plugins
         new(Language.Yaml, "YAML", "yaml", "yaml", "yaml"),
         new(Language.GraphQL, "GraphQL", "graphql", "graphql", "graphql"),
@@ -63,6 +72,13 @@ public static class LanguageRegistry
         new(Language.Php, "PHP", "php", "php", "php"),
         new(Language.Matlab, "MATLAB", "matlab", "m", "plaintext"),
         new(Language.Ruby, "Ruby", "ruby", "rb", "ruby"),
+
+        // dprint plugins
+        new(Language.Julia, "Julia", "julia", "jl", "julia"),
+        new(Language.CMake, "CMake", "cmake", "cmake", "plaintext"),
+        new(Language.Latex, "LaTeX", "latex", "tex", "plaintext"),
+        new(Language.Bibtex, "BibTeX", "bibtex", "bib", "plaintext"),
+        new(Language.Typst, "Typst", "typst", "typ", "plaintext"),
     ];
 
     private static readonly Dictionary<Language, LanguageInfo> _byLanguage =

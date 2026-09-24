@@ -1,0 +1,1713 @@
+##### perltidy v20250912 raw dumps (bundled exe) #####
+
+##### perltidy -npro --dump-defaults #####
+Default command line options:
+add-lone-trailing-commas
+add-newlines
+add-semicolons
+add-terminal-newline
+add-whitespace
+backup-file-extension=bak
+backup-method=copy
+blank-lines-after-opening-block=0
+blank-lines-before-closing-block=0
+blank-lines-before-packages=1
+blank-lines-before-subs=1
+blanks-before-blocks
+blanks-before-comments
+block-brace-tightness=0
+block-brace-vertical-tightness=0
+brace-follower-vertical-tightness=1
+brace-tightness=1
+brace-vertical-tightness-closing=0
+brace-vertical-tightness=0
+break-after-labels=0
+break-at-old-attribute-breakpoints
+break-at-old-keyword-breakpoints
+break-at-old-logical-breakpoints
+break-at-old-ternary-breakpoints
+break-before-hash-brace-and-indent=0
+break-before-hash-brace=0
+break-before-paren-and-indent=0
+break-before-paren=0
+break-before-square-bracket-and-indent=0
+break-before-square-bracket=0
+character-encoding=guess
+closing-brace-indentation=0
+closing-paren-indentation=0
+closing-side-comment-else-flag=0
+closing-side-comment-interval=6
+closing-side-comment-maximum-text=20
+closing-side-comments-balanced
+closing-square-bracket-indentation=0
+code-skipping
+comma-arrow-breakpoints=5
+continuation-indentation=2
+cuddled-break-option=1
+default-tabsize=8
+delete-lone-trailing-commas
+delete-old-newlines
+delete-repeated-commas
+delete-semicolons
+detect-format-skipping-from-start
+dump-block-minimum-lines=20
+dump-block-types=sub
+encode-output-strings
+entab-leading-whitespace=0
+extended-syntax
+file-size-order
+format-skipping
+format=tidy
+function-paren-vertical-alignment
+fuzzy-line-length
+hanging-side-comments
+html-entities
+html-table-of-contents
+indent-block-comments
+indent-columns=4
+indent-leading-semicolon
+integer-range-check=2
+interbracket-arrow-complexity=1
+iterations=1
+keep-old-blank-lines=1
+keyword-group-blanks-after=1
+keyword-group-blanks-before=1
+keyword-group-blanks-repeat-count=0
+keyword-group-blanks-size=5
+keyword-paren-inner-tightness=1
+logical-padding
+long-block-line-count=8
+look-for-autoloader
+look-for-selfloader
+maximum-consecutive-blank-lines=1
+maximum-file-size-mb=10
+maximum-level-errors=1
+maximum-line-length=80
+maximum-unexpected-errors=0
+memoize
+minimum-space-to-comment=4
+nested-ternary-maximum-depth=0
+nobrace-left-and-indent
+nocheck-syntax
+nocuddled-else
+nodelete-old-whitespace
+noextended-continuation-indentation
+nohtml
+nokeyword-group-blanks-delete
+nokeyword-group-blanks-inside
+nologfile
+non-indenting-braces
+noquiet
+noshow-options
+nostatic-side-comments
+notabs
+nouse-unicode-gcstring
+nowarning-output
+noweld-nested-containers
+one-line-block-nesting=0
+one-line-block-semicolons=1
+outdent-labels
+outdent-long-comments
+outdent-long-quotes
+paren-tightness=1
+paren-vertical-tightness-closing=0
+paren-vertical-tightness=0
+pass-version-line
+pod2html
+recombine
+short-concatenation-item-length=8
+similar-keys-maximum-difference=1
+similar-keys-maximum-pairs=25
+similar-keys-minimum-length=4
+space-backslash-quote=1
+space-for-semicolon
+space-prototype-paren=1
+space-signature-paren=1
+square-bracket-tightness=1
+square-bracket-vertical-tightness-closing=0
+square-bracket-vertical-tightness=0
+static-block-comments
+timeout-in-seconds=10
+timestamp
+trim-qw
+valign-block-comments
+valign-code
+valign-side-comments
+valign-signed-numbers
+valign-signed-numbers-limit=20
+warn-mismatched-arg-overcount-cutoff=1
+warn-mismatched-arg-undercount-cutoff=4
+warn-unique-keys-cutoff=1
+whitespace-cycle=0
+
+##### perltidy -npro --dump-long-names #####
+# Command line long names (passed to GetOptions)
+#--------------------------------------------------
+# here is a summary of the Getopt codes:
+# <none> does not take an argument
+# =s takes a mandatory string
+# :s takes an optional string
+# =i takes a mandatory integer
+# :i takes an optional integer
+# ! does not take an argument and may be negated
+#  i.e., -foo and -nofoo are allowed
+# a double dash signals the end of the options list
+#
+#--------------------------------------------------
+DEBUG!
+add-interbracket-arrows!
+add-lone-trailing-commas!
+add-missing-else!
+add-missing-else-comment=s
+add-newlines!
+add-semicolons!
+add-terminal-newline!
+add-trailing-commas!
+add-whitespace!
+assert-tidy!
+assert-untidy!
+backlink=s
+backup-and-modify-in-place!
+backup-file-extension=s
+backup-method=s
+blank-lines-after-opening-block-list=s
+blank-lines-after-opening-block=i
+blank-lines-before-closing-block-list=s
+blank-lines-before-closing-block=i
+blank-lines-before-packages=i
+blank-lines-before-subs=i
+blanks-before-blocks!
+blanks-before-comments!
+block-brace-tightness=i
+block-brace-vertical-tightness-list=s
+block-brace-vertical-tightness=i
+brace-follower-vertical-tightness=i
+brace-left-and-indent!
+brace-left-and-indent-exclusion-list=s
+brace-left-and-indent-list=s
+brace-left-exclusion-list=s
+brace-left-list=s
+brace-tightness=i
+brace-vertical-tightness-closing=i
+brace-vertical-tightness=i
+break-after-all-operators!
+break-after-labels=i
+break-at-old-attribute-breakpoints!
+break-at-old-comma-breakpoints!
+break-at-old-comma-types=s
+break-at-old-keyword-breakpoints!
+break-at-old-logical-breakpoints!
+break-at-old-method-breakpoints!
+break-at-old-semicolon-breakpoints!
+break-at-old-ternary-breakpoints!
+break-at-trailing-comma-types=s
+break-before-all-operators!
+break-before-hash-brace-and-indent=i
+break-before-hash-brace=i
+break-before-paren-and-indent=i
+break-before-paren=i
+break-before-square-bracket-and-indent=i
+break-before-square-bracket=i
+break-open-compact-parens=s
+cachedir=s
+character-encoding=s
+check-syntax!
+closing-brace-indentation=i
+closing-paren-indentation=i
+closing-side-comment-else-flag=i
+closing-side-comment-exclusion-list=s
+closing-side-comment-interval=i
+closing-side-comment-list=s
+closing-side-comment-maximum-text=i
+closing-side-comment-prefix=s
+closing-side-comment-warnings!
+closing-side-comments!
+closing-side-comments-balanced!
+closing-square-bracket-indentation=i
+closing-token-indentation=i
+code-skipping!
+code-skipping-begin=s
+code-skipping-end=s
+code-skipping-from-start!
+comma-arrow-breakpoints=i
+continuation-indentation=i
+cuddled-block-list-exclusive!
+cuddled-block-list=s
+cuddled-break-option=i
+cuddled-else!
+cuddled-paren-brace!
+cuddled-paren-brace-weld!
+default-tabsize=i
+delay-trailing-comma-operations!
+delete-block-comments!
+delete-closing-side-comments!
+delete-interbracket-arrows!
+delete-lone-trailing-commas!
+delete-old-newlines!
+delete-old-whitespace!
+delete-pod!
+delete-repeated-commas!
+delete-semicolons!
+delete-side-comments!
+delete-trailing-commas!
+delete-weld-interfering-commas!
+detect-format-skipping-from-start!
+dump-block-minimum-lines=i
+dump-block-summary!
+dump-block-types=s
+dump-cuddled-block-list!
+dump-defaults!
+dump-hash-keys!
+dump-integer-option-range!
+dump-long-names!
+dump-mismatched-args!
+dump-mismatched-returns!
+dump-mixed-call-parens!
+dump-nested-ternaries!
+dump-options!
+dump-profile!
+dump-short-names!
+dump-similar-keys!
+dump-token-types!
+dump-unique-keys!
+dump-unusual-variables!
+dump-want-left-space!
+dump-want-right-space!
+encode-output-strings!
+entab-leading-whitespace=i
+extended-block-tightness!
+extended-block-tightness-list=s
+extended-continuation-indentation!
+extended-line-up-parentheses!
+extended-syntax!
+file-size-order!
+fixed-position-side-comment=i
+force-read-binary!
+format-skipping!
+format-skipping-begin=s
+format-skipping-end=s
+format=s
+frames!
+function-paren-vertical-alignment!
+fuzzy-line-length!
+grep-alias-exclusion-list=s
+grep-alias-list=s
+hanging-side-comments!
+help
+html!
+html-bold-bareword!
+html-bold-colon!
+html-bold-comma!
+html-bold-comment!
+html-bold-here-doc-target!
+html-bold-here-doc-text!
+html-bold-identifier!
+html-bold-keyword!
+html-bold-label!
+html-bold-numeric!
+html-bold-paren!
+html-bold-pod-text!
+html-bold-punctuation!
+html-bold-quote!
+html-bold-semicolon!
+html-bold-structure!
+html-bold-subroutine!
+html-bold-v-string!
+html-color-background=s
+html-color-bareword=s
+html-color-colon=s
+html-color-comma=s
+html-color-comment=s
+html-color-here-doc-target=s
+html-color-here-doc-text=s
+html-color-identifier=s
+html-color-keyword=s
+html-color-label=s
+html-color-numeric=s
+html-color-paren=s
+html-color-pod-text=s
+html-color-punctuation=s
+html-color-quote=s
+html-color-semicolon=s
+html-color-structure=s
+html-color-subroutine=s
+html-color-v-string=s
+html-entities!
+html-italic-bareword!
+html-italic-colon!
+html-italic-comma!
+html-italic-comment!
+html-italic-here-doc-target!
+html-italic-here-doc-text!
+html-italic-identifier!
+html-italic-keyword!
+html-italic-label!
+html-italic-numeric!
+html-italic-paren!
+html-italic-pod-text!
+html-italic-punctuation!
+html-italic-quote!
+html-italic-semicolon!
+html-italic-structure!
+html-italic-subroutine!
+html-italic-v-string!
+html-line-numbers
+html-linked-style-sheet=s
+html-pre-only
+html-src-extension=s
+html-table-of-contents!
+html-toc-extension=s
+htmlroot=s
+ignore-old-breakpoints!
+ignore-perlcritic-comments!
+ignore-side-comment-lengths!
+indent-block-comments!
+indent-closing-brace!
+indent-columns=i
+indent-leading-semicolon!
+indent-spaced-block-comments!
+integer-range-check=i
+interbracket-arrow-complexity=i
+interbracket-arrow-style=s
+iterations=i
+keep-interior-semicolons!
+keep-old-blank-lines-exceptions=s
+keep-old-blank-lines=i
+keep-old-breakpoints-after=s
+keep-old-breakpoints-before=s
+keyword-group-blanks-after=i
+keyword-group-blanks-before=i
+keyword-group-blanks-delete!
+keyword-group-blanks-inside!
+keyword-group-blanks-list=s
+keyword-group-blanks-repeat-count=i
+keyword-group-blanks-size=s
+keyword-paren-inner-tightness-list=s
+keyword-paren-inner-tightness=i
+libpods=s
+line-range-tidy=s
+line-up-parentheses!
+line-up-parentheses-exclusion-list=s
+line-up-parentheses-inclusion-list=s
+logfile!
+logfile-gap:i
+logical-padding!
+long-block-line-count=i
+look-for-autoloader!
+look-for-hash-bang!
+look-for-selfloader!
+maximum-consecutive-blank-lines=i
+maximum-fields-per-table=s
+maximum-file-size-mb=i
+maximum-level-errors=i
+maximum-line-length=i
+maximum-unexpected-errors=i
+memoize!
+minimize-continuation-indentation!
+minimum-space-to-comment=i
+multiple-token-tightness=s
+nested-ternary-maximum-depth=i
+no-profile
+nohtml-style-sheets
+non-indenting-brace-prefix=s
+non-indenting-braces!
+nopro
+noprofile
+nospace-after-keyword=s
+notidy
+nowant-call-parens=s
+nowant-left-space=s
+nowant-right-space=s
+npro
+one-line-block-exclusion-list=s
+one-line-block-nesting=i
+one-line-block-semicolons=i
+opening-anonymous-sub-brace-on-new-line!
+opening-brace-always-on-right!
+opening-brace-on-new-line!
+opening-hash-brace-right!
+opening-paren-right!
+opening-square-bracket-right!
+opening-sub-brace-on-new-line!
+outdent-keyword-list=s
+outdent-keywords!
+outdent-labels!
+outdent-long-comments!
+outdent-long-quotes!
+outdent-static-block-comments!
+outfile=s
+output-file-extension=s
+output-line-ending=s
+output-path=s
+pack-operator-types=s
+paren-tightness=i
+paren-vertical-tightness-closing=i
+paren-vertical-tightness=i
+pass-version-line!
+perl-syntax-check-flags=s
+pod2html!
+podflush
+podheader!
+podindex!
+podpath=s
+podquiet!
+podrecurse!
+podroot=s
+podverbose!
+preserve-line-endings!
+profile=s
+quiet!
+qw-as-function!
+recombine!
+short-concatenation-item-length=i
+show-options!
+similar-keys-maximum-difference=i
+similar-keys-maximum-pairs=i
+similar-keys-minimum-length=i
+skip-formatting-except-id=s
+space-after-keyword=s
+space-backslash-quote=i
+space-for-semicolon!
+space-function-paren!
+space-keyword-paren!
+space-prototype-paren=i
+space-signature-paren=i
+space-terminal-semicolon!
+square-bracket-tightness=i
+square-bracket-vertical-tightness-closing=i
+square-bracket-vertical-tightness=i
+stack-closing-block-brace!
+stack-closing-hash-brace!
+stack-closing-paren!
+stack-closing-square-bracket!
+stack-opening-hash-brace!
+stack-opening-paren!
+stack-opening-square-bracket!
+standard-error-output!
+standard-output!
+starting-indentation-level=i
+static-block-comment-prefix=s
+static-block-comments!
+static-side-comment-prefix=s
+static-side-comments!
+stylesheet
+sub-alias-list=s
+tabs!
+tee-block-comments!
+tee-pod!
+tee-side-comments!
+tight-secret-operators!
+timeout-in-seconds=i
+timestamp!
+title=s
+trim-pod!
+trim-qw!
+use-feature=s
+use-unicode-gcstring!
+valign-block-comments!
+valign-code!
+valign-exclusion-list=s
+valign-if-unless!
+valign-inclusion-list=s
+valign-side-comments!
+valign-signed-numbers!
+valign-signed-numbers-limit=i
+valign-wide-equals!
+variable-maximum-line-length!
+version
+vertical-tightness-closing=i
+vertical-tightness=i
+want-break-after=s
+want-break-before=s
+want-call-parens=s
+want-left-space=s
+want-right-space=s
+want-trailing-commas=s
+warn-interbracket-arrows!
+warn-mismatched-arg-exclusion-list=s
+warn-mismatched-arg-overcount-cutoff=i
+warn-mismatched-arg-types=s
+warn-mismatched-arg-undercount-cutoff=i
+warn-mismatched-args!
+warn-mismatched-return-exclusion-list=s
+warn-mismatched-return-types=s
+warn-mismatched-returns!
+warn-missing-else!
+warn-nested-ternaries!
+warn-similar-keys!
+warn-unique-keys!
+warn-unique-keys-cutoff=i
+warn-variable-exclusion-list=s
+warn-variable-types=s
+warning-output!
+weld-fat-comma!
+weld-nested-containers!
+weld-nested-exclusion-list=s
+whitespace-cycle=i
+
+##### perltidy -npro --dump-short-names #####
+List of short names.  This list shows how all abbreviations are
+translated into other abbreviations and, eventually, into long names.
+New abbreviations may be defined in a .perltidyrc file.
+For a list of all long names, use perltidy --dump-long-names (-dln).
+--------------------------------------------------------------------------
+D --> DEBUG
+UTF8 --> character-encoding=utf8
+act=0 --> pt=0 sbt=0 bt=0 bbt=0
+act=1 --> pt=1 sbt=1 bt=1 bbt=1
+act=2 --> pt=2 sbt=2 bt=2 bbt=2
+aia --> add-interbracket-arrows
+all-containers-tightness=0 --> pt=0 sbt=0 bt=0 bbt=0
+all-containers-tightness=1 --> pt=1 sbt=1 bt=1 bbt=1
+all-containers-tightness=2 --> pt=2 sbt=2 bt=2 bbt=2
+altc --> add-lone-trailing-commas
+ame --> add-missing-else
+amec --> add-missing-else-comment
+anl --> add-newlines
+asbl --> opening-anonymous-sub-brace-on-new-line
+asc --> add-semicolons
+ast --> assert-tidy
+asu --> assert-untidy
+atc --> add-trailing-commas
+atnl --> add-terminal-newline
+aws --> add-whitespace
+b --> backup-and-modify-in-place
+baa --> cab=0
+baao --> break-after-all-operators
+bal --> break-after-labels
+bar --> opening-brace-always-on-right
+bbao --> break-before-all-operators
+bbb --> blanks-before-blocks
+bbc --> blanks-before-comments
+bbhb --> break-before-hash-brace
+bbhbi --> break-before-hash-brace-and-indent
+bbp --> break-before-paren
+bbpi --> break-before-paren-and-indent
+bbs --> blbs=1 blbp=1
+bbsb --> break-before-square-bracket
+bbsbi --> break-before-square-bracket-and-indent
+bbt --> block-brace-tightness
+bbvt --> block-brace-vertical-tightness
+bbvtl --> block-brace-vertical-tightness-list
+bext --> backup-file-extension
+bfvt --> brace-follower-vertical-tightness
+bl --> opening-brace-on-new-line
+blanks-before-subs --> blbs=1 blbp=1
+blao --> blank-lines-after-opening-block
+blaol --> blank-lines-after-opening-block-list
+blbc --> blank-lines-before-closing-block
+blbcl --> blank-lines-before-closing-block-list
+blbp --> blank-lines-before-packages
+blbs --> blank-lines-before-subs
+bli --> brace-left-and-indent
+blil --> brace-left-and-indent-list
+blixl --> brace-left-and-indent-exclusion-list
+bll --> brace-left-list
+blxl --> brace-left-exclusion-list
+bm --> backup-method
+boa --> break-at-old-attribute-breakpoints
+boc --> break-at-old-comma-breakpoints
+bocp --> break-open-compact-parens
+boct --> break-at-old-comma-types
+bok --> break-at-old-keyword-breakpoints
+bol --> break-at-old-logical-breakpoints
+bom --> break-at-old-method-breakpoints
+bos --> break-at-old-semicolon-breakpoints
+bot --> break-at-old-ternary-breakpoints
+brace-left --> opening-brace-on-new-line
+break-after-comma-arrows --> cab=0
+break-at-old-trinary-breakpoints --> bot
+bt --> brace-tightness
+btct --> break-at-trailing-comma-types
+bvt --> brace-vertical-tightness
+bvtc --> brace-vertical-tightness-closing
+cab --> comma-arrow-breakpoints
+cb --> cuddled-else
+cbi --> closing-brace-indentation
+cbl --> cuddled-block-list
+cblx --> cuddled-block-list-exclusive
+cbo --> cuddled-break-option
+ce --> cuddled-else
+ci --> continuation-indentation
+closing-token-indentation=0 --> cpi=0 cbi=0 csbi=0
+closing-token-indentation=1 --> cpi=1 cbi=1 csbi=1
+closing-token-indentation=2 --> cpi=2 cbi=2 csbi=2
+conv --> it=4
+converge --> it=4
+cpb --> cuddled-paren-brace
+cpbw --> cuddled-paren-brace-weld
+cpi --> closing-paren-indentation
+cs --> code-skipping
+csb --> code-skipping-begin
+csbi --> closing-square-bracket-indentation
+csc --> closing-side-comments
+cscb --> closing-side-comments-balanced
+csce --> closing-side-comment-else-flag
+csci --> closing-side-comment-interval
+cscl --> closing-side-comment-list
+cscp --> closing-side-comment-prefix
+csct --> closing-side-comment-maximum-text
+cscw --> closing-side-comment-warnings
+cscxl --> closing-side-comment-exclusion-list
+cse --> code-skipping-end
+csfs --> code-skipping-from-start
+css --> html-linked-style-sheet
+cti --> closing-token-indentation
+cti=0 --> cpi=0 cbi=0 csbi=0
+cti=1 --> cpi=1 cbi=1 csbi=1
+cti=2 --> cpi=2 cbi=2 csbi=2
+cuddled-blocks --> cuddled-else
+dac --> delete-all-comments
+dbc --> delete-block-comments
+dbl --> dump-block-minimum-lines
+dbs --> dump-block-summary
+dbt --> dump-block-types
+dcbl --> dump-cuddled-block-list
+dcsc --> delete-closing-side-comments
+ddf --> dump-defaults
+delete-all-comments --> delete-block-comments delete-side-comments delete-pod
+dfsfs --> detect-format-skipping-from-start
+dhk --> dump-hash-keys
+dia --> delete-interbracket-arrows
+dior --> dump-integer-option-range
+dln --> dump-long-names
+dltc --> delete-lone-trailing-commas
+dma --> dump-mismatched-args
+dmcp --> dump-mixed-call-parens
+dmr --> dump-mismatched-returns
+dnl --> delete-old-newlines
+dnt --> dump-nested-ternaries
+dop --> dump-options
+dp --> delete-pod
+dpro --> dump-profile
+drc --> delete-repeated-commas
+dsc --> delete-side-comments
+dsk --> dump-similar-keys
+dsm --> delete-semicolons
+dsn --> dump-short-names
+dt --> default-tabsize
+dtc --> delete-trailing-commas
+dtco --> delay-trailing-comma-operations
+dtt --> dump-token-types
+duk --> dump-unique-keys
+duv --> dump-unusual-variables
+dwic --> delete-weld-interfering-commas
+dwls --> dump-want-left-space
+dwrs --> dump-want-right-space
+dws --> delete-old-whitespace
+enc --> character-encoding
+eos --> encode-output-strings
+et --> entab-leading-whitespace
+extrude --> ci=0 delete-old-newlines delete-old-whitespace delete-semicolons indent-columns=0 maximum-consecutive-blank-lines=0 maximum-line-length=1 noadd-semicolons noadd-whitespace noblanks-before-blocks blank-lines-before-subs=0 blank-lines-before-packages=0 nofuzzy-line-length notabs norecombine
+f --> force-read-binary
+fbl --> freeze-blank-lines
+fll --> fuzzy-line-length
+fmt --> format
+fnl --> freeze-newlines
+fpsc --> fixed-position-side-comment
+fpva --> function-paren-vertical-alignment
+freeze-blank-lines --> maximum-consecutive-blank-lines=0 keep-old-blank-lines=2
+freeze-newlines --> noadd-newlines nodelete-old-newlines
+freeze-whitespace --> noadd-whitespace nodelete-old-whitespace
+frm --> frames
+fs --> format-skipping
+fsb --> format-skipping-begin
+fse --> format-skipping-end
+fso --> file-size-order
+fws --> freeze-whitespace
+g --> logfile-gap
+gal --> grep-alias-list
+gaxl --> grep-alias-exclusion-list
+gcs --> use-unicode-gcstring
+gnu --> gnu-style
+gnu-style --> lp bl noll pt=2 bt=2 sbt=2 cpi=1 csbi=1 cbi=1
+guess --> character-encoding=guess
+h --> help
+hbc --> html-bold-comment
+hbcm --> html-bold-comma
+hbco --> html-bold-colon
+hbh --> html-bold-here-doc-target
+hbhh --> html-bold-here-doc-text
+hbi --> html-bold-identifier
+hbj --> html-bold-label
+hbk --> html-bold-keyword
+hbm --> html-bold-subroutine
+hbn --> html-bold-numeric
+hbp --> html-bold-paren
+hbpd --> html-bold-pod-text
+hbpu --> html-bold-punctuation
+hbq --> html-bold-quote
+hbs --> html-bold-structure
+hbsc --> html-bold-semicolon
+hbv --> html-bold-v-string
+hbw --> html-bold-bareword
+hcbg --> html-color-background
+hcc --> html-color-comment
+hccm --> html-color-comma
+hcco --> html-color-colon
+hch --> html-color-here-doc-target
+hchh --> html-color-here-doc-text
+hci --> html-color-identifier
+hcj --> html-color-label
+hck --> html-color-keyword
+hcm --> html-color-subroutine
+hcn --> html-color-numeric
+hcp --> html-color-paren
+hcpd --> html-color-pod-text
+hcpu --> html-color-punctuation
+hcq --> html-color-quote
+hcs --> html-color-structure
+hcsc --> html-color-semicolon
+hcv --> html-color-v-string
+hcw --> html-color-bareword
+hent --> html-entities
+hic --> html-italic-comment
+hicm --> html-italic-comma
+hico --> html-italic-colon
+hih --> html-italic-here-doc-target
+hihh --> html-italic-here-doc-text
+hii --> html-italic-identifier
+hij --> html-italic-label
+hik --> html-italic-keyword
+him --> html-italic-subroutine
+hin --> html-italic-numeric
+hip --> html-italic-paren
+hipd --> html-italic-pod-text
+hipu --> html-italic-punctuation
+hiq --> html-italic-quote
+his --> html-italic-structure
+hisc --> html-italic-semicolon
+hiv --> html-italic-v-string
+hiw --> html-italic-bareword
+hsc --> hanging-side-comments
+html --> format=html
+i --> indent-columns
+iac --> interbracket-arrow-complexity
+ias --> interbracket-arrow-style
+ibc --> indent-block-comments
+icb --> indent-closing-brace
+icp --> cpi=2 cbi=2 csbi=2
+ils --> indent-leading-semicolon
+indent-closing-paren --> cpi=2 cbi=2 csbi=2
+indent-only --> freeze-newlines freeze-whitespace
+io --> indent-only
+iob --> ignore-old-breakpoints
+ipc --> ignore-perlcritic-comments
+irc --> integer-range-check
+isbc --> indent-spaced-block-comments
+iscl --> ignore-side-comment-lengths
+it --> iterations
+kba --> keep-old-breakpoints-after
+kbb --> keep-old-breakpoints-before
+kbl --> keep-old-blank-lines
+kblx --> keep-old-blank-lines-exceptions
+keyword-group-blanks --> kgbb=2 kgbi kgba=2
+kgb --> kgbb=2 kgbi kgba=2
+kgba --> keyword-group-blanks-after
+kgbb --> keyword-group-blanks-before
+kgbd --> keyword-group-blanks-delete
+kgbi --> keyword-group-blanks-inside
+kgbl --> keyword-group-blanks-list
+kgbr --> keyword-group-blanks-repeat-count
+kgbs --> keyword-group-blanks-size
+kis --> keep-interior-semicolons
+kpit --> keyword-paren-inner-tightness
+kpitl --> keyword-paren-inner-tightness-list
+l --> maximum-line-length
+lal --> look-for-autoloader
+lbl --> long-block-line-count
+log --> logfile
+lop --> logical-padding
+lp --> line-up-parentheses
+lpil --> line-up-parentheses-inclusion-list
+lpxl --> line-up-parentheses-exclusion-list
+lrt --> line-range-tidy
+lsl --> look-for-selfloader
+mangle --> keep-old-blank-lines=0 delete-old-newlines delete-old-whitespace delete-semicolons indent-columns=0 maximum-consecutive-blank-lines=0 maximum-line-length=100000 noadd-newlines noadd-semicolons noadd-whitespace noblanks-before-blocks blank-lines-before-subs=0 blank-lines-before-packages=0 notabs
+maxfs --> maximum-file-size-mb
+maxle --> maximum-level-errors
+maxue --> maximum-unexpected-errors
+mbl --> maximum-consecutive-blank-lines
+mci --> minimize-continuation-indentation
+mem --> memoize
+mft --> maximum-fields-per-table
+msc --> minimum-space-to-comment
+mutt --> multiple-token-tightness
+nD --> noDEBUG
+naia --> noadd-interbracket-arrows
+naltc --> noadd-lone-trailing-commas
+name --> noadd-missing-else
+nanl --> noadd-newlines
+nasbl --> noopening-anonymous-sub-brace-on-new-line
+nasc --> noadd-semicolons
+nast --> noassert-tidy
+nasu --> noassert-untidy
+natc --> noadd-trailing-commas
+natnl --> noadd-terminal-newline
+naws --> noadd-whitespace
+nb --> nobackup-and-modify-in-place
+nbaa --> cab=1
+nbaao --> nobreak-after-all-operators
+nbar --> noopening-brace-always-on-right
+nbbao --> nobreak-before-all-operators
+nbbb --> noblanks-before-blocks
+nbbc --> noblanks-before-comments
+nbbs --> blbs=0 blbp=0
+nbl --> noopening-brace-on-new-line
+nbli --> nobrace-left-and-indent
+nboa --> nobreak-at-old-attribute-breakpoints
+nboc --> nobreak-at-old-comma-breakpoints
+nbok --> nobreak-at-old-keyword-breakpoints
+nbol --> nobreak-at-old-logical-breakpoints
+nbom --> nobreak-at-old-method-breakpoints
+nbos --> nobreak-at-old-semicolon-breakpoints
+nbot --> nobreak-at-old-ternary-breakpoints
+ncblx --> nocuddled-block-list-exclusive
+nce --> nocuddled-else
+nconv --> it=1
+ncpb --> nocuddled-paren-brace
+ncpbw --> nocuddled-paren-brace-weld
+ncs --> nocode-skipping
+ncsc --> noclosing-side-comments
+ncscb --> noclosing-side-comments-balanced
+ncscw --> noclosing-side-comment-warnings
+ncsfs --> nocode-skipping-from-start
+ndac --> nodelete-all-comments
+ndbc --> nodelete-block-comments
+ndbs --> nodump-block-summary
+ndcbl --> nodump-cuddled-block-list
+ndcsc --> nodelete-closing-side-comments
+nddf --> nodump-defaults
+ndfsfs --> nodetect-format-skipping-from-start
+ndhk --> nodump-hash-keys
+ndia --> nodelete-interbracket-arrows
+ndior --> nodump-integer-option-range
+ndln --> nodump-long-names
+ndltc --> nodelete-lone-trailing-commas
+ndma --> nodump-mismatched-args
+ndmcp --> nodump-mixed-call-parens
+ndmr --> nodump-mismatched-returns
+ndnl --> nodelete-old-newlines
+ndnt --> nodump-nested-ternaries
+ndop --> nodump-options
+ndp --> nodelete-pod
+ndpro --> nodump-profile
+ndrc --> nodelete-repeated-commas
+ndsc --> nodelete-side-comments
+ndsk --> nodump-similar-keys
+ndsm --> nodelete-semicolons
+ndsn --> nodump-short-names
+ndtc --> nodelete-trailing-commas
+ndtco --> nodelay-trailing-comma-operations
+ndtt --> nodump-token-types
+nduk --> nodump-unique-keys
+nduv --> nodump-unusual-variables
+ndwic --> nodelete-weld-interfering-commas
+ndwls --> nodump-want-left-space
+ndwrs --> nodump-want-right-space
+ndws --> nodelete-old-whitespace
+neos --> noencode-output-strings
+nf --> noforce-read-binary
+nfll --> nofuzzy-line-length
+nfpva --> nofunction-paren-vertical-alignment
+nfrm --> noframes
+nfs --> noformat-skipping
+nfso --> nofile-size-order
+ngcs --> nouse-unicode-gcstring
+nhbc --> nohtml-bold-comment
+nhbcm --> nohtml-bold-comma
+nhbco --> nohtml-bold-colon
+nhbh --> nohtml-bold-here-doc-target
+nhbhh --> nohtml-bold-here-doc-text
+nhbi --> nohtml-bold-identifier
+nhbj --> nohtml-bold-label
+nhbk --> nohtml-bold-keyword
+nhbm --> nohtml-bold-subroutine
+nhbn --> nohtml-bold-numeric
+nhbp --> nohtml-bold-paren
+nhbpd --> nohtml-bold-pod-text
+nhbpu --> nohtml-bold-punctuation
+nhbq --> nohtml-bold-quote
+nhbs --> nohtml-bold-structure
+nhbsc --> nohtml-bold-semicolon
+nhbv --> nohtml-bold-v-string
+nhbw --> nohtml-bold-bareword
+nhent --> nohtml-entities
+nhic --> nohtml-italic-comment
+nhicm --> nohtml-italic-comma
+nhico --> nohtml-italic-colon
+nhih --> nohtml-italic-here-doc-target
+nhihh --> nohtml-italic-here-doc-text
+nhii --> nohtml-italic-identifier
+nhij --> nohtml-italic-label
+nhik --> nohtml-italic-keyword
+nhim --> nohtml-italic-subroutine
+nhin --> nohtml-italic-numeric
+nhip --> nohtml-italic-paren
+nhipd --> nohtml-italic-pod-text
+nhipu --> nohtml-italic-punctuation
+nhiq --> nohtml-italic-quote
+nhis --> nohtml-italic-structure
+nhisc --> nohtml-italic-semicolon
+nhiv --> nohtml-italic-v-string
+nhiw --> nohtml-italic-bareword
+nhsc --> nohanging-side-comments
+nhtml --> format=tidy
+nib --> non-indenting-braces
+nibc --> noindent-block-comments
+nibp --> non-indenting-brace-prefix
+nicb --> noindent-closing-brace
+nicp --> cpi=0 cbi=0 csbi=0
+nils --> noindent-leading-semicolon
+niob --> noignore-old-breakpoints
+nipc --> noignore-perlcritic-comments
+nisbc --> noindent-spaced-block-comments
+niscl --> noignore-side-comment-lengths
+nkgb --> kgbb=1 nkgbi kgba=1
+nkgbd --> nokeyword-group-blanks-delete
+nkgbi --> nokeyword-group-blanks-inside
+nkis --> nokeep-interior-semicolons
+nlal --> nolook-for-autoloader
+nlog --> nologfile
+nlop --> nological-padding
+nlp --> noline-up-parentheses
+nlsl --> nolook-for-selfloader
+nmci --> nominimize-continuation-indentation
+nmem --> nomemoize
+nnib --> nonon-indenting-braces
+nnn --> html-line-numbers
+noblanks-before-subs --> blbs=0 blbp=0
+nobreak-after-comma-arrows --> cab=1
+noconverge --> it=1
+nodelete-all-comments --> nodelete-block-comments nodelete-side-comments nodelete-pod
+nohbr --> noopening-hash-brace-right
+noindent-closing-paren --> cpi=0 cbi=0 csbi=0
+nokeyword-group-blanks --> kgbb=1 nkgbi kgba=1
+nokw --> nooutdent-keywords
+nola --> nooutdent-labels
+nolc --> nooutdent-long-comments
+noll --> nooutdent-long-lines
+nolq --> nooutdent-long-quotes
+noopening-token-right --> nopr nohbr nosbr
+nooutdent-long-lines --> nooutdent-long-quotes nooutdent-long-comments
+nopr --> noopening-paren-right
+nopt --> noshow-options
+nosbc --> nooutdent-static-block-comments
+nosbr --> noopening-square-bracket-right
+nostack-all-containers --> nsot nsct
+nostack-closing-tokens --> nscp nschb nscsb
+nostack-opening-block-brace --> bbvt=0
+nostack-opening-tokens --> nsop nsohb nsosb
+noswallow-optional-blank-lines --> kbl=1
+notee-all-comments --> notee-block-comments notee-side-comments notee-pod
+notr --> nopr nohbr nosbr
+novalign --> nvc nvsc nvbc
+nple --> nopreserve-line-endings
+npod --> nopod2html
+npvl --> nopass-version-line
+nq --> noquiet
+nqwaf --> noqw-as-function
+nsac --> nsot nsct
+nsak --> nospace-after-keyword
+nsbc --> nostatic-block-comments
+nsbl --> noopening-sub-brace-on-new-line
+nscbb --> nostack-closing-block-brace
+nschb --> nostack-closing-hash-brace
+nscp --> nostack-closing-paren
+nscsb --> nostack-closing-square-bracket
+nsct --> nscp nschb nscsb
+nse --> nostandard-error-output
+nsfp --> nospace-function-paren
+nsfs --> nospace-for-semicolon
+nskp --> nospace-keyword-paren
+nsob --> kbl=1
+nsobb --> bbvt=0
+nsohb --> nostack-opening-hash-brace
+nsop --> nostack-opening-paren
+nsosb --> nostack-opening-square-bracket
+nsot --> nsop nsohb nsosb
+nss --> nohtml-style-sheets
+nssc --> nostatic-side-comments
+nst --> nostandard-output
+nsts --> nospace-terminal-semicolon
+nsyn --> nocheck-syntax
+nt --> notabs
+ntac --> notee-all-comments
+ntbc --> notee-block-comments
+ntmd --> nested-ternary-maximum-depth
+ntoc --> nohtml-table-of-contents
+ntp --> notee-pod
+ntqw --> notrim-qw
+ntrp --> notrim-pod
+nts --> notimestamp
+ntsc --> notee-side-comments
+ntso --> notight-secret-operators
+nvbc --> novalign-block-comments
+nvc --> novalign-code
+nviu --> novalign-if-unless
+nvmll --> novariable-maximum-line-length
+nvsc --> novalign-side-comments
+nvsn --> novalign-signed-numbers
+nvwe --> novalign-wide-equals
+nw --> nowarning-output
+nwcp --> nowant-call-parens
+nwfc --> noweld-fat-comma
+nwia --> nowarn-interbracket-arrows
+nwls --> nowant-left-space
+nwma --> nowarn-mismatched-args
+nwme --> nowarn-missing-else
+nwmr --> nowarn-mismatched-returns
+nwn --> noweld-nested-containers
+nwnt --> nowarn-nested-ternaries
+nwrs --> nowant-right-space
+nwsk --> nowarn-similar-keys
+nwuk --> nowarn-unique-keys
+nx --> nolook-for-hash-bang
+nxbt --> noextended-block-tightness
+nxci --> noextended-continuation-indentation
+nxlp --> noextended-line-up-parentheses
+nxs --> noextended-syntax
+o --> outfile
+oext --> output-file-extension
+ohbr --> opening-hash-brace-right
+okw --> outdent-keywords
+okwl --> outdent-keyword-list
+ola --> outdent-labels
+olbn --> one-line-block-nesting
+olbs --> one-line-block-semicolons
+olbxl --> one-line-block-exclusion-list
+olc --> outdent-long-comments
+ole --> output-line-ending
+oll --> outdent-long-lines
+olq --> outdent-long-quotes
+opath --> output-path
+opening-token-right --> opr ohbr osbr
+opr --> opening-paren-right
+opt --> show-options
+osbc --> outdent-static-block-comments
+osbr --> opening-square-bracket-right
+otr --> opr ohbr osbr
+outdent-long-lines --> outdent-long-quotes outdent-long-comments
+pbp --> perl-best-practices
+perl-best-practices --> l=78 i=4 ci=4 st se vt=2 cti=0 pt=1 bt=1 sbt=1 bbt=1 nsfs nolq wbb=% + - * / x != == >= <= =~ !~ < > | & = **= += *= &= <<= &&= -= /= |= >>= ||= //= .= %= ^= x=
+ple --> preserve-line-endings
+pod --> pod2html
+pot --> pack-operator-types
+pre --> html-pre-only
+pro --> profile
+pscf --> perl-syntax-check-flags
+pt --> paren-tightness
+pvl --> pass-version-line
+pvt --> paren-vertical-tightness
+pvtc --> paren-vertical-tightness-closing
+q --> quiet
+qwaf --> qw-as-function
+sac --> sot sct
+sak --> space-after-keyword
+sal --> sub-alias-list
+sbc --> static-block-comments
+sbcp --> static-block-comment-prefix
+sbl --> opening-sub-brace-on-new-line
+sbq --> space-backslash-quote
+sbt --> square-bracket-tightness
+sbvt --> square-bracket-vertical-tightness
+sbvtc --> square-bracket-vertical-tightness-closing
+scbb --> stack-closing-block-brace
+schb --> stack-closing-hash-brace
+scl --> short-concatenation-item-length
+scp --> stack-closing-paren
+scsb --> stack-closing-square-bracket
+sct --> scp schb scsb
+se --> standard-error-output
+sext --> html-src-extension
+sfei --> skip-formatting-except-id
+sfp --> space-function-paren
+sfs --> space-for-semicolon
+sil --> starting-indentation-level
+skmd --> similar-keys-maximum-difference
+skml --> similar-keys-minimum-length
+skmp --> similar-keys-maximum-pairs
+skp --> space-keyword-paren
+sob --> kbl=0
+sobb --> bbvt=2 bbvtl=*
+sohb --> stack-opening-hash-brace
+sop --> stack-opening-paren
+sosb --> stack-opening-square-bracket
+sot --> sop sohb sosb
+spp --> space-prototype-paren
+ss --> stylesheet
+ssc --> static-side-comments
+sscp --> static-side-comment-prefix
+ssp --> space-signature-paren
+st --> standard-output
+stack-all-containers --> sot sct
+stack-closing-tokens --> scp schb scsb
+stack-opening-block-brace --> bbvt=2 bbvtl=*
+stack-opening-tokens --> sop sohb sosb
+sts --> space-terminal-semicolon
+swallow-optional-blank-lines --> kbl=0
+syn --> check-syntax
+t --> tabs
+tac --> tee-all-comments
+tbc --> tee-block-comments
+tee-all-comments --> tee-block-comments tee-side-comments tee-pod
+text --> html-toc-extension
+tidy --> format=tidy
+toc --> html-table-of-contents
+tos --> timeout-in-seconds
+tp --> tee-pod
+tqw --> trim-qw
+trp --> trim-pod
+ts --> timestamp
+tsc --> tee-side-comments
+tso --> tight-secret-operators
+uf --> use-feature
+utf8 --> character-encoding=utf8
+v --> version
+valign --> vc vsc vbc
+vbc --> valign-block-comments
+vc --> valign-code
+vertical-tightness-closing=0 --> pvtc=0 bvtc=0 sbvtc=0
+vertical-tightness-closing=1 --> pvtc=1 bvtc=1 sbvtc=1
+vertical-tightness-closing=2 --> pvtc=2 bvtc=2 sbvtc=2
+vertical-tightness-closing=3 --> pvtc=3 bvtc=3 sbvtc=3
+vertical-tightness=0 --> pvt=0 bvt=0 sbvt=0
+vertical-tightness=1 --> pvt=1 bvt=1 sbvt=1
+vertical-tightness=2 --> pvt=2 bvt=2 sbvt=2
+vil --> valign-inclusion-list
+viu --> valign-if-unless
+vmll --> variable-maximum-line-length
+vsc --> valign-side-comments
+vsn --> valign-signed-numbers
+vsnl --> valign-signed-numbers-limit
+vt --> vertical-tightness
+vt=0 --> pvt=0 bvt=0 sbvt=0
+vt=1 --> pvt=1 bvt=1 sbvt=1
+vt=2 --> pvt=2 bvt=2 sbvt=2
+vtc --> vertical-tightness-closing
+vtc=0 --> pvtc=0 bvtc=0 sbvtc=0
+vtc=1 --> pvtc=1 bvtc=1 sbvtc=1
+vtc=2 --> pvtc=2 bvtc=2 sbvtc=2
+vtc=3 --> pvtc=3 bvtc=3 sbvtc=3
+vwe --> valign-wide-equals
+vxl --> valign-exclusion-list
+w --> warning-output
+wba --> want-break-after
+wbb --> want-break-before
+wc --> whitespace-cycle
+wcp --> want-call-parens
+wfc --> weld-fat-comma
+wia --> warn-interbracket-arrows
+wls --> want-left-space
+wma --> warn-mismatched-args
+wmaoc --> warn-mismatched-arg-overcount-cutoff
+wmat --> warn-mismatched-arg-types
+wmauc --> warn-mismatched-arg-undercount-cutoff
+wmaxl --> warn-mismatched-arg-exclusion-list
+wme --> warn-missing-else
+wmr --> warn-mismatched-returns
+wmrt --> warn-mismatched-return-types
+wmrxl --> warn-mismatched-return-exclusion-list
+wn --> weld-nested-containers
+wnt --> warn-nested-ternaries
+wnxl --> weld-nested-exclusion-list
+wrs --> want-right-space
+wsk --> warn-similar-keys
+wtc --> want-trailing-commas
+wuk --> warn-unique-keys
+wukc --> warn-unique-keys-cutoff
+wvt --> warn-variable-types
+wvxl --> warn-variable-exclusion-list
+x --> look-for-hash-bang
+xbt --> extended-block-tightness
+xbtl --> extended-block-tightness-list
+xci --> extended-continuation-indentation
+xlp --> extended-line-up-parentheses
+xs --> extended-syntax
+
+##### perltidy -npro --dump-options #####
+# Final parameter set for this run.
+# See utility 'perltidyrc_dump.pl' for nicer formatting.
+--add-lone-trailing-commas
+--add-newlines
+--add-semicolons
+--add-terminal-newline
+--add-whitespace
+--backup-file-extension="bak"
+--backup-method="copy"
+--blank-lines-after-opening-block=0
+--blank-lines-before-closing-block=0
+--blank-lines-before-packages=1
+--blank-lines-before-subs=1
+--blanks-before-blocks
+--blanks-before-comments
+--block-brace-tightness=0
+--block-brace-vertical-tightness=0
+--brace-follower-vertical-tightness=1
+--nobrace-left-and-indent
+--brace-tightness=1
+--brace-vertical-tightness=0
+--brace-vertical-tightness-closing=0
+--break-after-labels=0
+--break-at-old-attribute-breakpoints
+--break-at-old-keyword-breakpoints
+--break-at-old-logical-breakpoints
+--break-at-old-ternary-breakpoints
+--break-before-hash-brace=0
+--break-before-hash-brace-and-indent=0
+--break-before-paren=0
+--break-before-paren-and-indent=0
+--break-before-square-bracket=0
+--break-before-square-bracket-and-indent=0
+--character-encoding="guess"
+--nocheck-syntax
+--closing-brace-indentation=0
+--closing-paren-indentation=0
+--closing-side-comment-else-flag=0
+--closing-side-comment-interval=6
+--closing-side-comment-maximum-text=20
+--closing-side-comments-balanced
+--closing-square-bracket-indentation=0
+--code-skipping
+--comma-arrow-breakpoints=5
+--continuation-indentation=2
+--cuddled-break-option=1
+--nocuddled-else
+--default-tabsize=8
+--delete-lone-trailing-commas
+--delete-old-newlines
+--nodelete-old-whitespace
+--delete-repeated-commas
+--delete-semicolons
+--detect-format-skipping-from-start
+--dump-block-minimum-lines=20
+--dump-block-types="sub"
+--dump-options
+--encode-output-strings
+--entab-leading-whitespace=0
+--noextended-continuation-indentation
+--extended-syntax
+--file-size-order
+--format="tidy"
+--format-skipping
+--function-paren-vertical-alignment
+--fuzzy-line-length
+--hanging-side-comments
+--nohtml
+--html-entities
+--html-table-of-contents
+--indent-block-comments
+--indent-columns=4
+--indent-leading-semicolon
+--integer-range-check=2
+--interbracket-arrow-complexity=1
+--iterations=1
+--keep-old-blank-lines=1
+--keyword-group-blanks-after=1
+--keyword-group-blanks-before=1
+--nokeyword-group-blanks-delete
+--nokeyword-group-blanks-inside
+--keyword-group-blanks-repeat-count=0
+--keyword-group-blanks-size=5
+--keyword-paren-inner-tightness=1
+--nologfile
+--logical-padding
+--long-block-line-count=8
+--look-for-autoloader
+--look-for-selfloader
+--maximum-consecutive-blank-lines=1
+--maximum-file-size-mb=10
+--maximum-level-errors=1
+--maximum-line-length=80
+--maximum-unexpected-errors=0
+--memoize
+--minimum-space-to-comment=4
+--nested-ternary-maximum-depth=0
+--non-indenting-braces
+--npro
+--one-line-block-nesting=0
+--one-line-block-semicolons=1
+--outdent-labels
+--outdent-long-comments
+--outdent-long-quotes
+--paren-tightness=1
+--paren-vertical-tightness=0
+--paren-vertical-tightness-closing=0
+--pass-version-line
+--pod2html
+--noquiet
+--recombine
+--short-concatenation-item-length=8
+--noshow-options
+--similar-keys-maximum-difference=1
+--similar-keys-maximum-pairs=25
+--similar-keys-minimum-length=4
+--space-backslash-quote=1
+--space-for-semicolon
+--space-prototype-paren=1
+--space-signature-paren=1
+--square-bracket-tightness=1
+--square-bracket-vertical-tightness=0
+--square-bracket-vertical-tightness-closing=0
+--static-block-comments
+--nostatic-side-comments
+--notabs
+--timeout-in-seconds=10
+--timestamp
+--trim-qw
+--nouse-unicode-gcstring
+--valign-block-comments
+--valign-code
+--valign-side-comments
+--valign-signed-numbers
+--valign-signed-numbers-limit=20
+--warn-mismatched-arg-overcount-cutoff=1
+--warn-mismatched-arg-undercount-cutoff=4
+--warn-unique-keys-cutoff=1
+--nowarning-output
+--noweld-nested-containers
+--whitespace-cycle=0
+
+##### perltidy -npro --dump-token-types #####
+
+Here is a list of the token types currently used for lines of type 'CODE'.
+For the following tokens, the "type" of a token is just the token itself.
+
+.. :: << >> ** && .. || // -> => += -= .= %= &= |= ^= *= <>
+( ) <= >= == =~ !~ != ++ -- /= x=
+... **= <<= >>= &&= ||= //= <=>
+, + - / * | % ! x ~ = \ ? : . < > ^ & ^^
+
+The following additional token types are defined:
+
+ type    meaning
+    b    blank (white space)
+    {    indent: opening structural curly brace or square bracket or paren
+         (code block, anonymous hash reference, or anonymous array reference)
+    }    outdent: right structural curly brace or square bracket or paren
+    [    left non-structural square bracket (enclosing an array index)
+    ]    right non-structural square bracket
+    (    left non-structural paren (all but a list right of an =)
+    )    right non-structural paren
+    L    left non-structural curly brace (enclosing a key)
+    R    right non-structural curly brace
+    ;    terminal semicolon
+    f    indicates a semicolon in a "for" statement
+    h    here_doc operator <<
+    #    a comment
+    Q    indicates a quote or pattern
+    q    indicates a qw quote block
+    k    a perl keyword
+    C    user-defined constant or constant function (with void prototype = ())
+    U    user-defined function taking parameters
+    G    user-defined function taking block parameter (like grep/map/eval)
+    S    sub definition     (reported as type 'i' in older versions)
+    P    package definition (reported as type 'i' in older versions)
+    t    type indicator such as %,$,@,*,&,sub
+    w    bare word (perhaps a subroutine call)
+    i    identifier of some type (with leading %, $, @, *, &, sub, -> )
+    n    a number
+    v    a v-string
+    F    a file test operator (like -e)
+    Y    File handle
+    Z    identifier in indirect object slot: may be file handle, object
+    J    LABEL:  code block label
+    j    LABEL after next, last, redo, goto
+    p    unary +
+    m    unary -
+    pp   pre-increment operator ++
+    mm   pre-decrement operator --
+    A    : used as attribute separator
+
+    Here are the '_line_type' codes used internally:
+    SYSTEM         - system-specific code before hash-bang line
+    CODE           - line of perl code (including comments)
+    POD_START      - line starting pod, such as '=head'
+    POD            - pod documentation text
+    POD_END        - last line of pod section, '=cut'
+    HERE           - text of here-document
+    HERE_END       - last line of here-doc (target word)
+    FORMAT         - format section
+    FORMAT_END     - last line of format section, '.'
+    SKIP           - code skipping section
+    SKIP_END       - last line of code skipping section, '#>>V'
+    DATA_START     - __DATA__ line
+    DATA           - unidentified text following __DATA__
+    END_START      - __END__ line
+    END            - unidentified text following __END__
+    ERROR          - we are in big trouble, probably not a perl script
+
+##### perltidy -npro --dump-want-left-space #####
+These values are the main control of whitespace to the left of a token type;
+They may be altered with the -wls parameter.
+For a list of token types, use perltidy --dump-token-types (-dtt)
+ 1 means the token wants a space to its left
+-1 means the token does not want a space to its left
+------------------------------------------------------------------------
+!	1
+!=	1
+!~	1
+!~~	1
+#	1
+%	1
+%=	1
+&	1
+&&	1
+&&=	1
+&=	1
+)	-1
+*	1
+**	-1
+**=	1
+*=	1
++	1
+++	-1
++=	1
+,	-1
+-	1
+--	-1
+-=	1
+->	-1
+.	1
+..	1
+...	1
+.=	1
+/	1
+//	1
+//=	1
+/=	1
+:	1
+;	-1
+<	1
+<<	1
+<<=	1
+<=	1
+<=>	1
+<>	1
+=	1
+==	1
+=>	1
+=~	1
+>	1
+>=	1
+>>	1
+>>=	1
+?	1
+A	1
+C	1
+F	1
+G	1
+J	-1
+P	1
+R	-1
+S	1
+U	1
+Y	1
+Z	1
+\	1
+]	-1
+^	1
+^=	1
+^^	1
+f	1
+h	1
+j	1
+k	1
+m	1
+mm	1
+n	1
+p	1
+pp	1
+t	1
+v	1
+w	1
+x	1
+x=	1
+{	1
+|	1
+|=	1
+||	1
+||=	1
+}	-1
+~	1
+~~	1
+
+##### perltidy -npro --dump-want-right-space #####
+These values are the main control of whitespace to the right of a token type;
+They may be altered with the -wrs parameter.
+For a list of token types, use perltidy --dump-token-types (-dtt)
+ 1 means the token wants a space to its right
+-1 means the token does not want a space to its right
+------------------------------------------------------------------------
+!	-1
+!=	1
+!~	1
+!~~	1
+#	-1
+%	1
+%=	1
+&	1
+&&	1
+&&=	1
+&=	1
+)	1
+*	1
+**	-1
+**=	1
+*=	1
++	1
+++	1
++=	1
+,	1
+-	1
+--	1
+-=	1
+->	-1
+.	1
+..	1
+...	1
+.=	1
+/	1
+//	1
+//=	1
+/=	1
+:	1
+;	1
+<	1
+<<	1
+<<=	1
+<=	1
+<=>	1
+<>	1
+=	1
+==	1
+=>	1
+=~	1
+>	1
+>=	1
+>>	1
+>>=	1
+?	1
+A	1
+C	1
+CORE::	-1
+F	1
+G	1
+J	1
+P	1
+R	1
+S	1
+U	1
+Y	1
+Z	-1
+\	-1
+]	1
+^	1
+^=	1
+^^	1
+f	1
+h	-1
+j	-1
+k	1
+m	-1
+mm	-1
+n	1
+p	-1
+pp	-1
+t	-1
+v	1
+w	1
+x	1
+x=	1
+{	-1
+|	1
+|=	1
+||	1
+||=	1
+}	1
+~	-1
+~~	1
+
+##### perltidy -npro --dump-cuddled-block-list #####
+------------------------------------------------------------------------
+Hash of cuddled block types prepared for a run with these parameters:
+   -cbl=''
+Note: You must specify -ce to generate a cuddled hash
+------------------------------------------------------------------------
+$VAR1 = {};
+------------------------------------------------------------------------
+
+##### perltidy -npro --dump-integer-option-range #####
+Option, min, max, default
+blank-lines-after-opening-block, 0, undef, 0
+blank-lines-before-closing-block, 0, undef, 0
+blank-lines-before-packages, 0, undef, 1
+blank-lines-before-subs, 0, undef, 1
+block-brace-tightness, 0, 2, 0
+block-brace-vertical-tightness, 0, 2, 0
+brace-follower-vertical-tightness, 0, 2, 1
+brace-tightness, 0, 2, 1
+brace-vertical-tightness, 0, 2, 0
+brace-vertical-tightness-closing, 0, 3, 0
+break-after-labels, 0, 2, 0
+break-before-hash-brace, 0, 3, 0
+break-before-hash-brace-and-indent, 0, 2, 0
+break-before-paren, 0, 3, 0
+break-before-paren-and-indent, 0, 2, 0
+break-before-square-bracket, 0, 3, 0
+break-before-square-bracket-and-indent, 0, 2, 0
+closing-brace-indentation, 0, 3, 0
+closing-paren-indentation, 0, 3, 0
+closing-side-comment-else-flag, 0, 2, 0
+closing-side-comment-interval, 0, undef, 6
+closing-side-comment-maximum-text, 0, undef, 20
+closing-square-bracket-indentation, 0, 3, 0
+closing-token-indentation, 0, 3, undef
+comma-arrow-breakpoints, 0, 5, 5
+continuation-indentation, 0, undef, 2
+cuddled-break-option, 0, 2, 1
+default-tabsize, 0, undef, 8
+dump-block-minimum-lines, 0, undef, 20
+entab-leading-whitespace, 0, undef, 0
+fixed-position-side-comment, 0, undef, undef
+indent-columns, 0, undef, 4
+integer-range-check, 1, 3, 2
+interbracket-arrow-complexity, 0, 2, 1
+iterations, 0, undef, 1
+keep-old-blank-lines, 0, 2, 1
+keyword-group-blanks-after, 0, 2, 1
+keyword-group-blanks-before, 0, 2, 1
+keyword-group-blanks-repeat-count, 0, undef, 0
+keyword-paren-inner-tightness, 0, 2, 1
+long-block-line-count, 0, undef, 8
+maximum-consecutive-blank-lines, 0, undef, 1
+maximum-file-size-mb, 0, undef, 10
+maximum-level-errors, 0, undef, 1
+maximum-line-length, 0, undef, 80
+maximum-unexpected-errors, 0, undef, 0
+minimum-space-to-comment, 0, undef, 4
+nested-ternary-maximum-depth, 0, undef, 0
+one-line-block-nesting, 0, 1, 0
+one-line-block-semicolons, 0, 2, 1
+paren-tightness, 0, 2, 1
+paren-vertical-tightness, 0, 2, 0
+paren-vertical-tightness-closing, 0, 3, 0
+short-concatenation-item-length, 0, undef, 8
+similar-keys-maximum-difference, 1, undef, 1
+similar-keys-maximum-pairs, 1, undef, 25
+similar-keys-minimum-length, 1, undef, 4
+space-backslash-quote, 0, 2, 1
+space-prototype-paren, 0, 2, 1
+space-signature-paren, 0, 2, 1
+square-bracket-tightness, 0, 2, 1
+square-bracket-vertical-tightness, 0, 2, 0
+square-bracket-vertical-tightness-closing, 0, 3, 0
+starting-indentation-level, 0, undef, undef
+timeout-in-seconds, 0, undef, 10
+valign-signed-numbers-limit, 0, undef, 20
+vertical-tightness, 0, 2, undef
+vertical-tightness-closing, 0, 3, undef
+warn-mismatched-arg-overcount-cutoff, 0, undef, 1
+warn-mismatched-arg-undercount-cutoff, 0, undef, 4
+warn-unique-keys-cutoff, 1, undef, 1
+whitespace-cycle, 0, undef, 0

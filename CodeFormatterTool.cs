@@ -1,3 +1,4 @@
+﻿using CodeFormatter.Formatters;
 using CodeFormatter.Models;
 using CodeFormatter.Resources;
 using CodeFormatter.Services;
@@ -34,6 +35,8 @@ internal sealed class CodeFormatterTool : IGuiTool
     // Auto-format debounce
     private CancellationTokenSource? _formatCts;
     private const int DebounceDelayMs = 500;
+    // For formatters that need seconds to start: do not launch one at every pause in typing
+    private const int SlowFormatterDebounceDelayMs = 1200;
 
     [Import]
     private IFileStorage _fileStorage = null!;
@@ -70,7 +73,8 @@ internal sealed class CodeFormatterTool : IGuiTool
                                         Label().Text("Language"),
                                         SelectDropDownList("language-selector")
                                             .WithItems(GetLanguageItems())
-                                            .Select((int)_selectedLanguage)
+                                            // The list follows the registry's order, not the enum's
+                                            .Select(Math.Max(0, LanguageRegistry.All.ToList().FindIndex(info => info.Language == _selectedLanguage)))
                                             .OnItemSelected(OnLanguageSelectedAsync),
                                         Button("swap-btn")
                                             .Text(CodeFormatterStrings.SwapButton)
@@ -158,7 +162,8 @@ internal sealed class CodeFormatterTool : IGuiTool
         try
         {
             // Wait for debounce delay
-            await Task.Delay(DebounceDelayMs, token);
+            var slow = FormatterSpecs.For(_selectedLanguage)?.SlowToStart == true;
+            await Task.Delay(slow ? SlowFormatterDebounceDelayMs : DebounceDelayMs, token);
 
             var input = _inputEditor.Text;
             if (string.IsNullOrWhiteSpace(input))
@@ -167,7 +172,9 @@ internal sealed class CodeFormatterTool : IGuiTool
                 return;
             }
 
-            var result = await _formatterService.FormatAsync(input, _selectedLanguage);
+            // The token also stops the formatter process: the slow ones take seconds to start,
+            // and would otherwise pile up behind every pause in typing
+            var result = await _formatterService.FormatAsync(input, _selectedLanguage, token);
 
             // Check if cancelled before updating UI
             if (!token.IsCancellationRequested)
@@ -208,12 +215,12 @@ internal sealed class CodeFormatterTool : IGuiTool
         _inputEditor.Text(content);
     }
 
-    private string[] GetFileExtensions() =>
+    private static string[] GetFileExtensions() =>
     [
-        "py", "js", "ts", "tsx", "jsx", "json", "md", "toml",
-        "css", "scss", "less", "html", "vue", "svelte", "astro",
-        "yaml", "yml", "graphql", "gql", "java", "sql",
-        "txt", "xml", "config"
+        .. LanguageRegistry.All
+            .Select(info => info.FileExtension.Split('.')[^1].ToLowerInvariant())
+            .Where(extension => extension != "dockerfile"),
+        "tsx", "jsx", "yml", "gql", "h", "hpp", "cc", "kts", "sty", "cls", "txt"
     ];
 
     #region Config Dialog
@@ -224,29 +231,86 @@ internal sealed class CodeFormatterTool : IGuiTool
         await OpenConfigDialogAsync();
     }
 
+    // A DevToys dialog sizes itself to its content and does not scroll, so its content is given
+    // a fixed size: it must not change shape while open, and must fit the window.
+    private const int DialogWidth = 640;
+    // A row is a card: its content, the card's own padding, and the gap to the next row
+    private const int SettingContentHeight = 44;
+    private const int SettingRowHeight = 76;
+
+    private enum DialogRow { Title, Tabs, Page }
+    private enum DialogColumn { Main }
+
+    private enum SettingRow { Only }
+    private enum SettingColumn { Text, Control }
+
     private async Task OpenConfigDialogAsync()
     {
-        var definitions = FormatterSettingsDefinitions.GetSettings(_selectedLanguage);
-        var settingsControls = BuildSettingsControls(definitions);
+        var spec = FormatterSpecs.For(_selectedLanguage);
+        var pages = SettingsPages.Build(spec?.Settings ?? [], hasDocs: spec?.DocsUrl is not null || spec?.Note is not null);
+
+        // Every page is built once; choosing a tab shows one of them and hides the rest
+        var pageViews = pages
+            .Select(page => Stack().Vertical().SmallSpacing().WithChildren(
+            [
+                .. page.Settings.Select(BuildSetting),
+                .. page.ShowsDocs ? new[] { BuildDocs(spec!) } : []
+            ]))
+            .ToArray();
+        var tabs = new IUIButton[pages.Count];
+
+        void SelectPage(int selected)
+        {
+            for (var i = 0; i < pageViews.Length; i++)
+            {
+                if (i == selected)
+                {
+                    pageViews[i].Show();
+                    tabs[i].AccentAppearance();
+                }
+                else
+                {
+                    pageViews[i].Hide();
+                    tabs[i].NeutralAppearance();
+                }
+            }
+        }
+
+        for (var i = 0; i < tabs.Length; i++)
+        {
+            var index = i;
+            tabs[i] = Button($"settings-tab-{i}").Text(pages[i].Title).OnClick(() => SelectPage(index));
+        }
+        SelectPage(0);
+
+        // The tallest page decides the height, for all of them
+        var pageHeight = SettingRowHeight * Math.Max(1, pages.Select(p => p.Rows).DefaultIfEmpty(0).Max());
+
+        IUIElement body = pages.Count > 0
+            ? Stack().Vertical().WithChildren(pageViews)
+            : Label().Style(UILabelStyle.Body).Text("No configurable settings for this formatter.");
 
         await _view.OpenDialogAsync(
             dialogContent:
-                Stack()
-                    .Vertical()
-                    .LargeSpacing()
-                    .WithChildren(
-                        Label()
-                            .Style(UILabelStyle.Subtitle)
-                            .Text($"{_selectedLanguage.ToDisplayName()} Settings"),
-
-                        settingsControls.Length > 0
-                            ? Stack()
-                                .Vertical()
-                                .MediumSpacing()
-                                .WithChildren(settingsControls)
-                            : Label()
-                                .Style(UILabelStyle.Body)
-                                .Text("No configurable settings for this formatter.")),
+                Grid()
+                    .RowSmallSpacing()
+                    .Rows(
+                        (DialogRow.Title, UIGridLength.Auto),
+                        (DialogRow.Tabs, UIGridLength.Auto),
+                        (DialogRow.Page, new UIGridLength(pageHeight, UIGridUnitType.Pixel)))
+                    .Columns(
+                        (DialogColumn.Main, new UIGridLength(DialogWidth, UIGridUnitType.Pixel)))
+                    .Cells(
+                        Cell(DialogRow.Title, DialogColumn.Main,
+                            Label()
+                                .Style(UILabelStyle.Subtitle)
+                                .Text($"{_selectedLanguage.ToDisplayName()} Settings")),
+                        // A single page needs no tabs
+                        Cell(DialogRow.Tabs, DialogColumn.Main,
+                            pages.Count > 1
+                                ? Wrap().SmallSpacing().WithChildren(tabs)
+                                : Stack()),
+                        Cell(DialogRow.Page, DialogColumn.Main, body)),
             footerContent:
                 Stack()
                     .Horizontal()
@@ -263,104 +327,135 @@ internal sealed class CodeFormatterTool : IGuiTool
             isDismissible: true);
     }
 
-    private IUIElement[] BuildSettingsControls(SettingDefinition[] definitions)
+    private IUIElement BuildSetting(SettingDefinition def)
     {
-        var controls = new List<IUIElement>();
+        var currentValue = _pendingSettings.TryGetValue(def.Key, out var val)
+            ? val
+            : def.DefaultValue;
 
-        foreach (var def in definitions)
+        var text = Stack()
+            .Vertical()
+            .NoSpacing()
+            .AlignVertically(UIVerticalAlignment.Center)
+            .WithChildren(
+                Label().Text(def.DisplayName),
+                Label().Style(UILabelStyle.Caption).Text(def.Description ?? ""));
+
+        // Free text needs the full width: title and description, then the input on its own line
+        if (def.Type == SettingType.Text)
+            return Card(Stack().Vertical().SmallSpacing().WithChildren(text, BuildTextSetting(def, currentValue)));
+
+        var control = def.Type switch
         {
-            var currentValue = _pendingSettings.TryGetValue(def.Key, out var val)
-                ? val
-                : def.DefaultValue;
+            SettingType.Boolean => BuildBooleanSetting(def, currentValue),
+            SettingType.Integer => BuildIntegerSetting(def, currentValue),
+            SettingType.Choice => BuildChoiceSetting(def, currentValue),
+            _ => Label().Text($"Unknown setting type: {def.Key}")
+        };
 
-            IUIElement control = def.Type switch
-            {
-                SettingType.Boolean => BuildBooleanSetting(def, currentValue),
-                SettingType.Integer => BuildIntegerSetting(def, currentValue),
-                SettingType.Choice => BuildChoiceSetting(def, currentValue),
-                _ => Label().Text($"Unknown setting type: {def.Key}")
-            };
+        // Not DevToys' own Setting element: that keeps a column free for an icon we do not have.
+        // The row height is fixed so that a page is as tall as was planned for it.
+        return Card(
+            Grid()
+                .Rows((SettingRow.Only, new UIGridLength(SettingContentHeight, UIGridUnitType.Pixel)))
+                .Columns(
+                    (SettingColumn.Text, new UIGridLength(1, UIGridUnitType.Fraction)),
+                    (SettingColumn.Control, UIGridLength.Auto))
+                .Cells(
+                    Cell(SettingRow.Only, SettingColumn.Text, text),
+                    Cell(SettingRow.Only, SettingColumn.Control,
+                        control.AlignVertically(UIVerticalAlignment.Center).AlignHorizontally(UIHorizontalAlignment.Right))));
+    }
 
-            controls.Add(control);
+    /// <summary>
+    /// What there is to say about the formatter's options as a whole, and where they are documented.
+    /// </summary>
+    private static IUIElement BuildDocs(FormatterSpec spec)
+    {
+        var children = new List<IUIElement>();
+
+        if (spec.Note is not null)
+            children.Add(Label().Style(UILabelStyle.Caption).Text(spec.Note));
+
+        if (spec.DocsUrl is { } url)
+        {
+            children.Add(
+                Button("settings-docs-link")
+                    .HyperlinkAppearance()
+                    .Text($"{spec.Command} options on {new Uri(url).Host}")
+                    .OnClick(() => OpenInBrowser(url)));
         }
 
-        return controls.ToArray();
+        return Stack().Vertical().SmallSpacing().WithChildren(children.ToArray());
     }
+
+    private static void OpenInBrowser(string url)
+    {
+        try
+        {
+            System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo(url) { UseShellExecute = true });
+        }
+        catch
+        {
+            // No browser to hand it to; the address is on the button
+        }
+    }
+
+    // Setting keys are the formatters' own ("format.quote-style", "-i"); element ids are plainer
+    private static string ToId(string key) =>
+        new(key.Select(c => char.IsLetterOrDigit(c) ? c : '-').ToArray());
 
     private IUIElement BuildBooleanSetting(SettingDefinition def, object currentValue)
     {
-        var isOn = currentValue is bool b && b;
-        var sw = Switch($"setting-{def.Key}")
+        var sw = Switch($"setting-{ToId(def.Key)}")
             .OnText("Yes")
             .OffText("No")
             .OnToggle(value => _pendingSettings[def.Key] = value);
 
-        if (isOn)
-            sw.On();
-        else
-            sw.Off();
-
-        return Stack()
-            .Horizontal()
-            .SmallSpacing()
-            .AlignVertically(UIVerticalAlignment.Center)
-            .WithChildren(
-                Label().Text(def.DisplayName),
-                sw,
-                def.Description != null
-                    ? Label().Style(UILabelStyle.Caption).Text($"({def.Description})")
-                    : Label().Text(""));
+        return currentValue is true ? sw.On() : sw.Off();
     }
 
     private IUIElement BuildIntegerSetting(SettingDefinition def, object currentValue)
     {
-        var intValue = currentValue switch
-        {
-            int i => i,
-            long l => (int)l,
-            double d => (int)d,
-            _ => (int)def.DefaultValue
-        };
-
-        return Stack()
-            .Vertical()
-            .SmallSpacing()
-            .WithChildren(
-                Label().Text(def.DisplayName + (def.Description != null ? $" ({def.Description})" : "")),
-                NumberInput($"setting-{def.Key}")
-                    .Minimum(def.Min ?? 1)
-                    .Maximum(def.Max ?? 1000)
-                    .Value(intValue)
-                    .OnValueChanged(value => _pendingSettings[def.Key] = (int)value));
+        return NumberInput($"setting-{ToId(def.Key)}")
+            .HideCommandBar()
+            .Minimum(def.Min ?? 1)
+            .Maximum(def.Max ?? 1000)
+            .Value(currentValue as int? ?? (int)def.DefaultValue)
+            .OnValueChanged(value => _pendingSettings[def.Key] = (int)value);
     }
 
     private IUIElement BuildChoiceSetting(SettingDefinition def, object currentValue)
     {
         var choices = def.Choices ?? [];
         var items = choices.Select(c => Item(c, c)).ToArray();
-        var currentStr = currentValue?.ToString() ?? def.DefaultValue.ToString();
-        var selectedIndex = Array.IndexOf(choices, currentStr);
-        if (selectedIndex < 0) selectedIndex = 0;
+        var selectedIndex = Math.Max(0, Array.IndexOf(choices, currentValue as string));
 
-        return Stack()
-            .Vertical()
-            .SmallSpacing()
-            .WithChildren(
-                Label().Text(def.DisplayName + (def.Description != null ? $" ({def.Description})" : "")),
-                SelectDropDownList($"setting-{def.Key}")
-                    .WithItems(items)
-                    .Select(selectedIndex)
-                    .OnItemSelected(item =>
-                    {
-                        if (item?.Value is string s)
-                            _pendingSettings[def.Key] = s;
-                    }));
+        return SelectDropDownList($"setting-{ToId(def.Key)}")
+            .WithItems(items)
+            .Select(selectedIndex)
+            .OnItemSelected(item =>
+            {
+                if (item?.Value is string s)
+                    _pendingSettings[def.Key] = s;
+            });
+    }
+
+    private IUIElement BuildTextSetting(SettingDefinition def, object currentValue)
+    {
+        return SingleLineTextInput($"setting-{ToId(def.Key)}")
+            .HideCommandBar()
+            .Text(currentValue as string ?? "")
+            .OnTextChanged(value => _pendingSettings[def.Key] = value);
     }
 
     private void OnConfigSaveClick()
     {
         _configManager.SaveAllSettings(_selectedLanguage, _pendingSettings);
         _view.CurrentOpenedDialog?.Close();
+
+        // Show what the new settings do
+        _ = FormatWithDebounceAsync();
     }
 
     private async void OnConfigResetClickAsync()
