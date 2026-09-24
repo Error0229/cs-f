@@ -234,10 +234,8 @@ public class ConfigManager
             var language = LanguageRegistry.GetByConfigKey(languageKey)?.Language;
             foreach (var (settingKey, settingValue) in settings)
             {
-                var key = language is { } l ? FormatterSpecs.MigrateSettingKey(l, settingKey) : settingKey;
-
                 // Convert TOML types to appropriate .NET types
-                entry.Settings[key] = settingValue switch
+                object value = settingValue switch
                 {
                     bool boolVal => boolVal,
                     long longVal => (int)longVal,
@@ -245,6 +243,9 @@ public class ConfigManager
                     string strVal => strVal,
                     _ => settingValue?.ToString() ?? ""
                 };
+
+                var (key, migrated) = language is { } l ? FormatterSpecs.MigrateSetting(l, settingKey, value) : (settingKey, value);
+                entry.Settings[key] = migrated;
             }
         }
 

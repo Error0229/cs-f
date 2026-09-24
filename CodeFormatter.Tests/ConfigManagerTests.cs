@@ -31,7 +31,7 @@ public class ConfigManagerTests
 
             [formatters.typescript]
             command = "dprint"
-            args = ["fmt", "--stdin", "file.ts", "--plugins", "https://plugins.dprint.dev/typescript-0.93.0.wasm"]
+            args = ["fmt", "--stdin", "file.ts", "--plugins", "https://plugins.dprint.dev/typescript-0.95.13.wasm"]
 
             [formatters.php]
             command = "php-cs-fixer"
@@ -50,6 +50,37 @@ public class ConfigManagerTests
         Assert.Null(config.GetUserEntry(Language.TypeScript));
         Assert.Null(config.GetUserEntry(Language.Php));
         Assert.Null(config.GetUserEntry(Language.Java));
+    }
+
+    [Fact]
+    public void DprintCommandWithAChosenPlugin_IsAUserCommand()
+    {
+        // Same shape as the shipped default, but the user pinned a plugin themselves
+        var config = FromToml("""
+            [formatters.typescript]
+            command = "dprint"
+            args = ["fmt", "--stdin", "file.ts", "--plugins", "https://plugins.dprint.dev/typescript-0.93.0.wasm"]
+            """, out _);
+
+        Assert.NotNull(config.GetUserEntry(Language.TypeScript));
+    }
+
+    [Fact]
+    public void OldSettingValues_AreMigrated()
+    {
+        var config = FromToml("""
+            [formatters.css.settings]
+            singleQuote = true
+            printWidth = 100
+
+            [formatters.typescript.settings]
+            quoteStyle = "single"
+            """, out _);
+
+        var css = config.GetSettingsWithDefaults(Language.Css);
+        Assert.Equal("alwaysSingle", css["quotes"]);
+        Assert.Equal(100, css["lineWidth"]);
+        Assert.Equal("alwaysSingle", config.GetSettingsWithDefaults(Language.TypeScript)["quoteStyle"]);
     }
 
     [Fact]

@@ -97,15 +97,38 @@ public static class FormatterSpecs
         if (entry.RequiresNode)
             return true; // Prettier / sql-formatter era; those formatters are gone
 
-        var args = entry.Args
-            .Where(a => a != "--plugins" && a != "--config-discovery=false" && !a.StartsWith("https://plugins.dprint.dev/"))
-            .ToArray();
+        var args = entry.Args.Where(a => a != "--config-discovery=false").ToArray();
 
+        // dprint: the stdin name and the plugin must both be ones that shipped. A user who wrote
+        // the same command with a plugin they chose themselves meant it.
         if (entry.Command == "dprint")
-            return args.Length == 3 && args[0] == "fmt" && args[1] == "--stdin";
+        {
+            return args is ["fmt", "--stdin", var name] && ShippedStdinNames.Contains(name)
+                || args is ["fmt", "--stdin", var n, "--plugins", var url] && ShippedStdinNames.Contains(n) && ShippedPlugins.Contains(url);
+        }
 
         return ShippedDefaults.Contains($"{entry.Command} {string.Join(' ', args)}".TrimEnd());
     }
+
+    private static readonly HashSet<string> ShippedStdinNames =
+    [
+        "file.js", "file.ts", "file.json", "file.md", "file.toml", "file.css", "file.scss", "file.less",
+        "file.html", "file.vue", "file.svelte", "file.astro", "file.yaml", "file.graphql", "Dockerfile"
+    ];
+
+    // Every plugin URL a released version wrote into config.toml
+    private static readonly HashSet<string> ShippedPlugins =
+    [
+        "https://plugins.dprint.dev/typescript-0.95.13.wasm",
+        "https://plugins.dprint.dev/json-0.21.0.wasm",
+        "https://plugins.dprint.dev/markdown-0.20.0.wasm",
+        "https://plugins.dprint.dev/toml-0.7.0.wasm",
+        "https://plugins.dprint.dev/g-plane/malva-v0.15.1.wasm",
+        "https://plugins.dprint.dev/g-plane/markup_fmt-v0.25.1.wasm",
+        "https://plugins.dprint.dev/g-plane/pretty_yaml-v0.5.1.wasm",
+        "https://plugins.dprint.dev/g-plane/pretty_graphql-v0.2.3.wasm",
+        "https://plugins.dprint.dev/dockerfile-0.3.3.wasm",
+    ];
 
     private static readonly HashSet<string> ShippedDefaults =
     [
@@ -136,10 +159,23 @@ public static class FormatterSpecs
     ];
 
     /// <summary>
-    /// Setting keys saved by versions up to 1.2.0, mapped to the tool's own key.
+    /// A setting saved by a version up to 1.2.0, as the tool itself spells it.
     /// Old keys without an entry here never reached their formatter and are dropped.
     /// </summary>
-    public static string MigrateSettingKey(Language language, string key) => language switch
+    public static (string Key, object Value) MigrateSetting(Language language, string key, object value)
+    {
+        var quote = value is true ? "alwaysSingle" : "alwaysDouble";
+        return (language, key, value) switch
+        {
+            // The dprint plugins never took these; the definitions had Prettier's spellings
+            (Language.Css or Language.Scss or Language.Less, "singleQuote", bool) => ("quotes", quote),
+            (Language.JavaScript or Language.TypeScript, "quoteStyle", "double") => (key, "alwaysDouble"),
+            (Language.JavaScript or Language.TypeScript, "quoteStyle", "single") => (key, "alwaysSingle"),
+            _ => (MigrateSettingKey(language, key), value)
+        };
+    }
+
+    private static string MigrateSettingKey(Language language, string key) => language switch
     {
         Language.Python => key switch
         {

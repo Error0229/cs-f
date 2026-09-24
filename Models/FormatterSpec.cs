@@ -91,7 +91,9 @@ public sealed record LauncherPayload(
 /// <summary>
 /// How to tell a successful run from a failed one. Exit codes alone are not enough: several tools
 /// exit non-zero after formatting correctly, and several exit zero after failing.
-/// An empty result is always a failure.
+/// An empty result is a failure when the tool also had something to say (ktlint reports a syntax
+/// error on stderr and exits 0); with a clean exit and silence it is what the tool made of the
+/// input (a comment-only script minified by shfmt).
 /// </summary>
 public sealed record SuccessRule(int[] OkExitCodes, Regex? FailurePattern = null)
 {
@@ -111,10 +113,10 @@ public sealed record SuccessRule(int[] OkExitCodes, Regex? FailurePattern = null
     /// <param name="diagnostics">Text the tool printed that is not the formatted result.</param>
     public bool IsSuccess(int exitCode, string result, string diagnostics)
     {
-        if (string.IsNullOrWhiteSpace(result))
-            return false;
         if (FailurePattern is not null && FailurePattern.IsMatch(diagnostics))
             return false;
+        if (string.IsNullOrWhiteSpace(result))
+            return string.IsNullOrWhiteSpace(diagnostics) && OkExitCodes.Contains(exitCode);
         return OkExitCodes.Length == 0 || OkExitCodes.Contains(exitCode);
     }
 }

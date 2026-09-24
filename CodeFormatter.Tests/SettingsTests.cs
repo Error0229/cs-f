@@ -259,6 +259,16 @@ public class SettingsTests
     }
 
     [Fact]
+    public async Task AnOptionThatRemovesEverything_IsNotAFailure()
+    {
+        // Minify drops comments; a comment-only script comes back empty, and that is correct
+        var result = await TestFormatter.With(Language.Shell, ("-mn", true)).FormatAsync("# only a comment\n", Language.Shell);
+
+        Assert.True(result.Success, $"Format failed: {result.Output}");
+        Assert.Equal("", result.Output.Trim());
+    }
+
+    [Fact]
     public async Task ObjectiveC_DefaultsActuallyFormat()
     {
         // Uncrustify's built-in defaults only re-indent; the base profile is what formats
