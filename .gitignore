@@ -5,6 +5,7 @@ obj/
 *.suo
 .vscode/
 Binaries/*.exe
+Binaries/plugins/
 node_modules/
 nupkg/
 package-lock.json
